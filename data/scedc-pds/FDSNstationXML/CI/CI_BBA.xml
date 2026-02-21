@@ -1,0 +1,2293 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<fsx:FDSNStationXML xmlns:fsx="http://www.fdsn.org/xml/station/1" xmlns:sis="http://anss-sis.scsn.org/xml/ext-stationxml/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.1" xsi:schemaLocation="http://www.fdsn.org/xml/station/1 http://www.fdsn.org/xml/station/fdsn-station-1.1.xsd">
+  <fsx:Source>ANSS Station Information System</fsx:Source>
+  <fsx:Sender>ANSS Station Information System</fsx:Sender>
+  <fsx:Created>2015-10-22T06:24:49.695910Z</fsx:Created>
+  <fsx:Network code="CI">
+    <fsx:Description>Southern California Seismic Network</fsx:Description>
+    <fsx:TotalNumberStations>725</fsx:TotalNumberStations>
+    <fsx:SelectedNumberStations>1</fsx:SelectedNumberStations>
+    <fsx:Station code="BBA" startDate="1997-10-02T00:00:00Z" endDate="2001-01-18T00:00:00Z">
+      <fsx:Latitude>34.195510</fsx:Latitude>
+      <fsx:Longitude>-118.353400</fsx:Longitude>
+      <fsx:Elevation>182.0</fsx:Elevation>
+      <fsx:Site>
+        <fsx:Name>Burbank Airport</fsx:Name>
+      </fsx:Site>
+      <fsx:Operator>
+        <fsx:Agency>SCSN-CA</fsx:Agency>
+      </fsx:Operator>
+      <fsx:CreationDate>1997-10-02T00:00:00Z</fsx:CreationDate>
+      <fsx:TotalNumberChannels>6</fsx:TotalNumberChannels>
+      <fsx:SelectedNumberChannels>6</fsx:SelectedNumberChannels>
+      <fsx:Channel code="HLE" startDate="1997-10-02T00:00:00Z" endDate="2000-02-07T00:00:00Z" locationCode="">
+        <fsx:Latitude>34.195510</fsx:Latitude>
+        <fsx:Longitude>-118.353400</fsx:Longitude>
+        <fsx:Elevation>182.0</fsx:Elevation>
+        <fsx:Depth>0.0</fsx:Depth>
+        <fsx:Azimuth>180.0</fsx:Azimuth>
+        <fsx:Dip>0.0</fsx:Dip>
+        <fsx:Type>GEOPHYSICAL</fsx:Type>
+        <fsx:SampleRate>1.000000000000E+02</fsx:SampleRate>
+        
+        <fsx:ClockDrift>1.000000000000E-02</fsx:ClockDrift>
+        <fsx:CalibrationUnits>
+          <fsx:Name>A</fsx:Name>
+          <fsx:Description>Electric Current in Amperes</fsx:Description>
+        </fsx:CalibrationUnits>
+        <fsx:Sensor>
+          <fsx:Type>KINEMETRICS:FBA-DECK:39761</fsx:Type>
+          <fsx:Manufacturer>KINEMETRICS</fsx:Manufacturer>
+          <fsx:Model>FBA-DECK</fsx:Model>
+          <fsx:SerialNumber>39761</fsx:SerialNumber>
+          <fsx:CalibrationDate>1995-01-01T00:00:00Z</fsx:CalibrationDate>
+        </fsx:Sensor>
+        <fsx:DataLogger>
+          <fsx:Type>KINEMETRICS:K2:524</fsx:Type>
+          <fsx:Manufacturer>KINEMETRICS</fsx:Manufacturer>
+          <fsx:Model>K2</fsx:Model>
+          <fsx:SerialNumber>524</fsx:SerialNumber>
+          <fsx:CalibrationDate>1996-03-28T00:00:00Z</fsx:CalibrationDate>
+        </fsx:DataLogger>
+        <fsx:Response>
+          <fsx:InstrumentSensitivity>
+            <fsx:Value>4.194303750000E+05</fsx:Value>
+            <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            <fsx:InputUnits>
+              <fsx:Name>m/s**2</fsx:Name>
+              <fsx:Description>Acceleration in meters per second squared</fsx:Description>
+            </fsx:InputUnits>
+            <fsx:OutputUnits>
+              <fsx:Name>counts</fsx:Name>
+              <fsx:Description>Digital Count in Digital counts</fsx:Description>
+            </fsx:OutputUnits>
+          </fsx:InstrumentSensitivity>
+          <fsx:Stage number="1">
+            <fsx:PolesZeros name="FBA-K2_COMPONENT_3_DEFAULT">
+              <fsx:Description>CISN</fsx:Description>
+              <fsx:InputUnits>
+                <fsx:Name>m/s**2</fsx:Name>
+                <fsx:Description>Acceleration in meters per second squared</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</fsx:PzTransferFunctionType>
+              <fsx:NormalizationFactor>1.625927395980E+08</fsx:NormalizationFactor>
+              <fsx:NormalizationFrequency>1.000000000000E+00</fsx:NormalizationFrequency>
+              <fsx:Pole number="0">
+                <fsx:Real>-2.140100000000E+02</fsx:Real>
+                <fsx:Imaginary>2.502000000000E+02</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="1">
+                <fsx:Real>-2.140100000000E+02</fsx:Real>
+                <fsx:Imaginary>-2.502000000000E+02</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="2">
+                <fsx:Real>-1.500000000000E+03</fsx:Real>
+                <fsx:Imaginary>0.000000000000E+00</fsx:Imaginary>
+              </fsx:Pole>
+            </fsx:PolesZeros>
+            <fsx:StageGain>
+              <fsx:Value>1.250000000000E-01</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="2">
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="3">
+            <fsx:Coefficients>
+              <fsx:InputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:CfTransferFunctionType>DIGITAL</fsx:CfTransferFunctionType>
+            </fsx:Coefficients>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+03</fsx:InputSampleRate>
+              <fsx:Factor>1</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>3.355443000000E+06</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="4">
+            <fsx:FIR name="FIR_K2_A_100">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>NONE</fsx:Symmetry>
+              <fsx:NumeratorCoefficient i="1">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="2">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="3">-4.800000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="4">-1.670000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="5">-4.170000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="6">-8.820000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="7">-1.705000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="8">-3.016000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="9">-4.983000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="10">-7.761000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="11">-1.145600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="12">-1.610500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="13">-2.157700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="14">-2.758500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="15">-3.355700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="16">-3.868300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="17">-4.186600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="18">-4.177100000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="19">-3.691900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="20">-2.585600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="21">-7.319000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="22">1.947900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="23">5.463400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="24">9.720300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="25">1.450660000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="26">1.947050000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="27">2.412680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="28">2.787110000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="29">3.001210000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="30">2.982850000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="31">2.664450000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="32">1.991390000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="33">9.315000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="34">-5.148600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="35">-2.308130000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="36">-4.362460000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="37">-6.543870000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="38">-8.672360000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="39">-1.052845000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="40">-1.186526000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="41">-1.242423000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="42">-1.195538000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="43">-1.023924000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="44">-7.109170000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="45">-2.471920000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="46">3.675220000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="47">1.123416000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="48">2.000153000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="49">2.967393000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="50">3.986084000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="51">5.010605000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="52">5.991530000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="53">6.878912000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="54">7.625711000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="55">8.191156000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="56">8.543730000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="57">8.663523000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="58">8.543730000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="59">8.191156000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="60">7.625711000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="61">6.878912000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="62">5.991530000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="63">5.010605000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="64">3.986084000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="65">2.967393000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="66">2.000153000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="67">1.123416000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="68">3.675220000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="69">-2.471920000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="70">-7.109170000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="71">-1.023924000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="72">-1.195538000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="73">-1.242423000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="74">-1.186526000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="75">-1.052845000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="76">-8.672360000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="77">-6.543870000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="78">-4.362460000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="79">-2.308130000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="80">-5.148600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="81">9.315000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="82">1.991390000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="83">2.664450000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="84">2.982850000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="85">3.001210000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="86">2.787110000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="87">2.412680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="88">1.947050000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="89">1.450660000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="90">9.720300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="91">5.463400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="92">1.947900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="93">-7.319000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="94">-2.585600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="95">-3.691900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="96">-4.177100000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="97">-4.186600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="98">-3.868300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="99">-3.355700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="100">-2.758500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="101">-2.157700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="102">-1.610500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="103">-1.145600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="104">-7.761000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="105">-4.983000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="106">-3.016000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="107">-1.705000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="108">-8.820000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="109">-4.170000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="110">-1.670000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="111">-4.800000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="112">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="113">0.000000000000E+00</fsx:NumeratorCoefficient>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+03</fsx:InputSampleRate>
+              <fsx:Factor>10</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="5">
+            <fsx:FIR name="FIR_K2_B_CAUSAL">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>NONE</fsx:Symmetry>
+              <fsx:NumeratorCoefficient i="1">-2.060000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="2">-1.219000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="3">2.280300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="4">2.510680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="5">1.279174000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="6">4.281990000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="7">1.049868500000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="8">1.969493100000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="9">2.851090600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="10">3.092237600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="11">2.225426100000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="12">4.536691000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="13">-1.232700200000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="14">-1.709755000000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="15">-7.274992000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="16">7.287046000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="17">1.279021600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="18">4.910778000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="19">-6.894971000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="20">-9.767751000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="21">-1.562395000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="22">7.349438000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="23">6.705659000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="24">-1.705849000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="25">-7.066927000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="26">-3.258794000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="27">4.071076000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="28">5.498540000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="29">-9.362200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="30">-4.891677000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="31">-2.919256000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="32">2.523275000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="33">4.057722000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="34">1.839560000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="35">-3.426010000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="36">-2.126285000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="37">1.758183000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="38">2.821350000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="39">5.736700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="40">-2.383745000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="41">-1.348916000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="42">1.294588000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="43">1.833540000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="44">-1.148730000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="45">-1.595152000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="46">-7.379690000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="47">9.386670000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="48">1.090838000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="49">-2.120690000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="50">-9.958140000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="51">-3.289540000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="52">6.371070000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="53">5.784960000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="54">-2.218790000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="55">-5.647140000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="56">-9.926200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="57">3.920230000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="58">2.634430000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="59">-1.764560000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="60">-2.832440000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="61">2.269000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="62">2.141370000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="63">9.639500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="64">-1.145270000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="65">-1.218720000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="66">2.948000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="67">1.010570000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="68">2.266200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="69">-6.240400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="70">-4.269500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="71">2.588500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="72">4.073700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="73">-9.700000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="74">-2.848600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="75">-1.106400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="76">1.481300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="77">1.345300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="78">-4.449000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="79">-1.067200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="80">-1.347000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="81">6.397000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="82">3.371000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="83">-2.744000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="84">-3.175000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="85">4.660000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="86">2.138000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="87">5.230000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="88">-1.081000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="89">-7.040000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="90">3.560000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="91">5.400000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="92">-6.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="93">-2.980000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="94">-1.050000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="95">1.190000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="96">1.010000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="97">-3.200000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="98">-5.400000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="99">-5.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="100">2.100000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="101">1.500000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="102">-9.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="103">-7.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="104">2.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="105">1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="106">1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="107">-1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="108">-1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="109">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="110">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="111">0.000000000000E+00</fsx:NumeratorCoefficient>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+02</fsx:InputSampleRate>
+              <fsx:Factor>2</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+        </fsx:Response>
+      </fsx:Channel>
+      <fsx:Channel code="HLE" startDate="2000-02-07T00:00:00Z" endDate="2001-01-18T00:00:00Z" locationCode="">
+        <fsx:Latitude>34.195510</fsx:Latitude>
+        <fsx:Longitude>-118.353400</fsx:Longitude>
+        <fsx:Elevation>182.0</fsx:Elevation>
+        <fsx:Depth>0.0</fsx:Depth>
+        <fsx:Azimuth>90.0</fsx:Azimuth>
+        <fsx:Dip>0.0</fsx:Dip>
+        <fsx:Type>GEOPHYSICAL</fsx:Type>
+        <fsx:SampleRate>1.000000000000E+02</fsx:SampleRate>
+        
+        <fsx:ClockDrift>1.000000000000E-02</fsx:ClockDrift>
+        <fsx:CalibrationUnits>
+          <fsx:Name>A</fsx:Name>
+          <fsx:Description>Electric Current in Amperes</fsx:Description>
+        </fsx:CalibrationUnits>
+        <fsx:Sensor>
+          <fsx:Type>KINEMETRICS:FBA-DECK:39761</fsx:Type>
+          <fsx:Manufacturer>KINEMETRICS</fsx:Manufacturer>
+          <fsx:Model>FBA-DECK</fsx:Model>
+          <fsx:SerialNumber>39761</fsx:SerialNumber>
+          <fsx:CalibrationDate>1995-01-01T00:00:00Z</fsx:CalibrationDate>
+        </fsx:Sensor>
+        <fsx:DataLogger>
+          <fsx:Type>KINEMETRICS:K2:524</fsx:Type>
+          <fsx:Manufacturer>KINEMETRICS</fsx:Manufacturer>
+          <fsx:Model>K2</fsx:Model>
+          <fsx:SerialNumber>524</fsx:SerialNumber>
+          <fsx:CalibrationDate>1996-03-28T00:00:00Z</fsx:CalibrationDate>
+        </fsx:DataLogger>
+        <fsx:Response>
+          <fsx:InstrumentSensitivity>
+            <fsx:Value>4.194303750000E+05</fsx:Value>
+            <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            <fsx:InputUnits>
+              <fsx:Name>m/s**2</fsx:Name>
+              <fsx:Description>Acceleration in meters per second squared</fsx:Description>
+            </fsx:InputUnits>
+            <fsx:OutputUnits>
+              <fsx:Name>counts</fsx:Name>
+              <fsx:Description>Digital Count in Digital counts</fsx:Description>
+            </fsx:OutputUnits>
+          </fsx:InstrumentSensitivity>
+          <fsx:Stage number="1">
+            <fsx:PolesZeros name="FBA-K2_COMPONENT_3_DEFAULT">
+              <fsx:Description>CISN</fsx:Description>
+              <fsx:InputUnits>
+                <fsx:Name>m/s**2</fsx:Name>
+                <fsx:Description>Acceleration in meters per second squared</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</fsx:PzTransferFunctionType>
+              <fsx:NormalizationFactor>1.625927395980E+08</fsx:NormalizationFactor>
+              <fsx:NormalizationFrequency>1.000000000000E+00</fsx:NormalizationFrequency>
+              <fsx:Pole number="0">
+                <fsx:Real>-2.140100000000E+02</fsx:Real>
+                <fsx:Imaginary>2.502000000000E+02</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="1">
+                <fsx:Real>-2.140100000000E+02</fsx:Real>
+                <fsx:Imaginary>-2.502000000000E+02</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="2">
+                <fsx:Real>-1.500000000000E+03</fsx:Real>
+                <fsx:Imaginary>0.000000000000E+00</fsx:Imaginary>
+              </fsx:Pole>
+            </fsx:PolesZeros>
+            <fsx:StageGain>
+              <fsx:Value>1.250000000000E-01</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="2">
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="3">
+            <fsx:Coefficients>
+              <fsx:InputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:CfTransferFunctionType>DIGITAL</fsx:CfTransferFunctionType>
+            </fsx:Coefficients>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+03</fsx:InputSampleRate>
+              <fsx:Factor>1</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>3.355443000000E+06</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="4">
+            <fsx:FIR name="FIR_K2_A_100">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>NONE</fsx:Symmetry>
+              <fsx:NumeratorCoefficient i="1">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="2">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="3">-4.800000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="4">-1.670000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="5">-4.170000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="6">-8.820000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="7">-1.705000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="8">-3.016000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="9">-4.983000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="10">-7.761000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="11">-1.145600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="12">-1.610500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="13">-2.157700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="14">-2.758500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="15">-3.355700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="16">-3.868300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="17">-4.186600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="18">-4.177100000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="19">-3.691900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="20">-2.585600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="21">-7.319000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="22">1.947900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="23">5.463400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="24">9.720300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="25">1.450660000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="26">1.947050000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="27">2.412680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="28">2.787110000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="29">3.001210000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="30">2.982850000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="31">2.664450000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="32">1.991390000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="33">9.315000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="34">-5.148600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="35">-2.308130000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="36">-4.362460000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="37">-6.543870000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="38">-8.672360000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="39">-1.052845000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="40">-1.186526000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="41">-1.242423000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="42">-1.195538000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="43">-1.023924000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="44">-7.109170000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="45">-2.471920000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="46">3.675220000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="47">1.123416000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="48">2.000153000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="49">2.967393000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="50">3.986084000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="51">5.010605000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="52">5.991530000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="53">6.878912000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="54">7.625711000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="55">8.191156000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="56">8.543730000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="57">8.663523000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="58">8.543730000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="59">8.191156000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="60">7.625711000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="61">6.878912000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="62">5.991530000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="63">5.010605000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="64">3.986084000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="65">2.967393000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="66">2.000153000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="67">1.123416000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="68">3.675220000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="69">-2.471920000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="70">-7.109170000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="71">-1.023924000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="72">-1.195538000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="73">-1.242423000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="74">-1.186526000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="75">-1.052845000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="76">-8.672360000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="77">-6.543870000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="78">-4.362460000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="79">-2.308130000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="80">-5.148600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="81">9.315000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="82">1.991390000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="83">2.664450000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="84">2.982850000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="85">3.001210000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="86">2.787110000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="87">2.412680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="88">1.947050000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="89">1.450660000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="90">9.720300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="91">5.463400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="92">1.947900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="93">-7.319000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="94">-2.585600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="95">-3.691900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="96">-4.177100000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="97">-4.186600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="98">-3.868300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="99">-3.355700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="100">-2.758500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="101">-2.157700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="102">-1.610500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="103">-1.145600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="104">-7.761000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="105">-4.983000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="106">-3.016000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="107">-1.705000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="108">-8.820000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="109">-4.170000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="110">-1.670000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="111">-4.800000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="112">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="113">0.000000000000E+00</fsx:NumeratorCoefficient>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+03</fsx:InputSampleRate>
+              <fsx:Factor>10</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="5">
+            <fsx:FIR name="FIR_K2_B_CAUSAL">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>NONE</fsx:Symmetry>
+              <fsx:NumeratorCoefficient i="1">-2.060000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="2">-1.219000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="3">2.280300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="4">2.510680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="5">1.279174000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="6">4.281990000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="7">1.049868500000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="8">1.969493100000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="9">2.851090600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="10">3.092237600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="11">2.225426100000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="12">4.536691000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="13">-1.232700200000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="14">-1.709755000000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="15">-7.274992000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="16">7.287046000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="17">1.279021600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="18">4.910778000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="19">-6.894971000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="20">-9.767751000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="21">-1.562395000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="22">7.349438000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="23">6.705659000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="24">-1.705849000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="25">-7.066927000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="26">-3.258794000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="27">4.071076000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="28">5.498540000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="29">-9.362200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="30">-4.891677000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="31">-2.919256000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="32">2.523275000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="33">4.057722000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="34">1.839560000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="35">-3.426010000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="36">-2.126285000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="37">1.758183000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="38">2.821350000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="39">5.736700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="40">-2.383745000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="41">-1.348916000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="42">1.294588000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="43">1.833540000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="44">-1.148730000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="45">-1.595152000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="46">-7.379690000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="47">9.386670000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="48">1.090838000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="49">-2.120690000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="50">-9.958140000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="51">-3.289540000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="52">6.371070000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="53">5.784960000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="54">-2.218790000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="55">-5.647140000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="56">-9.926200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="57">3.920230000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="58">2.634430000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="59">-1.764560000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="60">-2.832440000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="61">2.269000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="62">2.141370000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="63">9.639500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="64">-1.145270000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="65">-1.218720000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="66">2.948000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="67">1.010570000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="68">2.266200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="69">-6.240400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="70">-4.269500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="71">2.588500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="72">4.073700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="73">-9.700000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="74">-2.848600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="75">-1.106400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="76">1.481300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="77">1.345300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="78">-4.449000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="79">-1.067200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="80">-1.347000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="81">6.397000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="82">3.371000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="83">-2.744000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="84">-3.175000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="85">4.660000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="86">2.138000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="87">5.230000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="88">-1.081000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="89">-7.040000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="90">3.560000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="91">5.400000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="92">-6.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="93">-2.980000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="94">-1.050000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="95">1.190000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="96">1.010000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="97">-3.200000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="98">-5.400000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="99">-5.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="100">2.100000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="101">1.500000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="102">-9.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="103">-7.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="104">2.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="105">1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="106">1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="107">-1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="108">-1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="109">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="110">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="111">0.000000000000E+00</fsx:NumeratorCoefficient>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+02</fsx:InputSampleRate>
+              <fsx:Factor>2</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+        </fsx:Response>
+      </fsx:Channel>
+      <fsx:Channel code="HLN" startDate="1997-10-02T00:00:00Z" endDate="2000-02-07T00:00:00Z" locationCode="">
+        <fsx:Latitude>34.195510</fsx:Latitude>
+        <fsx:Longitude>-118.353400</fsx:Longitude>
+        <fsx:Elevation>182.0</fsx:Elevation>
+        <fsx:Depth>0.0</fsx:Depth>
+        <fsx:Azimuth>90.0</fsx:Azimuth>
+        <fsx:Dip>0.0</fsx:Dip>
+        <fsx:Type>GEOPHYSICAL</fsx:Type>
+        <fsx:SampleRate>1.000000000000E+02</fsx:SampleRate>
+        
+        <fsx:ClockDrift>1.000000000000E-02</fsx:ClockDrift>
+        <fsx:CalibrationUnits>
+          <fsx:Name>A</fsx:Name>
+          <fsx:Description>Electric Current in Amperes</fsx:Description>
+        </fsx:CalibrationUnits>
+        <fsx:Sensor>
+          <fsx:Type>KINEMETRICS:FBA-DECK:39761</fsx:Type>
+          <fsx:Manufacturer>KINEMETRICS</fsx:Manufacturer>
+          <fsx:Model>FBA-DECK</fsx:Model>
+          <fsx:SerialNumber>39761</fsx:SerialNumber>
+          <fsx:CalibrationDate>1995-01-01T00:00:00Z</fsx:CalibrationDate>
+        </fsx:Sensor>
+        <fsx:DataLogger>
+          <fsx:Type>KINEMETRICS:K2:524</fsx:Type>
+          <fsx:Manufacturer>KINEMETRICS</fsx:Manufacturer>
+          <fsx:Model>K2</fsx:Model>
+          <fsx:SerialNumber>524</fsx:SerialNumber>
+          <fsx:CalibrationDate>1996-03-28T00:00:00Z</fsx:CalibrationDate>
+        </fsx:DataLogger>
+        <fsx:Response>
+          <fsx:InstrumentSensitivity>
+            <fsx:Value>4.194303750000E+05</fsx:Value>
+            <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            <fsx:InputUnits>
+              <fsx:Name>m/s**2</fsx:Name>
+              <fsx:Description>Acceleration in meters per second squared</fsx:Description>
+            </fsx:InputUnits>
+            <fsx:OutputUnits>
+              <fsx:Name>counts</fsx:Name>
+              <fsx:Description>Digital Count in Digital counts</fsx:Description>
+            </fsx:OutputUnits>
+          </fsx:InstrumentSensitivity>
+          <fsx:Stage number="1">
+            <fsx:PolesZeros name="FBA-K2_COMPONENT_2_DEFAULT">
+              <fsx:Description>CISN</fsx:Description>
+              <fsx:InputUnits>
+                <fsx:Name>m/s**2</fsx:Name>
+                <fsx:Description>Acceleration in meters per second squared</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</fsx:PzTransferFunctionType>
+              <fsx:NormalizationFactor>1.625871059556E+08</fsx:NormalizationFactor>
+              <fsx:NormalizationFrequency>1.000000000000E+00</fsx:NormalizationFrequency>
+              <fsx:Pole number="0">
+                <fsx:Real>-2.107100000000E+02</fsx:Real>
+                <fsx:Imaginary>2.529800000000E+02</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="1">
+                <fsx:Real>-2.107100000000E+02</fsx:Real>
+                <fsx:Imaginary>-2.529800000000E+02</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="2">
+                <fsx:Real>-1.500000000000E+03</fsx:Real>
+                <fsx:Imaginary>0.000000000000E+00</fsx:Imaginary>
+              </fsx:Pole>
+            </fsx:PolesZeros>
+            <fsx:StageGain>
+              <fsx:Value>1.250000000000E-01</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="2">
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="3">
+            <fsx:Coefficients>
+              <fsx:InputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:CfTransferFunctionType>DIGITAL</fsx:CfTransferFunctionType>
+            </fsx:Coefficients>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+03</fsx:InputSampleRate>
+              <fsx:Factor>1</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>3.355443000000E+06</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="4">
+            <fsx:FIR name="FIR_K2_A_100">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>NONE</fsx:Symmetry>
+              <fsx:NumeratorCoefficient i="1">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="2">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="3">-4.800000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="4">-1.670000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="5">-4.170000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="6">-8.820000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="7">-1.705000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="8">-3.016000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="9">-4.983000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="10">-7.761000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="11">-1.145600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="12">-1.610500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="13">-2.157700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="14">-2.758500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="15">-3.355700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="16">-3.868300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="17">-4.186600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="18">-4.177100000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="19">-3.691900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="20">-2.585600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="21">-7.319000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="22">1.947900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="23">5.463400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="24">9.720300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="25">1.450660000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="26">1.947050000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="27">2.412680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="28">2.787110000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="29">3.001210000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="30">2.982850000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="31">2.664450000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="32">1.991390000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="33">9.315000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="34">-5.148600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="35">-2.308130000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="36">-4.362460000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="37">-6.543870000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="38">-8.672360000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="39">-1.052845000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="40">-1.186526000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="41">-1.242423000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="42">-1.195538000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="43">-1.023924000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="44">-7.109170000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="45">-2.471920000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="46">3.675220000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="47">1.123416000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="48">2.000153000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="49">2.967393000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="50">3.986084000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="51">5.010605000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="52">5.991530000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="53">6.878912000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="54">7.625711000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="55">8.191156000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="56">8.543730000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="57">8.663523000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="58">8.543730000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="59">8.191156000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="60">7.625711000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="61">6.878912000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="62">5.991530000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="63">5.010605000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="64">3.986084000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="65">2.967393000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="66">2.000153000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="67">1.123416000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="68">3.675220000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="69">-2.471920000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="70">-7.109170000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="71">-1.023924000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="72">-1.195538000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="73">-1.242423000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="74">-1.186526000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="75">-1.052845000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="76">-8.672360000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="77">-6.543870000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="78">-4.362460000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="79">-2.308130000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="80">-5.148600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="81">9.315000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="82">1.991390000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="83">2.664450000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="84">2.982850000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="85">3.001210000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="86">2.787110000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="87">2.412680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="88">1.947050000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="89">1.450660000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="90">9.720300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="91">5.463400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="92">1.947900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="93">-7.319000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="94">-2.585600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="95">-3.691900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="96">-4.177100000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="97">-4.186600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="98">-3.868300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="99">-3.355700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="100">-2.758500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="101">-2.157700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="102">-1.610500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="103">-1.145600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="104">-7.761000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="105">-4.983000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="106">-3.016000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="107">-1.705000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="108">-8.820000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="109">-4.170000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="110">-1.670000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="111">-4.800000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="112">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="113">0.000000000000E+00</fsx:NumeratorCoefficient>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+03</fsx:InputSampleRate>
+              <fsx:Factor>10</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="5">
+            <fsx:FIR name="FIR_K2_B_CAUSAL">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>NONE</fsx:Symmetry>
+              <fsx:NumeratorCoefficient i="1">-2.060000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="2">-1.219000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="3">2.280300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="4">2.510680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="5">1.279174000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="6">4.281990000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="7">1.049868500000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="8">1.969493100000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="9">2.851090600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="10">3.092237600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="11">2.225426100000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="12">4.536691000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="13">-1.232700200000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="14">-1.709755000000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="15">-7.274992000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="16">7.287046000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="17">1.279021600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="18">4.910778000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="19">-6.894971000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="20">-9.767751000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="21">-1.562395000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="22">7.349438000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="23">6.705659000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="24">-1.705849000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="25">-7.066927000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="26">-3.258794000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="27">4.071076000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="28">5.498540000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="29">-9.362200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="30">-4.891677000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="31">-2.919256000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="32">2.523275000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="33">4.057722000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="34">1.839560000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="35">-3.426010000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="36">-2.126285000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="37">1.758183000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="38">2.821350000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="39">5.736700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="40">-2.383745000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="41">-1.348916000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="42">1.294588000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="43">1.833540000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="44">-1.148730000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="45">-1.595152000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="46">-7.379690000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="47">9.386670000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="48">1.090838000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="49">-2.120690000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="50">-9.958140000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="51">-3.289540000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="52">6.371070000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="53">5.784960000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="54">-2.218790000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="55">-5.647140000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="56">-9.926200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="57">3.920230000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="58">2.634430000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="59">-1.764560000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="60">-2.832440000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="61">2.269000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="62">2.141370000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="63">9.639500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="64">-1.145270000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="65">-1.218720000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="66">2.948000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="67">1.010570000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="68">2.266200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="69">-6.240400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="70">-4.269500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="71">2.588500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="72">4.073700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="73">-9.700000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="74">-2.848600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="75">-1.106400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="76">1.481300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="77">1.345300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="78">-4.449000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="79">-1.067200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="80">-1.347000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="81">6.397000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="82">3.371000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="83">-2.744000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="84">-3.175000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="85">4.660000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="86">2.138000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="87">5.230000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="88">-1.081000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="89">-7.040000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="90">3.560000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="91">5.400000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="92">-6.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="93">-2.980000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="94">-1.050000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="95">1.190000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="96">1.010000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="97">-3.200000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="98">-5.400000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="99">-5.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="100">2.100000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="101">1.500000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="102">-9.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="103">-7.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="104">2.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="105">1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="106">1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="107">-1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="108">-1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="109">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="110">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="111">0.000000000000E+00</fsx:NumeratorCoefficient>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+02</fsx:InputSampleRate>
+              <fsx:Factor>2</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+        </fsx:Response>
+      </fsx:Channel>
+      <fsx:Channel code="HLN" startDate="2000-02-07T00:00:00Z" endDate="2001-01-18T00:00:00Z" locationCode="">
+        <fsx:Latitude>34.195510</fsx:Latitude>
+        <fsx:Longitude>-118.353400</fsx:Longitude>
+        <fsx:Elevation>182.0</fsx:Elevation>
+        <fsx:Depth>0.0</fsx:Depth>
+        <fsx:Azimuth>0.0</fsx:Azimuth>
+        <fsx:Dip>0.0</fsx:Dip>
+        <fsx:Type>GEOPHYSICAL</fsx:Type>
+        <fsx:SampleRate>1.000000000000E+02</fsx:SampleRate>
+        
+        <fsx:ClockDrift>1.000000000000E-02</fsx:ClockDrift>
+        <fsx:CalibrationUnits>
+          <fsx:Name>A</fsx:Name>
+          <fsx:Description>Electric Current in Amperes</fsx:Description>
+        </fsx:CalibrationUnits>
+        <fsx:Sensor>
+          <fsx:Type>KINEMETRICS:FBA-DECK:39761</fsx:Type>
+          <fsx:Manufacturer>KINEMETRICS</fsx:Manufacturer>
+          <fsx:Model>FBA-DECK</fsx:Model>
+          <fsx:SerialNumber>39761</fsx:SerialNumber>
+          <fsx:CalibrationDate>1995-01-01T00:00:00Z</fsx:CalibrationDate>
+        </fsx:Sensor>
+        <fsx:DataLogger>
+          <fsx:Type>KINEMETRICS:K2:524</fsx:Type>
+          <fsx:Manufacturer>KINEMETRICS</fsx:Manufacturer>
+          <fsx:Model>K2</fsx:Model>
+          <fsx:SerialNumber>524</fsx:SerialNumber>
+          <fsx:CalibrationDate>1996-03-28T00:00:00Z</fsx:CalibrationDate>
+        </fsx:DataLogger>
+        <fsx:Response>
+          <fsx:InstrumentSensitivity>
+            <fsx:Value>4.194303750000E+05</fsx:Value>
+            <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            <fsx:InputUnits>
+              <fsx:Name>m/s**2</fsx:Name>
+              <fsx:Description>Acceleration in meters per second squared</fsx:Description>
+            </fsx:InputUnits>
+            <fsx:OutputUnits>
+              <fsx:Name>counts</fsx:Name>
+              <fsx:Description>Digital Count in Digital counts</fsx:Description>
+            </fsx:OutputUnits>
+          </fsx:InstrumentSensitivity>
+          <fsx:Stage number="1">
+            <fsx:PolesZeros name="FBA-K2_COMPONENT_2_DEFAULT">
+              <fsx:Description>CISN</fsx:Description>
+              <fsx:InputUnits>
+                <fsx:Name>m/s**2</fsx:Name>
+                <fsx:Description>Acceleration in meters per second squared</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</fsx:PzTransferFunctionType>
+              <fsx:NormalizationFactor>1.625871059556E+08</fsx:NormalizationFactor>
+              <fsx:NormalizationFrequency>1.000000000000E+00</fsx:NormalizationFrequency>
+              <fsx:Pole number="0">
+                <fsx:Real>-2.107100000000E+02</fsx:Real>
+                <fsx:Imaginary>2.529800000000E+02</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="1">
+                <fsx:Real>-2.107100000000E+02</fsx:Real>
+                <fsx:Imaginary>-2.529800000000E+02</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="2">
+                <fsx:Real>-1.500000000000E+03</fsx:Real>
+                <fsx:Imaginary>0.000000000000E+00</fsx:Imaginary>
+              </fsx:Pole>
+            </fsx:PolesZeros>
+            <fsx:StageGain>
+              <fsx:Value>1.250000000000E-01</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="2">
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="3">
+            <fsx:Coefficients>
+              <fsx:InputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:CfTransferFunctionType>DIGITAL</fsx:CfTransferFunctionType>
+            </fsx:Coefficients>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+03</fsx:InputSampleRate>
+              <fsx:Factor>1</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>3.355443000000E+06</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="4">
+            <fsx:FIR name="FIR_K2_A_100">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>NONE</fsx:Symmetry>
+              <fsx:NumeratorCoefficient i="1">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="2">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="3">-4.800000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="4">-1.670000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="5">-4.170000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="6">-8.820000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="7">-1.705000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="8">-3.016000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="9">-4.983000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="10">-7.761000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="11">-1.145600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="12">-1.610500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="13">-2.157700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="14">-2.758500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="15">-3.355700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="16">-3.868300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="17">-4.186600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="18">-4.177100000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="19">-3.691900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="20">-2.585600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="21">-7.319000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="22">1.947900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="23">5.463400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="24">9.720300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="25">1.450660000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="26">1.947050000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="27">2.412680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="28">2.787110000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="29">3.001210000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="30">2.982850000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="31">2.664450000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="32">1.991390000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="33">9.315000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="34">-5.148600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="35">-2.308130000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="36">-4.362460000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="37">-6.543870000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="38">-8.672360000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="39">-1.052845000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="40">-1.186526000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="41">-1.242423000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="42">-1.195538000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="43">-1.023924000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="44">-7.109170000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="45">-2.471920000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="46">3.675220000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="47">1.123416000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="48">2.000153000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="49">2.967393000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="50">3.986084000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="51">5.010605000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="52">5.991530000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="53">6.878912000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="54">7.625711000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="55">8.191156000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="56">8.543730000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="57">8.663523000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="58">8.543730000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="59">8.191156000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="60">7.625711000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="61">6.878912000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="62">5.991530000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="63">5.010605000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="64">3.986084000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="65">2.967393000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="66">2.000153000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="67">1.123416000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="68">3.675220000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="69">-2.471920000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="70">-7.109170000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="71">-1.023924000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="72">-1.195538000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="73">-1.242423000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="74">-1.186526000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="75">-1.052845000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="76">-8.672360000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="77">-6.543870000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="78">-4.362460000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="79">-2.308130000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="80">-5.148600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="81">9.315000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="82">1.991390000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="83">2.664450000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="84">2.982850000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="85">3.001210000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="86">2.787110000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="87">2.412680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="88">1.947050000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="89">1.450660000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="90">9.720300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="91">5.463400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="92">1.947900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="93">-7.319000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="94">-2.585600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="95">-3.691900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="96">-4.177100000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="97">-4.186600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="98">-3.868300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="99">-3.355700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="100">-2.758500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="101">-2.157700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="102">-1.610500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="103">-1.145600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="104">-7.761000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="105">-4.983000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="106">-3.016000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="107">-1.705000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="108">-8.820000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="109">-4.170000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="110">-1.670000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="111">-4.800000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="112">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="113">0.000000000000E+00</fsx:NumeratorCoefficient>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+03</fsx:InputSampleRate>
+              <fsx:Factor>10</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="5">
+            <fsx:FIR name="FIR_K2_B_CAUSAL">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>NONE</fsx:Symmetry>
+              <fsx:NumeratorCoefficient i="1">-2.060000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="2">-1.219000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="3">2.280300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="4">2.510680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="5">1.279174000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="6">4.281990000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="7">1.049868500000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="8">1.969493100000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="9">2.851090600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="10">3.092237600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="11">2.225426100000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="12">4.536691000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="13">-1.232700200000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="14">-1.709755000000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="15">-7.274992000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="16">7.287046000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="17">1.279021600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="18">4.910778000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="19">-6.894971000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="20">-9.767751000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="21">-1.562395000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="22">7.349438000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="23">6.705659000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="24">-1.705849000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="25">-7.066927000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="26">-3.258794000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="27">4.071076000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="28">5.498540000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="29">-9.362200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="30">-4.891677000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="31">-2.919256000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="32">2.523275000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="33">4.057722000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="34">1.839560000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="35">-3.426010000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="36">-2.126285000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="37">1.758183000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="38">2.821350000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="39">5.736700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="40">-2.383745000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="41">-1.348916000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="42">1.294588000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="43">1.833540000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="44">-1.148730000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="45">-1.595152000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="46">-7.379690000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="47">9.386670000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="48">1.090838000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="49">-2.120690000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="50">-9.958140000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="51">-3.289540000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="52">6.371070000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="53">5.784960000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="54">-2.218790000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="55">-5.647140000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="56">-9.926200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="57">3.920230000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="58">2.634430000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="59">-1.764560000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="60">-2.832440000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="61">2.269000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="62">2.141370000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="63">9.639500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="64">-1.145270000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="65">-1.218720000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="66">2.948000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="67">1.010570000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="68">2.266200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="69">-6.240400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="70">-4.269500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="71">2.588500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="72">4.073700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="73">-9.700000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="74">-2.848600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="75">-1.106400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="76">1.481300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="77">1.345300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="78">-4.449000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="79">-1.067200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="80">-1.347000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="81">6.397000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="82">3.371000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="83">-2.744000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="84">-3.175000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="85">4.660000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="86">2.138000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="87">5.230000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="88">-1.081000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="89">-7.040000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="90">3.560000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="91">5.400000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="92">-6.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="93">-2.980000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="94">-1.050000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="95">1.190000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="96">1.010000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="97">-3.200000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="98">-5.400000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="99">-5.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="100">2.100000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="101">1.500000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="102">-9.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="103">-7.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="104">2.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="105">1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="106">1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="107">-1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="108">-1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="109">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="110">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="111">0.000000000000E+00</fsx:NumeratorCoefficient>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+02</fsx:InputSampleRate>
+              <fsx:Factor>2</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+        </fsx:Response>
+      </fsx:Channel>
+      <fsx:Channel code="HLZ" startDate="1997-10-02T00:00:00Z" endDate="2000-02-07T00:00:00Z" locationCode="">
+        <fsx:Latitude>34.195510</fsx:Latitude>
+        <fsx:Longitude>-118.353400</fsx:Longitude>
+        <fsx:Elevation>182.0</fsx:Elevation>
+        <fsx:Depth>0.0</fsx:Depth>
+        <fsx:Azimuth>0.0</fsx:Azimuth>
+        <fsx:Dip>-90.0</fsx:Dip>
+        <fsx:Type>GEOPHYSICAL</fsx:Type>
+        <fsx:SampleRate>1.000000000000E+02</fsx:SampleRate>
+        
+        <fsx:ClockDrift>1.000000000000E-02</fsx:ClockDrift>
+        <fsx:CalibrationUnits>
+          <fsx:Name>A</fsx:Name>
+          <fsx:Description>Electric Current in Amperes</fsx:Description>
+        </fsx:CalibrationUnits>
+        <fsx:Sensor>
+          <fsx:Type>KINEMETRICS:FBA-DECK:39761</fsx:Type>
+          <fsx:Manufacturer>KINEMETRICS</fsx:Manufacturer>
+          <fsx:Model>FBA-DECK</fsx:Model>
+          <fsx:SerialNumber>39761</fsx:SerialNumber>
+          <fsx:CalibrationDate>1995-01-01T00:00:00Z</fsx:CalibrationDate>
+        </fsx:Sensor>
+        <fsx:DataLogger>
+          <fsx:Type>KINEMETRICS:K2:524</fsx:Type>
+          <fsx:Manufacturer>KINEMETRICS</fsx:Manufacturer>
+          <fsx:Model>K2</fsx:Model>
+          <fsx:SerialNumber>524</fsx:SerialNumber>
+          <fsx:CalibrationDate>1996-03-28T00:00:00Z</fsx:CalibrationDate>
+        </fsx:DataLogger>
+        <fsx:Response>
+          <fsx:InstrumentSensitivity>
+            <fsx:Value>4.194303750000E+05</fsx:Value>
+            <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            <fsx:InputUnits>
+              <fsx:Name>m/s**2</fsx:Name>
+              <fsx:Description>Acceleration in meters per second squared</fsx:Description>
+            </fsx:InputUnits>
+            <fsx:OutputUnits>
+              <fsx:Name>counts</fsx:Name>
+              <fsx:Description>Digital Count in Digital counts</fsx:Description>
+            </fsx:OutputUnits>
+          </fsx:InstrumentSensitivity>
+          <fsx:Stage number="1">
+            <fsx:PolesZeros name="FBA-K2_COMPONENT_1_DEFAULT">
+              <fsx:Description>CISN</fsx:Description>
+              <fsx:InputUnits>
+                <fsx:Name>m/s**2</fsx:Name>
+                <fsx:Description>Acceleration in meters per second squared</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</fsx:PzTransferFunctionType>
+              <fsx:NormalizationFactor>1.540137969087E+08</fsx:NormalizationFactor>
+              <fsx:NormalizationFrequency>1.000000000000E+00</fsx:NormalizationFrequency>
+              <fsx:Pole number="0">
+                <fsx:Real>-2.050800000000E+02</fsx:Real>
+                <fsx:Imaginary>2.462200000000E+02</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="1">
+                <fsx:Real>-2.050800000000E+02</fsx:Real>
+                <fsx:Imaginary>-2.462200000000E+02</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="2">
+                <fsx:Real>-1.500000000000E+03</fsx:Real>
+                <fsx:Imaginary>0.000000000000E+00</fsx:Imaginary>
+              </fsx:Pole>
+            </fsx:PolesZeros>
+            <fsx:StageGain>
+              <fsx:Value>1.250000000000E-01</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="2">
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="3">
+            <fsx:Coefficients>
+              <fsx:InputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:CfTransferFunctionType>DIGITAL</fsx:CfTransferFunctionType>
+            </fsx:Coefficients>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+03</fsx:InputSampleRate>
+              <fsx:Factor>1</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>3.355443000000E+06</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="4">
+            <fsx:FIR name="FIR_K2_A_100">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>NONE</fsx:Symmetry>
+              <fsx:NumeratorCoefficient i="1">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="2">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="3">-4.800000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="4">-1.670000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="5">-4.170000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="6">-8.820000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="7">-1.705000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="8">-3.016000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="9">-4.983000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="10">-7.761000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="11">-1.145600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="12">-1.610500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="13">-2.157700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="14">-2.758500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="15">-3.355700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="16">-3.868300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="17">-4.186600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="18">-4.177100000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="19">-3.691900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="20">-2.585600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="21">-7.319000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="22">1.947900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="23">5.463400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="24">9.720300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="25">1.450660000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="26">1.947050000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="27">2.412680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="28">2.787110000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="29">3.001210000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="30">2.982850000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="31">2.664450000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="32">1.991390000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="33">9.315000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="34">-5.148600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="35">-2.308130000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="36">-4.362460000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="37">-6.543870000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="38">-8.672360000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="39">-1.052845000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="40">-1.186526000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="41">-1.242423000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="42">-1.195538000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="43">-1.023924000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="44">-7.109170000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="45">-2.471920000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="46">3.675220000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="47">1.123416000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="48">2.000153000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="49">2.967393000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="50">3.986084000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="51">5.010605000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="52">5.991530000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="53">6.878912000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="54">7.625711000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="55">8.191156000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="56">8.543730000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="57">8.663523000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="58">8.543730000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="59">8.191156000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="60">7.625711000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="61">6.878912000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="62">5.991530000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="63">5.010605000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="64">3.986084000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="65">2.967393000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="66">2.000153000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="67">1.123416000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="68">3.675220000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="69">-2.471920000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="70">-7.109170000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="71">-1.023924000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="72">-1.195538000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="73">-1.242423000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="74">-1.186526000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="75">-1.052845000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="76">-8.672360000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="77">-6.543870000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="78">-4.362460000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="79">-2.308130000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="80">-5.148600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="81">9.315000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="82">1.991390000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="83">2.664450000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="84">2.982850000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="85">3.001210000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="86">2.787110000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="87">2.412680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="88">1.947050000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="89">1.450660000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="90">9.720300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="91">5.463400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="92">1.947900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="93">-7.319000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="94">-2.585600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="95">-3.691900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="96">-4.177100000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="97">-4.186600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="98">-3.868300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="99">-3.355700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="100">-2.758500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="101">-2.157700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="102">-1.610500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="103">-1.145600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="104">-7.761000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="105">-4.983000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="106">-3.016000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="107">-1.705000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="108">-8.820000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="109">-4.170000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="110">-1.670000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="111">-4.800000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="112">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="113">0.000000000000E+00</fsx:NumeratorCoefficient>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+03</fsx:InputSampleRate>
+              <fsx:Factor>10</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="5">
+            <fsx:FIR name="FIR_K2_B_CAUSAL">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>NONE</fsx:Symmetry>
+              <fsx:NumeratorCoefficient i="1">-2.060000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="2">-1.219000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="3">2.280300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="4">2.510680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="5">1.279174000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="6">4.281990000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="7">1.049868500000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="8">1.969493100000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="9">2.851090600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="10">3.092237600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="11">2.225426100000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="12">4.536691000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="13">-1.232700200000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="14">-1.709755000000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="15">-7.274992000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="16">7.287046000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="17">1.279021600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="18">4.910778000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="19">-6.894971000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="20">-9.767751000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="21">-1.562395000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="22">7.349438000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="23">6.705659000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="24">-1.705849000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="25">-7.066927000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="26">-3.258794000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="27">4.071076000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="28">5.498540000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="29">-9.362200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="30">-4.891677000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="31">-2.919256000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="32">2.523275000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="33">4.057722000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="34">1.839560000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="35">-3.426010000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="36">-2.126285000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="37">1.758183000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="38">2.821350000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="39">5.736700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="40">-2.383745000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="41">-1.348916000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="42">1.294588000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="43">1.833540000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="44">-1.148730000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="45">-1.595152000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="46">-7.379690000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="47">9.386670000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="48">1.090838000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="49">-2.120690000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="50">-9.958140000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="51">-3.289540000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="52">6.371070000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="53">5.784960000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="54">-2.218790000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="55">-5.647140000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="56">-9.926200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="57">3.920230000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="58">2.634430000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="59">-1.764560000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="60">-2.832440000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="61">2.269000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="62">2.141370000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="63">9.639500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="64">-1.145270000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="65">-1.218720000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="66">2.948000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="67">1.010570000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="68">2.266200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="69">-6.240400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="70">-4.269500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="71">2.588500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="72">4.073700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="73">-9.700000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="74">-2.848600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="75">-1.106400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="76">1.481300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="77">1.345300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="78">-4.449000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="79">-1.067200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="80">-1.347000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="81">6.397000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="82">3.371000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="83">-2.744000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="84">-3.175000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="85">4.660000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="86">2.138000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="87">5.230000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="88">-1.081000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="89">-7.040000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="90">3.560000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="91">5.400000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="92">-6.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="93">-2.980000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="94">-1.050000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="95">1.190000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="96">1.010000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="97">-3.200000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="98">-5.400000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="99">-5.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="100">2.100000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="101">1.500000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="102">-9.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="103">-7.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="104">2.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="105">1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="106">1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="107">-1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="108">-1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="109">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="110">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="111">0.000000000000E+00</fsx:NumeratorCoefficient>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+02</fsx:InputSampleRate>
+              <fsx:Factor>2</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+        </fsx:Response>
+      </fsx:Channel>
+      <fsx:Channel code="HLZ" startDate="2000-02-07T00:00:00Z" endDate="2001-01-18T00:00:00Z" locationCode="">
+        <fsx:Latitude>34.195510</fsx:Latitude>
+        <fsx:Longitude>-118.353400</fsx:Longitude>
+        <fsx:Elevation>182.0</fsx:Elevation>
+        <fsx:Depth>0.0</fsx:Depth>
+        <fsx:Azimuth>0.0</fsx:Azimuth>
+        <fsx:Dip>-90.0</fsx:Dip>
+        <fsx:Type>GEOPHYSICAL</fsx:Type>
+        <fsx:SampleRate>1.000000000000E+02</fsx:SampleRate>
+        
+        <fsx:ClockDrift>1.000000000000E-02</fsx:ClockDrift>
+        <fsx:CalibrationUnits>
+          <fsx:Name>A</fsx:Name>
+          <fsx:Description>Electric Current in Amperes</fsx:Description>
+        </fsx:CalibrationUnits>
+        <fsx:Sensor>
+          <fsx:Type>KINEMETRICS:FBA-DECK:39761</fsx:Type>
+          <fsx:Manufacturer>KINEMETRICS</fsx:Manufacturer>
+          <fsx:Model>FBA-DECK</fsx:Model>
+          <fsx:SerialNumber>39761</fsx:SerialNumber>
+          <fsx:CalibrationDate>1995-01-01T00:00:00Z</fsx:CalibrationDate>
+        </fsx:Sensor>
+        <fsx:DataLogger>
+          <fsx:Type>KINEMETRICS:K2:524</fsx:Type>
+          <fsx:Manufacturer>KINEMETRICS</fsx:Manufacturer>
+          <fsx:Model>K2</fsx:Model>
+          <fsx:SerialNumber>524</fsx:SerialNumber>
+          <fsx:CalibrationDate>1996-03-28T00:00:00Z</fsx:CalibrationDate>
+        </fsx:DataLogger>
+        <fsx:Response>
+          <fsx:InstrumentSensitivity>
+            <fsx:Value>4.194303750000E+05</fsx:Value>
+            <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            <fsx:InputUnits>
+              <fsx:Name>m/s**2</fsx:Name>
+              <fsx:Description>Acceleration in meters per second squared</fsx:Description>
+            </fsx:InputUnits>
+            <fsx:OutputUnits>
+              <fsx:Name>counts</fsx:Name>
+              <fsx:Description>Digital Count in Digital counts</fsx:Description>
+            </fsx:OutputUnits>
+          </fsx:InstrumentSensitivity>
+          <fsx:Stage number="1">
+            <fsx:PolesZeros name="FBA-K2_COMPONENT_1_DEFAULT">
+              <fsx:Description>CISN</fsx:Description>
+              <fsx:InputUnits>
+                <fsx:Name>m/s**2</fsx:Name>
+                <fsx:Description>Acceleration in meters per second squared</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</fsx:PzTransferFunctionType>
+              <fsx:NormalizationFactor>1.540137969087E+08</fsx:NormalizationFactor>
+              <fsx:NormalizationFrequency>1.000000000000E+00</fsx:NormalizationFrequency>
+              <fsx:Pole number="0">
+                <fsx:Real>-2.050800000000E+02</fsx:Real>
+                <fsx:Imaginary>2.462200000000E+02</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="1">
+                <fsx:Real>-2.050800000000E+02</fsx:Real>
+                <fsx:Imaginary>-2.462200000000E+02</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="2">
+                <fsx:Real>-1.500000000000E+03</fsx:Real>
+                <fsx:Imaginary>0.000000000000E+00</fsx:Imaginary>
+              </fsx:Pole>
+            </fsx:PolesZeros>
+            <fsx:StageGain>
+              <fsx:Value>1.250000000000E-01</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="2">
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="3">
+            <fsx:Coefficients>
+              <fsx:InputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:CfTransferFunctionType>DIGITAL</fsx:CfTransferFunctionType>
+            </fsx:Coefficients>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+03</fsx:InputSampleRate>
+              <fsx:Factor>1</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>3.355443000000E+06</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="4">
+            <fsx:FIR name="FIR_K2_A_100">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>NONE</fsx:Symmetry>
+              <fsx:NumeratorCoefficient i="1">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="2">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="3">-4.800000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="4">-1.670000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="5">-4.170000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="6">-8.820000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="7">-1.705000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="8">-3.016000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="9">-4.983000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="10">-7.761000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="11">-1.145600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="12">-1.610500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="13">-2.157700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="14">-2.758500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="15">-3.355700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="16">-3.868300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="17">-4.186600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="18">-4.177100000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="19">-3.691900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="20">-2.585600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="21">-7.319000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="22">1.947900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="23">5.463400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="24">9.720300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="25">1.450660000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="26">1.947050000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="27">2.412680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="28">2.787110000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="29">3.001210000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="30">2.982850000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="31">2.664450000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="32">1.991390000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="33">9.315000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="34">-5.148600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="35">-2.308130000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="36">-4.362460000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="37">-6.543870000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="38">-8.672360000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="39">-1.052845000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="40">-1.186526000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="41">-1.242423000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="42">-1.195538000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="43">-1.023924000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="44">-7.109170000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="45">-2.471920000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="46">3.675220000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="47">1.123416000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="48">2.000153000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="49">2.967393000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="50">3.986084000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="51">5.010605000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="52">5.991530000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="53">6.878912000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="54">7.625711000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="55">8.191156000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="56">8.543730000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="57">8.663523000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="58">8.543730000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="59">8.191156000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="60">7.625711000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="61">6.878912000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="62">5.991530000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="63">5.010605000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="64">3.986084000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="65">2.967393000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="66">2.000153000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="67">1.123416000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="68">3.675220000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="69">-2.471920000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="70">-7.109170000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="71">-1.023924000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="72">-1.195538000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="73">-1.242423000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="74">-1.186526000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="75">-1.052845000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="76">-8.672360000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="77">-6.543870000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="78">-4.362460000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="79">-2.308130000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="80">-5.148600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="81">9.315000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="82">1.991390000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="83">2.664450000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="84">2.982850000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="85">3.001210000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="86">2.787110000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="87">2.412680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="88">1.947050000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="89">1.450660000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="90">9.720300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="91">5.463400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="92">1.947900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="93">-7.319000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="94">-2.585600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="95">-3.691900000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="96">-4.177100000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="97">-4.186600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="98">-3.868300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="99">-3.355700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="100">-2.758500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="101">-2.157700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="102">-1.610500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="103">-1.145600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="104">-7.761000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="105">-4.983000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="106">-3.016000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="107">-1.705000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="108">-8.820000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="109">-4.170000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="110">-1.670000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="111">-4.800000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="112">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="113">0.000000000000E+00</fsx:NumeratorCoefficient>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+03</fsx:InputSampleRate>
+              <fsx:Factor>10</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="5">
+            <fsx:FIR name="FIR_K2_B_CAUSAL">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>NONE</fsx:Symmetry>
+              <fsx:NumeratorCoefficient i="1">-2.060000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="2">-1.219000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="3">2.280300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="4">2.510680000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="5">1.279174000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="6">4.281990000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="7">1.049868500000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="8">1.969493100000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="9">2.851090600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="10">3.092237600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="11">2.225426100000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="12">4.536691000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="13">-1.232700200000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="14">-1.709755000000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="15">-7.274992000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="16">7.287046000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="17">1.279021600000E-01</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="18">4.910778000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="19">-6.894971000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="20">-9.767751000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="21">-1.562395000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="22">7.349438000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="23">6.705659000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="24">-1.705849000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="25">-7.066927000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="26">-3.258794000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="27">4.071076000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="28">5.498540000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="29">-9.362200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="30">-4.891677000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="31">-2.919256000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="32">2.523275000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="33">4.057722000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="34">1.839560000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="35">-3.426010000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="36">-2.126285000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="37">1.758183000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="38">2.821350000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="39">5.736700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="40">-2.383745000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="41">-1.348916000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="42">1.294588000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="43">1.833540000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="44">-1.148730000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="45">-1.595152000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="46">-7.379690000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="47">9.386670000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="48">1.090838000000E-02</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="49">-2.120690000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="50">-9.958140000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="51">-3.289540000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="52">6.371070000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="53">5.784960000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="54">-2.218790000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="55">-5.647140000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="56">-9.926200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="57">3.920230000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="58">2.634430000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="59">-1.764560000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="60">-2.832440000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="61">2.269000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="62">2.141370000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="63">9.639500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="64">-1.145270000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="65">-1.218720000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="66">2.948000000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="67">1.010570000000E-03</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="68">2.266200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="69">-6.240400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="70">-4.269500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="71">2.588500000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="72">4.073700000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="73">-9.700000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="74">-2.848600000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="75">-1.106400000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="76">1.481300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="77">1.345300000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="78">-4.449000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="79">-1.067200000000E-04</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="80">-1.347000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="81">6.397000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="82">3.371000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="83">-2.744000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="84">-3.175000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="85">4.660000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="86">2.138000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="87">5.230000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="88">-1.081000000000E-05</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="89">-7.040000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="90">3.560000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="91">5.400000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="92">-6.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="93">-2.980000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="94">-1.050000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="95">1.190000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="96">1.010000000000E-06</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="97">-3.200000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="98">-5.400000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="99">-5.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="100">2.100000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="101">1.500000000000E-07</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="102">-9.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="103">-7.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="104">2.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="105">1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="106">1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="107">-1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="108">-1.000000000000E-08</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="109">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="110">0.000000000000E+00</fsx:NumeratorCoefficient>
+              <fsx:NumeratorCoefficient i="111">0.000000000000E+00</fsx:NumeratorCoefficient>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>2.000000000000E+02</fsx:InputSampleRate>
+              <fsx:Factor>2</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>1.000000000000E+00</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+        </fsx:Response>
+      </fsx:Channel>
+    </fsx:Station>
+  </fsx:Network>
+</fsx:FDSNStationXML>

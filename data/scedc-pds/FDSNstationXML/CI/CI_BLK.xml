@@ -1,0 +1,225 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<fsx:FDSNStationXML xmlns:fsx="http://www.fdsn.org/xml/station/1" xmlns:sis="http://anss-sis.scsn.org/xml/ext-stationxml/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.1" xsi:schemaLocation="http://www.fdsn.org/xml/station/1 http://www.fdsn.org/xml/station/fdsn-station-1.1.xsd">
+  <fsx:Source>ANSS Station Information System</fsx:Source>
+  <fsx:Sender>ANSS Station Information System</fsx:Sender>
+  <fsx:Created>2015-10-21T19:24:55.734882Z</fsx:Created>
+  <fsx:Network code="CI">
+    <fsx:Description>Southern California Seismic Network</fsx:Description>
+    <fsx:TotalNumberStations>725</fsx:TotalNumberStations>
+    <fsx:SelectedNumberStations>1</fsx:SelectedNumberStations>
+    <fsx:Station code="BLK" startDate="1981-04-30T00:00:00Z" endDate="2014-02-14T00:00:00Z">
+      <fsx:Latitude>35.088670</fsx:Latitude>
+      <fsx:Longitude>-117.219750</fsx:Longitude>
+      <fsx:Elevation>619.0</fsx:Elevation>
+      <fsx:Site>
+        <fsx:Name>Black Mtn</fsx:Name>
+        <fsx:Town>Barstow</fsx:Town>
+        <fsx:Region>CA</fsx:Region>
+        <fsx:Country>USA</fsx:Country>
+      </fsx:Site>
+      <fsx:Operator>
+        <fsx:Agency>SCSN-CA</fsx:Agency>
+      </fsx:Operator>
+      <fsx:CreationDate>1981-04-30T00:00:00Z</fsx:CreationDate>
+      <fsx:TotalNumberChannels>1</fsx:TotalNumberChannels>
+      <fsx:SelectedNumberChannels>1</fsx:SelectedNumberChannels>
+      <fsx:Channel code="EHZ" startDate="1981-04-30T00:00:00Z" endDate="2014-02-14T00:00:00Z" locationCode="">
+        <fsx:Latitude>35.088670</fsx:Latitude>
+        <fsx:Longitude>-117.219750</fsx:Longitude>
+        <fsx:Elevation>619.0</fsx:Elevation>
+        <fsx:Depth>0.0</fsx:Depth>
+        <fsx:Azimuth>0.0</fsx:Azimuth>
+        <fsx:Dip>-90.0</fsx:Dip>
+        <fsx:Type>GEOPHYSICAL</fsx:Type>
+        <fsx:SampleRate>1.000000000000E+02</fsx:SampleRate>
+        
+        <fsx:CalibrationUnits>
+          <fsx:Name>A</fsx:Name>
+          <fsx:Description>Electric Current in Amperes</fsx:Description>
+        </fsx:CalibrationUnits>
+        <fsx:Sensor>
+          <fsx:Type>SERCEL:L-4C VERTICAL:L4_BLK_VHZ_01</fsx:Type>
+          <fsx:Manufacturer>SERCEL</fsx:Manufacturer>
+          <fsx:Model>L-4C VERTICAL</fsx:Model>
+          <fsx:SerialNumber>L4_BLK_VHZ_01</fsx:SerialNumber>
+          <fsx:CalibrationDate>1981-04-30T00:00:00Z</fsx:CalibrationDate>
+        </fsx:Sensor>
+        <fsx:DataLogger>
+          <fsx:Type>NATIONAL:EARTHWORM NI:CUSP-TUSTIN_01</fsx:Type>
+          <fsx:Manufacturer>NATIONAL</fsx:Manufacturer>
+          <fsx:Model>EARTHWORM NI</fsx:Model>
+          <fsx:SerialNumber>CUSP-TUSTIN_01</fsx:SerialNumber>
+          <fsx:CalibrationDate>1981-04-30T00:00:00Z</fsx:CalibrationDate>
+        </fsx:DataLogger>
+        <fsx:Equipment>
+          <fsx:Type>USGS:J412H:J412H_BLK_VHZ_01</fsx:Type>
+          <fsx:Manufacturer>USGS</fsx:Manufacturer>
+          <fsx:Model>J412H</fsx:Model>
+          <fsx:SerialNumber>J412H_BLK_VHZ_01</fsx:SerialNumber>
+          <fsx:CalibrationDate>1981-04-30T00:00:00Z</fsx:CalibrationDate>
+        </fsx:Equipment>
+        <fsx:Response>
+          <fsx:InstrumentSensitivity>
+            <fsx:Value>4.504805649979E+08</fsx:Value>
+            <fsx:Frequency>2.500000000000E+01</fsx:Frequency>
+            <fsx:InputUnits>
+              <fsx:Name>m/s</fsx:Name>
+              <fsx:Description>Velocity in meters per second</fsx:Description>
+            </fsx:InputUnits>
+            <fsx:OutputUnits>
+              <fsx:Name>counts</fsx:Name>
+              <fsx:Description>Digital Count in Digital counts</fsx:Description>
+            </fsx:OutputUnits>
+          </fsx:InstrumentSensitivity>
+          <fsx:Stage number="1">
+            <fsx:PolesZeros name="L4_DEFAULT_DERIVED">
+              <fsx:Description>CISN</fsx:Description>
+              <fsx:InputUnits>
+                <fsx:Name>m/s</fsx:Name>
+                <fsx:Description>Velocity in meters per second</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</fsx:PzTransferFunctionType>
+              <fsx:NormalizationFactor>1.000449170119E+00</fsx:NormalizationFactor>
+              <fsx:NormalizationFrequency>2.500000000000E+01</fsx:NormalizationFrequency>
+              <fsx:Zero number="0">
+                <fsx:Real>0.000000000000E+00</fsx:Real>
+                <fsx:Imaginary>0.000000000000E+00</fsx:Imaginary>
+              </fsx:Zero>
+              <fsx:Zero number="1">
+                <fsx:Real>0.000000000000E+00</fsx:Real>
+                <fsx:Imaginary>0.000000000000E+00</fsx:Imaginary>
+              </fsx:Zero>
+              <fsx:Pole number="2">
+                <fsx:Real>-5.026498000000E+00</fsx:Real>
+                <fsx:Imaginary>3.769873490000E+00</fsx:Imaginary>
+              </fsx:Pole>
+              <fsx:Pole number="3">
+                <fsx:Real>-5.026498000000E+00</fsx:Real>
+                <fsx:Imaginary>-3.769873490000E+00</fsx:Imaginary>
+              </fsx:Pole>
+            </fsx:PolesZeros>
+            <fsx:StageGain>
+              <fsx:Value>1.002395646319E+02</fsx:Value>
+              <fsx:Frequency>2.500000000000E+01</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="2">
+            <fsx:PolesZeros>
+              <fsx:InputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:PzTransferFunctionType>LAPLACE (HERTZ)</fsx:PzTransferFunctionType>
+              <fsx:NormalizationFactor>1.000000000000E+00</fsx:NormalizationFactor>
+              <fsx:NormalizationFrequency>1.000000000000E+00</fsx:NormalizationFrequency>
+            </fsx:PolesZeros>
+            <fsx:StageGain>
+              <fsx:Value>1.202264434617E+04</fsx:Value>
+              <fsx:Frequency>2.500000000000E+01</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="3">
+            <fsx:PolesZeros>
+              <fsx:InputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:PzTransferFunctionType>LAPLACE (HERTZ)</fsx:PzTransferFunctionType>
+              <fsx:NormalizationFactor>1.000000000000E+00</fsx:NormalizationFactor>
+              <fsx:NormalizationFrequency>1.000000000000E+00</fsx:NormalizationFrequency>
+            </fsx:PolesZeros>
+            <fsx:StageGain>
+              <fsx:Value>2.592592592593E+01</fsx:Value>
+              <fsx:Frequency>2.500000000000E+01</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="4">
+            <fsx:PolesZeros>
+              <fsx:InputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:PzTransferFunctionType>LAPLACE (HERTZ)</fsx:PzTransferFunctionType>
+              <fsx:NormalizationFactor>1.000000000000E+00</fsx:NormalizationFactor>
+              <fsx:NormalizationFrequency>1.000000000000E+00</fsx:NormalizationFrequency>
+            </fsx:PolesZeros>
+            <fsx:StageGain>
+              <fsx:Value>1.760000000000E-02</fsx:Value>
+              <fsx:Frequency>2.500000000000E+01</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="5">
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>2.500000000000E+01</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="6">
+            <fsx:Coefficients>
+              <fsx:InputUnits>
+                <fsx:Name>V</fsx:Name>
+                <fsx:Description>Voltage in Volts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:CfTransferFunctionType>DIGITAL</fsx:CfTransferFunctionType>
+            </fsx:Coefficients>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>1.000000000000E+02</fsx:InputSampleRate>
+              <fsx:Factor>1</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>8.192000000000E+02</fsx:Value>
+              <fsx:Frequency>2.500000000000E+01</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+          <fsx:Stage number="7">
+            <fsx:FIR name="CUSP-TUSTIN_FIR">
+              <fsx:InputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:InputUnits>
+              <fsx:OutputUnits>
+                <fsx:Name>counts</fsx:Name>
+                <fsx:Description>Digital Count in Digital counts</fsx:Description>
+              </fsx:OutputUnits>
+              <fsx:Symmetry>ODD</fsx:Symmetry>
+            </fsx:FIR>
+            <fsx:Decimation>
+              <fsx:InputSampleRate>1.000000000000E+02</fsx:InputSampleRate>
+              <fsx:Factor>1</fsx:Factor>
+              <fsx:Offset>0</fsx:Offset>
+              <fsx:Delay>0.000000000000E+00</fsx:Delay>
+              <fsx:Correction>0.000000000000E+00</fsx:Correction>
+            </fsx:Decimation>
+            <fsx:StageGain>
+              <fsx:Value>1.000000000000E+00</fsx:Value>
+              <fsx:Frequency>2.500000000000E+01</fsx:Frequency>
+            </fsx:StageGain>
+          </fsx:Stage>
+        </fsx:Response>
+      </fsx:Channel>
+    </fsx:Station>
+  </fsx:Network>
+</fsx:FDSNStationXML>
