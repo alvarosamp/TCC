@@ -9,10 +9,7 @@
 
 Este repositório contém o código-fonte do meu Trabalho de Conclusão de Curso (TCC) em Ciência da Computação, que aborda a **detecção de eventos sísmicos em séries temporais não estacionárias utilizando aprendizado não supervisionado otimizado para edge computing**.
 
-**Autores:** [Seu Nome]  
-**Orientador:** [Nome do Orientador]  
-**Instituição:** [Sua Universidade]  
-**Ano:** 2024/2025
+
 
 ### 🎯 Objetivo
 
@@ -279,12 +276,6 @@ Este é um trabalho acadêmico individual, mas sugestões e discussões são bem
 
 Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-## ✉️ Contato
-
-- **Autor:** [Seu Nome]
-- **Email:** [seu.email@exemplo.com]
-- **LinkedIn:** [Perfil no LinkedIn]
-- **GitHub:** [@seu-usuario]
 
 ---
 
