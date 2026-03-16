@@ -9,7 +9,8 @@ from tqdm import tqdm
 BUCKET = "scedc-pds"
 
 # Pasta raiz onde você quer salvar os dados
-DATA_ROOT = Path(r"C:\Users\vish8\OneDrive\Documentos\SeriesTemporaisSismicas\data")
+# Pasta de dados dentro do projeto (relativa ao script)
+DATA_ROOT = Path(__file__).resolve().parent
 
 def make_s3_client():
     return boto3.client("s3", config=Config(signature_version=UNSIGNED))
