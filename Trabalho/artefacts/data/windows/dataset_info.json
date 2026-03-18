@@ -1,0 +1,234 @@
+{
+  "versao": "1.0",
+  "data_geracao": "2026-03-17",
+  "parametros": {
+    "canal": "BHZ",
+    "sr_hz": 40.0,
+    "janela_seg": 30.0,
+    "n_amostras": 1200,
+    "sobreposicao": 0.5,
+    "margem_seg": 10.0,
+    "freq_min": 0.5,
+    "freq_max": 15.0,
+    "output_resp": "VEL"
+  },
+  "dataset": {
+    "n_arquivos": 19,
+    "n_train_noise": 1,
+    "n_val_noise": 0,
+    "n_test_noise": 1,
+    "n_val_events": 6,
+    "n_test_events": 24
+  },
+  "arquivos_processados": [
+    {
+      "arquivo": "37509232.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 271.6,
+      "t_evento": 27.0,
+      "n_ruido": 0,
+      "n_evento": 1,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509240.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 112.8,
+      "t_evento": 11.5,
+      "n_ruido": 0,
+      "n_evento": 2,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509264.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 230.6,
+      "t_evento": 30.0,
+      "n_ruido": 0,
+      "n_evento": 1,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509272.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 306.3,
+      "t_evento": 25.0,
+      "n_ruido": 0,
+      "n_evento": 1,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509296.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 355.6,
+      "t_evento": 42.5,
+      "n_ruido": 1,
+      "n_evento": 0,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509320.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 231.5,
+      "t_evento": 0.5,
+      "n_ruido": 0,
+      "n_evento": 3,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509328.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 206.2,
+      "t_evento": 26.5,
+      "n_ruido": 0,
+      "n_evento": 1,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509336.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 510.5,
+      "t_evento": 24.0,
+      "n_ruido": 0,
+      "n_evento": 1,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509352.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 340.1,
+      "t_evento": 16.0,
+      "n_ruido": 0,
+      "n_evento": 2,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509376.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 1654.9,
+      "t_evento": 12.5,
+      "n_ruido": 0,
+      "n_evento": 2,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509384.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 517.1,
+      "t_evento": 16.5,
+      "n_ruido": 0,
+      "n_evento": 2,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509392.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 182.0,
+      "t_evento": 0.0,
+      "n_ruido": 0,
+      "n_evento": 3,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509400.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 127.9,
+      "t_evento": 13.5,
+      "n_ruido": 0,
+      "n_evento": 2,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509416.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 2023.9,
+      "t_evento": 15.5,
+      "n_ruido": 0,
+      "n_evento": 2,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509432.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 475.2,
+      "t_evento": 13.5,
+      "n_ruido": 0,
+      "n_evento": 2,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509440.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 344.4,
+      "t_evento": 44.0,
+      "n_ruido": 1,
+      "n_evento": 0,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509448.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 44.8,
+      "t_evento": 16.0,
+      "n_ruido": 0,
+      "n_evento": 2,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509464.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 43.3,
+      "t_evento": 13.5,
+      "n_ruido": 0,
+      "n_evento": 2,
+      "xml": "AZ.BZN.xml"
+    },
+    {
+      "arquivo": "37509480.ms",
+      "rede": "AZ",
+      "estacao": "BZN",
+      "canal": "BHZ",
+      "razao_var": 165.9,
+      "t_evento": 33.0,
+      "n_ruido": 0,
+      "n_evento": 1,
+      "xml": "AZ.BZN.xml"
+    }
+  ]
+}
