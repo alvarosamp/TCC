@@ -1,0 +1,205 @@
+{
+  "versao": "2.0",
+  "mudancas_v2": [
+    "janela_seg reduzida: 30s -> 10s",
+    "margem_seg reduzida: 10s -> 3s",
+    "multiplas estacoes por arquivo"
+  ],
+  "data_geracao": "2026-03-23",
+  "parametros": {
+    "canal": "BHZ",
+    "sr_hz": 40.0,
+    "janela_seg": 10.0,
+    "n_amostras": 400,
+    "sobreposicao": 0.5,
+    "margem_seg": 3.0,
+    "freq_min": 0.5,
+    "freq_max": 15.0
+  },
+  "dataset": {
+    "n_arquivos": 22,
+    "n_train": 342,
+    "n_val_noise": 73,
+    "n_test_noise": 74,
+    "n_val_events": 318,
+    "n_test_events": 1272
+  },
+  "por_arquivo": [
+    {
+      "arquivo": "37509232.ms",
+      "n_estacoes": 127,
+      "razao_var": 271.6,
+      "t_evento": 27.0,
+      "n_ruido": 33,
+      "n_evento": 77
+    },
+    {
+      "arquivo": "37509240.ms",
+      "n_estacoes": 180,
+      "razao_var": 112.8,
+      "t_evento": 11.5,
+      "n_ruido": 0,
+      "n_evento": 158
+    },
+    {
+      "arquivo": "37509256.ms",
+      "n_estacoes": 51,
+      "razao_var": 177.1,
+      "t_evento": 37.5,
+      "n_ruido": 15,
+      "n_evento": 12
+    },
+    {
+      "arquivo": "37509264.ms",
+      "n_estacoes": 200,
+      "razao_var": 230.6,
+      "t_evento": 30.0,
+      "n_ruido": 60,
+      "n_evento": 88
+    },
+    {
+      "arquivo": "37509272.ms",
+      "n_estacoes": 174,
+      "razao_var": 306.3,
+      "t_evento": 25.0,
+      "n_ruido": 45,
+      "n_evento": 110
+    },
+    {
+      "arquivo": "37509296.ms",
+      "n_estacoes": 36,
+      "razao_var": 355.6,
+      "t_evento": 42.5,
+      "n_ruido": 6,
+      "n_evento": 2
+    },
+    {
+      "arquivo": "37509320.ms",
+      "n_estacoes": 105,
+      "razao_var": 231.5,
+      "t_evento": 0.5,
+      "n_ruido": 0,
+      "n_evento": 103
+    },
+    {
+      "arquivo": "37509328.ms",
+      "n_estacoes": 69,
+      "razao_var": 206.2,
+      "t_evento": 26.5,
+      "n_ruido": 18,
+      "n_evento": 44
+    },
+    {
+      "arquivo": "37509336.ms",
+      "n_estacoes": 138,
+      "razao_var": 510.5,
+      "t_evento": 24.0,
+      "n_ruido": 36,
+      "n_evento": 91
+    },
+    {
+      "arquivo": "37509352.ms",
+      "n_estacoes": 55,
+      "razao_var": 340.1,
+      "t_evento": 16.0,
+      "n_ruido": 6,
+      "n_evento": 58
+    },
+    {
+      "arquivo": "37509368.ms",
+      "n_estacoes": 99,
+      "razao_var": 145.8,
+      "t_evento": 36.5,
+      "n_ruido": 35,
+      "n_evento": 38
+    },
+    {
+      "arquivo": "37509376.ms",
+      "n_estacoes": 184,
+      "razao_var": 1654.9,
+      "t_evento": 12.5,
+      "n_ruido": 0,
+      "n_evento": 141
+    },
+    {
+      "arquivo": "37509384.ms",
+      "n_estacoes": 27,
+      "razao_var": 517.1,
+      "t_evento": 16.5,
+      "n_ruido": 2,
+      "n_evento": 17
+    },
+    {
+      "arquivo": "37509392.ms",
+      "n_estacoes": 54,
+      "razao_var": 182.0,
+      "t_evento": 0.0,
+      "n_ruido": 0,
+      "n_evento": 52
+    },
+    {
+      "arquivo": "37509400.ms",
+      "n_estacoes": 94,
+      "razao_var": 127.9,
+      "t_evento": 13.5,
+      "n_ruido": 7,
+      "n_evento": 68
+    },
+    {
+      "arquivo": "37509416.ms",
+      "n_estacoes": 192,
+      "razao_var": 2023.9,
+      "t_evento": 15.5,
+      "n_ruido": 15,
+      "n_evento": 144
+    },
+    {
+      "arquivo": "37509432.ms",
+      "n_estacoes": 141,
+      "razao_var": 475.2,
+      "t_evento": 13.5,
+      "n_ruido": 9,
+      "n_evento": 88
+    },
+    {
+      "arquivo": "37509440.ms",
+      "n_estacoes": 94,
+      "razao_var": 344.4,
+      "t_evento": 44.0,
+      "n_ruido": 49,
+      "n_evento": 25
+    },
+    {
+      "arquivo": "37509448.ms",
+      "n_estacoes": 82,
+      "razao_var": 44.8,
+      "t_evento": 16.0,
+      "n_ruido": 6,
+      "n_evento": 60
+    },
+    {
+      "arquivo": "37509464.ms",
+      "n_estacoes": 84,
+      "razao_var": 43.3,
+      "t_evento": 13.5,
+      "n_ruido": 7,
+      "n_evento": 66
+    },
+    {
+      "arquivo": "37509480.ms",
+      "n_estacoes": 242,
+      "razao_var": 165.9,
+      "t_evento": 33.0,
+      "n_ruido": 90,
+      "n_evento": 96
+    },
+    {
+      "arquivo": "37509488.ms",
+      "n_estacoes": 118,
+      "razao_var": 80.5,
+      "t_evento": 36.0,
+      "n_ruido": 50,
+      "n_evento": 52
+    }
+  ]
+}
