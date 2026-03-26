@@ -1,0 +1,14 @@
+{
+  "metodo": "STA/LTA",
+  "parametros": {
+    "sta_seg": 0.5,
+    "lta_seg": 5.0,
+    "threshold": 2.9153761162933534
+  },
+  "f1": 0.0,
+  "auc": 0.4266528925619835,
+  "tamanho_kb": null,
+  "inferencia_ms": 0.004406218521845203,
+  "quantizado_f1": null,
+  "quantizado_ms": null
+}
