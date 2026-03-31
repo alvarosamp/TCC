@@ -1,0 +1,23 @@
+{
+  "metodo": "Dense Autoencoder",
+  "versao": "1.0",
+  "hiperparametros": {
+    "latent_dim": 32,
+    "epochs": 256,
+    "batch_size": 64,
+    "lr": 0.001,
+    "dropout": 0.1
+  },
+  "threshold": 0.5396074652671814,
+  "precisao": 0.9464285714285714,
+  "recall": 1.0,
+  "f1": 0.9724770642201835,
+  "auc": 0.48949303076661566,
+  "tamanho_kb": 3491.7421875,
+  "inferencia_ms": 48.19887899328023,
+  "inferencia_std": 4.723481816228896,
+  "tflite_kb": null,
+  "tflite_quant_kb": null,
+  "tflite_ms": null,
+  "tflite_quant_ms": null
+}
