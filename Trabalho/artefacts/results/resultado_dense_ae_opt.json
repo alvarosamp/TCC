@@ -1,0 +1,25 @@
+{
+  "metodo": "Dense Autoencoder (Optuna)",
+  "versao": "2.0",
+  "n_trials_optuna": 50,
+  "best_val_loss": 1.0,
+  "hiperparametros": {
+    "batch_size": 32,
+    "n_layers": 2,
+    "latent_dim": 16,
+    "dropout": 0.0,
+    "lr": 0.005399484409787433,
+    "units_1": 384
+  },
+  "n_params": 616352,
+  "tamanho_kb": 7265.2705078125,
+  "f1": 0.9717341482047365,
+  "precisao": 0.9450222882615156,
+  "recall": 1.0,
+  "auc": 0.5179914584395716,
+  "threshold": 0.990456223487854,
+  "tflite_kb": null,
+  "tflite_quant_kb": null,
+  "tflite_ms": null,
+  "tflite_quant_ms": null
+}
