@@ -1,3 +1,33 @@
-./aulas_completas.pdf
+﻿./aulas_completas.pdf
 ./planejamento.pdf
 ./venv
+# Python / notebooks
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Dados brutos e processados pesados
+/data/
+**/data/raw/
+**/data/processed/
+**/data/windows/
+**/*.npz
+**/*.npy
+**/*.mseed
+**/*.ms
+**/*.pkl
+
+# Modelos binarios pesados
+**/*.h5
+**/*.keras
+
+# Artefatos locais temporarios
+*.Zone.Identifier
+# Artefatos locais do TCC que nao devem ir ao GitHub
+/Trabalho/artefacts/data/
+/Trabalho/artefacts/models/
+/Trabalho/artefacts/results/models/
+*.code-workspace
+
