@@ -191,3 +191,7 @@ O dispositivo deve reportar versoes:
 - profile_name/profile_version
 
 Esses campos evitam confundir mudanca real do ambiente com mudanca de modelo ou de preprocessing.
+
+## Rastreabilidade de resultados
+
+Cada resultado usado no TCC deve apontar para o codigo que o gerou. Veja [docs/results_code_map.md](docs/results_code_map.md).
