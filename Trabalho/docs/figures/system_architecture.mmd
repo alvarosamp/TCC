@@ -1,0 +1,48 @@
+flowchart LR
+  %% System architecture for the IEEE article.
+  %% Keep labels short so the figure remains readable in two-column layouts.
+
+  S["Seismic data<br/>MiniSEED + StationXML"]
+  P["Canonical profile<br/>seismic_v1.json"]
+
+  subgraph OFF["Offline learning pipeline"]
+    O1["ObsPy preprocessing<br/>40 Hz, detrend, demean,<br/>taper, remove response,<br/>0.5-15 Hz bandpass, z-score"]
+    O2["Windowing<br/>20 s windows<br/>10 s step"]
+    O3["Dataset v4<br/>event-level split"]
+    O4["Model training<br/>STA/LTA, RF, ExtraTrees,<br/>AE, Tiny CNN, Tiny TCN"]
+    O5["Evaluation<br/>AUC-PR, F1,<br/>precision, recall"]
+    O6["Deployment artifact<br/>TFLite model + threshold<br/>preprocessing version"]
+  end
+
+  subgraph EDGE["Edge inference on ESP32"]
+    E1["Streaming window<br/>800 samples at 40 Hz"]
+    E2["Embedded preprocessing<br/>detrend, taper,<br/>bandpass, z-score"]
+    E3["TensorFlow Lite Micro<br/>Tiny TCN classifier"]
+    E4["Local decision<br/>score >= threshold"]
+    E5["Event action<br/>store/transmit anomaly<br/>and audit samples"]
+  end
+
+  subgraph OPS["Monitoring and lifecycle"]
+    M1["Telemetry/logs<br/>score, latency, versions"]
+    M2["Analysis<br/>metric drop or drift"]
+    M3["Future OTA path<br/>validate, approve,<br/>roll out, rollback"]
+  end
+
+  S --> O1 --> O2 --> O3 --> O4 --> O5 --> O6
+  P -. "defines contract" .-> O1
+  P -. "versioned parameters" .-> O3
+  P -. "edge compatibility" .-> E2
+  O6 --> E3
+  S -. "continuous signal" .-> E1
+  E1 --> E2 --> E3 --> E4 --> E5 --> M1 --> M2 --> M3
+  M2 -. "retraining trigger" .-> O4
+  M3 -. "approved update" .-> E3
+
+  classDef source fill:#f8fafc,stroke:#334155,color:#0f172a,stroke-width:1px;
+  classDef offline fill:#eaf5f2,stroke:#2f7668,color:#10231f,stroke-width:1px;
+  classDef edge fill:#eef2ff,stroke:#4456a6,color:#111827,stroke-width:1px;
+  classDef ops fill:#fff7ed,stroke:#b45309,color:#111827,stroke-width:1px;
+  class S,P source;
+  class O1,O2,O3,O4,O5,O6 offline;
+  class E1,E2,E3,E4,E5 edge;
+  class M1,M2,M3 ops;

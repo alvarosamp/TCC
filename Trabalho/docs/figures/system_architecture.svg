@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="1100" viewBox="0 0 1100 1100" role="img" aria-labelledby="title desc">
+  <title id="title">TinyML seismic anomaly detection architecture</title>
+  <desc id="desc">Compact architecture diagram showing data and profile inputs, offline learning pipeline, ESP32 edge inference, and monitoring lifecycle.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#334155"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#2f7668"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#4456a6"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .bg { fill: #ffffff; }
+      .title { font: 700 31px Arial, Helvetica, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 17px Arial, Helvetica, sans-serif; fill: #475569; }
+      .lane-title { font: 700 19px Arial, Helvetica, sans-serif; fill: #0f172a; }
+      .box-title { font: 700 16px Arial, Helvetica, sans-serif; fill: #111827; }
+      .box-text { font: 400 13px Arial, Helvetica, sans-serif; fill: #334155; }
+      .caption { font: 400 13px Arial, Helvetica, sans-serif; fill: #64748b; }
+      .source { fill: #f8fafc; stroke: #64748b; stroke-width: 1.5; }
+      .profile { fill: #f8fafc; stroke: #64748b; stroke-width: 1.5; stroke-dasharray: 7 5; }
+      .offline-lane { fill: #eef8f5; stroke: #7bb7aa; stroke-width: 1.5; }
+      .edge-lane { fill: #f0f3ff; stroke: #9aa6df; stroke-width: 1.5; }
+      .ops-lane { fill: #fff8ec; stroke: #e1b66e; stroke-width: 1.5; }
+      .offline-box { fill: #ffffff; stroke: #2f7668; stroke-width: 1.6; }
+      .edge-box { fill: #ffffff; stroke: #4456a6; stroke-width: 1.6; }
+      .ops-box { fill: #ffffff; stroke: #b45309; stroke-width: 1.6; }
+      .arrow { fill: none; stroke: #334155; stroke-width: 2.1; marker-end: url(#arrow); }
+      .arrow-teal { fill: none; stroke: #2f7668; stroke-width: 2.3; marker-end: url(#arrow-teal); }
+      .arrow-blue { fill: none; stroke: #4456a6; stroke-width: 2.3; marker-end: url(#arrow-blue); }
+      .arrow-dashed { fill: none; stroke: #64748b; stroke-width: 1.9; stroke-dasharray: 7 5; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1100" height="1100"/>
+  <text class="title" x="55" y="56">TinyML Seismic Anomaly Detection Architecture</text>
+  <text class="subtitle" x="55" y="84">A versioned offline pipeline produces a compact model for local inference on ESP32.</text>
+
+  <rect class="source" x="70" y="120" width="430" height="95" rx="8" filter="url(#shadow)"/>
+  <text class="box-title" x="100" y="154">Seismic data</text>
+  <text class="box-text" x="100" y="180">MiniSEED waveform traces + StationXML metadata</text>
+
+  <rect class="profile" x="600" y="120" width="430" height="95" rx="8"/>
+  <text class="box-title" x="630" y="154">Canonical pipeline profile</text>
+  <text class="box-text" x="630" y="180">seismic_v1.json: window, split, metrics, preprocessing</text>
+
+  <rect class="offline-lane" x="70" y="255" width="960" height="315" rx="10"/>
+  <text class="lane-title" x="100" y="292">Offline learning pipeline</text>
+
+  <rect class="offline-box" x="100" y="320" width="275" height="78" rx="8" filter="url(#shadow)"/>
+  <text class="box-title" x="125" y="350">Preprocessing</text>
+  <text class="box-text" x="125" y="371">40 Hz, detrend, taper</text>
+  <text class="box-text" x="125" y="392">remove response, bandpass</text>
+
+  <rect class="offline-box" x="415" y="320" width="275" height="78" rx="8" filter="url(#shadow)"/>
+  <text class="box-title" x="440" y="350">Windowing</text>
+  <text class="box-text" x="440" y="374">20 s windows, 10 s step, 800 samples</text>
+
+  <rect class="offline-box" x="730" y="320" width="275" height="78" rx="8" filter="url(#shadow)"/>
+  <text class="box-title" x="755" y="350">Dataset v4</text>
+  <text class="box-text" x="755" y="374">event-level train / validation / test split</text>
+
+  <rect class="offline-box" x="100" y="450" width="275" height="78" rx="8" filter="url(#shadow)"/>
+  <text class="box-title" x="125" y="480">Model candidates</text>
+  <text class="box-text" x="125" y="501">STA/LTA, RF, ExtraTrees</text>
+  <text class="box-text" x="125" y="522">AE, Tiny CNN, Tiny TCN</text>
+
+  <rect class="offline-box" x="415" y="450" width="275" height="78" rx="8" filter="url(#shadow)"/>
+  <text class="box-title" x="440" y="480">Evaluation</text>
+  <text class="box-text" x="440" y="504">AUC-PR, F1, precision, recall</text>
+
+  <rect class="offline-box" x="730" y="450" width="275" height="78" rx="8" filter="url(#shadow)"/>
+  <text class="box-title" x="755" y="480">Deployment artifact</text>
+  <text class="box-text" x="755" y="501">TFLite model + threshold</text>
+  <text class="box-text" x="755" y="522">preprocessing version</text>
+
+  <path class="arrow-teal" d="M285 215 V320"/>
+  <path class="arrow-dashed" d="M815 215 V255 C815 285, 240 285, 240 320"/>
+  <path class="arrow-teal" d="M375 359 H415"/>
+  <path class="arrow-teal" d="M690 359 H730"/>
+  <path class="arrow-teal" d="M868 398 V420 C868 438, 240 430, 240 450"/>
+  <path class="arrow-teal" d="M375 489 H415"/>
+  <path class="arrow-teal" d="M690 489 H730"/>
+
+  <rect class="edge-lane" x="70" y="625" width="960" height="200" rx="10"/>
+  <text class="lane-title" x="100" y="662">Edge inference on ESP32</text>
+
+  <rect class="edge-box" x="100" y="695" width="205" height="82" rx="8" filter="url(#shadow)"/>
+  <text class="box-title" x="125" y="726">Stream window</text>
+  <text class="box-text" x="125" y="750">800 samples at 40 Hz</text>
+
+  <rect class="edge-box" x="335" y="695" width="225" height="82" rx="8" filter="url(#shadow)"/>
+  <text class="box-title" x="360" y="726">Edge preprocessing</text>
+  <text class="box-text" x="360" y="750">detrend, taper, bandpass, z-score</text>
+
+  <rect class="edge-box" x="590" y="695" width="205" height="82" rx="8" filter="url(#shadow)"/>
+  <text class="box-title" x="615" y="726">TFLite Micro</text>
+  <text class="box-text" x="615" y="750">Tiny TCN score</text>
+
+  <rect class="edge-box" x="825" y="695" width="180" height="82" rx="8" filter="url(#shadow)"/>
+  <text class="box-title" x="850" y="726">Decision</text>
+  <text class="box-text" x="850" y="747">store/transmit</text>
+  <text class="box-text" x="850" y="768">anomaly</text>
+
+  <text class="caption" x="330" y="806">Note: instrument response removal is offline only in the current firmware snapshot.</text>
+
+  <path class="arrow-blue" d="M868 528 C868 595, 692 620, 692 695"/>
+  <path class="arrow-blue" d="M305 736 H335"/>
+  <path class="arrow-blue" d="M560 736 H590"/>
+  <path class="arrow-blue" d="M795 736 H825"/>
+
+  <rect class="ops-lane" x="70" y="880" width="960" height="155" rx="10"/>
+  <text class="lane-title" x="100" y="917">Monitoring and lifecycle</text>
+
+  <rect class="ops-box" x="135" y="950" width="230" height="58" rx="8"/>
+  <text class="box-title" x="160" y="984">Telemetry/logs</text>
+
+  <rect class="ops-box" x="435" y="950" width="230" height="58" rx="8"/>
+  <text class="box-title" x="460" y="984">Analysis/drift</text>
+
+  <rect class="ops-box" x="735" y="950" width="230" height="58" rx="8"/>
+  <text class="box-title" x="760" y="984">Future OTA update</text>
+
+  <path class="arrow" d="M915 777 V850 H45 V979 H135"/>
+  <path class="arrow" d="M365 979 H435"/>
+  <path class="arrow" d="M665 979 H735"/>
+  <path class="arrow-dashed" d="M850 950 C1035 850, 1040 650, 1005 489"/>
+</svg>

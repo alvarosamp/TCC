@@ -1,0 +1,40 @@
+flowchart TB
+  %% Figure highlighting the reproducibility contract and the known edge limitation.
+
+  subgraph RAW["Input"]
+    R["Seismic waveform window<br/>40 Hz, 800 samples"]
+  end
+
+  subgraph OFF["Offline preprocessing used to build the dataset"]
+    O1["Detrend linear"]
+    O2["Demean"]
+    O3["Taper 5%"]
+    O4["Remove instrument response<br/>StationXML -> velocity"]
+    O5["Bandpass 0.5-15 Hz<br/>zero phase"]
+    O6["Z-score per window"]
+  end
+
+  subgraph EDGE["Embedded preprocessing on ESP32"]
+    E1["Detrend linear"]
+    E2["Taper 5%"]
+    E3["Bandpass 0.5-15 Hz<br/>zero phase approximation"]
+    E4["Z-score per window"]
+  end
+
+  subgraph NOTE["Article note"]
+    N["Instrument response removal is offline only.<br/>For production, calibrate the sensor or train/evaluate<br/>a model variant without this dependency."]
+  end
+
+  R --> O1 --> O2 --> O3 --> O4 --> O5 --> O6
+  R --> E1 --> E2 --> E3 --> E4
+  O4 -. "not embedded" .-> N
+  E4 --> N
+
+  classDef input fill:#f8fafc,stroke:#475569,color:#111827,stroke-width:1px;
+  classDef offline fill:#eaf5f2,stroke:#2f7668,color:#10231f,stroke-width:1px;
+  classDef edge fill:#eef2ff,stroke:#4456a6,color:#111827,stroke-width:1px;
+  classDef note fill:#fff7ed,stroke:#b45309,color:#111827,stroke-width:1px;
+  class R input;
+  class O1,O2,O3,O4,O5,O6 offline;
+  class E1,E2,E3,E4 edge;
+  class N note;

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Model comparison by AUC-PR and F1</title>
+  <desc id="desc">Grouped horizontal bar chart comparing STA/LTA, Random Forest, ExtraTrees, Tiny CNN classifier, and Tiny TCN classifier by AUC-PR and F1.</desc>
+  <defs>
+    <style>
+      .bg { fill: #ffffff; }
+      .title { font: 700 30px Arial, Helvetica, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 16px Arial, Helvetica, sans-serif; fill: #475569; }
+      .axis { stroke: #334155; stroke-width: 1.5; }
+      .grid { stroke: #cbd5e1; stroke-width: 1; stroke-dasharray: 5 5; }
+      .tick { font: 400 13px Arial, Helvetica, sans-serif; fill: #475569; }
+      .label { font: 700 16px Arial, Helvetica, sans-serif; fill: #111827; }
+      .value { font: 400 13px Arial, Helvetica, sans-serif; fill: #334155; }
+      .legend { font: 700 14px Arial, Helvetica, sans-serif; fill: #111827; }
+      .caption { font: 400 13px Arial, Helvetica, sans-serif; fill: #64748b; }
+      .auc { fill: #2f7668; }
+      .f1 { fill: #4456a6; }
+      .baseline { stroke: #b45309; stroke-width: 2; stroke-dasharray: 6 5; }
+      .baseline-text { font: 400 12px Arial, Helvetica, sans-serif; fill: #92400e; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1000" height="1000"/>
+  <text class="title" x="70" y="70">Model Comparison on the Event-Level Test Split</text>
+  <text class="subtitle" x="70" y="100">AUC-PR is the primary metric because the anomaly class is imbalanced.</text>
+
+  <rect class="auc" x="70" y="135" width="20" height="14" rx="2"/>
+  <text class="legend" x="100" y="148">AUC-PR</text>
+  <rect class="f1" x="190" y="135" width="20" height="14" rx="2"/>
+  <text class="legend" x="220" y="148">F1</text>
+
+  <line class="axis" x1="250" y1="830" x2="850" y2="830"/>
+  <line class="axis" x1="250" y1="185" x2="250" y2="830"/>
+
+  <line class="grid" x1="400" y1="185" x2="400" y2="830"/>
+  <line class="grid" x1="550" y1="185" x2="550" y2="830"/>
+  <line class="grid" x1="700" y1="185" x2="700" y2="830"/>
+  <line class="grid" x1="850" y1="185" x2="850" y2="830"/>
+
+  <text class="tick" x="244" y="858">0</text>
+  <text class="tick" x="389" y="858">0.25</text>
+  <text class="tick" x="539" y="858">0.50</text>
+  <text class="tick" x="689" y="858">0.75</text>
+  <text class="tick" x="840" y="858">1.00</text>
+
+  <line class="baseline" x1="327" y1="185" x2="327" y2="830"/>
+  <text class="baseline-text" x="336" y="204">AUC-PR baseline ~= 0.128</text>
+
+  <text class="label" x="70" y="241">STA/LTA</text>
+  <rect class="auc" x="250" y="215" width="99" height="18" rx="3"/>
+  <rect class="f1" x="250" y="243" width="163" height="18" rx="3"/>
+  <text class="value" x="360" y="229">0.164</text>
+  <text class="value" x="424" y="257">0.272</text>
+
+  <text class="label" x="70" y="361">Random Forest</text>
+  <rect class="auc" x="250" y="335" width="458" height="18" rx="3"/>
+  <rect class="f1" x="250" y="363" width="414" height="18" rx="3"/>
+  <text class="value" x="718" y="349">0.764</text>
+  <text class="value" x="674" y="377">0.690</text>
+
+  <text class="label" x="70" y="481">ExtraTrees</text>
+  <rect class="auc" x="250" y="455" width="466" height="18" rx="3"/>
+  <rect class="f1" x="250" y="483" width="418" height="18" rx="3"/>
+  <text class="value" x="726" y="469">0.777</text>
+  <text class="value" x="678" y="497">0.696</text>
+
+  <text class="label" x="70" y="601">Tiny CNN</text>
+  <rect class="auc" x="250" y="575" width="541" height="18" rx="3"/>
+  <rect class="f1" x="250" y="603" width="491" height="18" rx="3"/>
+  <text class="value" x="801" y="589">0.902</text>
+  <text class="value" x="751" y="617">0.819</text>
+
+  <text class="label" x="70" y="721">Tiny TCN</text>
+  <rect class="auc" x="250" y="695" width="551" height="18" rx="3"/>
+  <rect class="f1" x="250" y="723" width="495" height="18" rx="3"/>
+  <text class="value" x="811" y="709">0.919</text>
+  <text class="value" x="755" y="737">0.825</text>
+
+  <text class="caption" x="250" y="910">Source: Trabalho/docs/metrics_summary.md and notebooks/Metricas_Alvaro.ipynb.</text>
+</svg>
