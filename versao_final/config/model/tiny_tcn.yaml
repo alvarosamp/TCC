@@ -1,0 +1,26 @@
+#Configuracao do modelo Tiny TCN
+name: tiny_tcn
+version: 1.0.0
+
+params:
+  filters: 24
+  kernel_size: 5
+  dilations: [1, 2, 4, 8]
+  dense_units: 24
+  dropout: 0.2
+  learning_rate: 0.001
+
+training: 
+  epochs: 40
+  batch_size: 64
+  patience: 8
+  class_weight: balanced
+
+export:
+  tflite:
+    - float32
+    - float16
+    - int 8
+  representative_samples: 512
+  export_header: true
+  
