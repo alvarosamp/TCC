@@ -1,6 +1,6 @@
 # TCC - TinyML para Deteccao de Anomalias em Series Temporais
 
-Este repositorio consolida o trabalho de deteccao de eventos anomalos em sinais sismicos com foco em TinyML, validacao embarcada no ESP32 e evolucao futura para MLOps/OTA.
+Este repositorio consolida uma arquitetura generica de deteccao de anomalias em series temporais com TinyML, validacao embarcada no ESP32 e evolucao futura para MLOps/OTA. O dominio sismico e o primeiro estudo de caso validado.
 
 ## Ideia central
 
@@ -26,7 +26,7 @@ Em vez de armazenar ou transmitir todos os dados, o dispositivo envia apenas eve
 
 ```text
 profiles/
-  seismic_v1.json              # contrato versionado do pipeline sismico
+  seismic_v1.json              # instancia sismica do contrato generico`n  _template_timeseries_binary.json # template para novos dominios
 
 src/tcc_pipeline/
   profile.py                   # leitura/validacao de profiles
@@ -36,10 +36,12 @@ src/tcc_pipeline/
 scripts/
   create_split_evento_v4.py    # cria dataset v4 com split por evento
   inspect_dataset.py           # valida NPZ contra um profile
+  train_generic_classifier.py  # retreino generico Tiny CNN/TCN por profile
 
 docs/
   metrics_summary.md           # resumo dos resultados do Colab
   project_inventory.md         # comparacao das pastas e organizacao
+  retraining_generic.md        # guia do novo fluxo de retreino`n  generic_pipeline_contract.md # contrato generico dataset/profile/pipeline
 
 edge/platformio_snapshot/
   src/main.cpp                 # firmware de inferencia/benchmark
@@ -58,6 +60,20 @@ artefacts/
 ```
 
 Os diretorios `notebook/` e `artefacts/` foram preservados como historico. A estrutura nova e o ponto recomendado para continuar o projeto.
+
+## Arquitetura generica
+
+A separacao central do projeto e:
+
+```text
+src/tcc_pipeline/  -> nucleo generico
+profiles/          -> contratos por dominio
+scripts/           -> comandos reproduziveis que recebem profile + dataset
+```
+
+O codigo generico nao deve depender de MiniSEED, StationXML ou regra sismica. Ele trabalha com janelas numericas, labels e profiles. A parte especifica de cada dominio fica na etapa que transforma dado bruto em `X_train/y_train/X_val/y_val/X_test/y_test`.
+
+Veja [docs/generic_pipeline_contract.md](docs/generic_pipeline_contract.md).
 
 ## Pipeline sismico atual
 
@@ -148,6 +164,21 @@ Saidas:
 - `dataset_v4_split_evento.npz`
 - `inventario_v4_split_evento.csv`
 - `dataset_v4_split_evento_info.json`
+
+## Como retreinar pelo pipeline generico
+
+```bash
+python scripts/train_generic_classifier.py \
+  --profile profiles/seismic_v1.json \
+  --dataset /caminho/para/dataset_v4_split_evento.npz \
+  --model tiny_tcn \
+  --epochs 40 \
+  --batch-size 256 \
+  --export-tflite all \
+  --export-header
+```
+
+Esse e o caminho recomendado para novos resultados. O script salva `manifest.json`, `metrics.json`, modelo Keras e exports TFLite na pasta de run. Veja [docs/retraining_generic.md](docs/retraining_generic.md).
 
 ## Firmware e modelo embarcado
 

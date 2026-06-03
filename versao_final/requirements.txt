@@ -1,0 +1,8 @@
+obspy
+scikit-learn
+tensorflow
+pandas
+numpy 
+scipy
+matplotlib
+joblib

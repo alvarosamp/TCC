@@ -1,0 +1,30 @@
+{
+  "model": "tiny_tcn_classifier",
+  "family": "deep_classifier",
+  "dataset": "/content/drive/MyDrive/AlvaroSampaio/TCC/TCC_data/processed_seismic_edge_v1/dataset_seismic_edge_v1_split_evento.npz",
+  "params": 6417,
+  "epochs_ran": 120,
+  "train_seconds": 2382.9221868515015,
+  "model_path": "/content/drive/MyDrive/AlvaroSampaio/TCC/TCC_GENERIC/artefacts/runs/tiny_tcn_classifier/tiny_tcn_classifier.keras",
+  "metrics": {
+    "escolhas_de_thresh": {
+      "max_f1": {
+        "auc_pr": 0.8964017978887865,
+        "auc_roc": 0.9627184871121879,
+        "threshold": 0.5,
+        "precision": 0.6789719626168225,
+        "recall": 0.8800726832222895,
+        "f1": 0.7665523608546557,
+        "tn": 21126,
+        "fp": 1374,
+        "fn": 396,
+        "tp": 2906,
+        "fpr": 0.061066666666666665,
+        "fp_per_hour_est": 21.983999999999998
+      }
+    },
+    "validacao": {},
+    "teste": {},
+    "primeiro_thresh": "max_f1"
+  }
+}

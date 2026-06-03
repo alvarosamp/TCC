@@ -1,4 +1,4 @@
-﻿# Mapa Resultado -> Codigo
+# Mapa Resultado -> Codigo
 
 Este arquivo conecta cada resultado usado no TCC ao codigo que o gerou. Ele tambem marca lacunas para evitar resultado solto sem rastreabilidade.
 
@@ -14,9 +14,9 @@ Este arquivo conecta cada resultado usado no TCC ao codigo que o gerou. Ele tamb
 | Dense AE | Coberto historico | `Trabalho/notebook/Treinamento/DenseAE/`, `Trabalho/scripts/train_autoencoders.py` | Modelos `.h5/.keras` nao devem ir ao Git. |
 | CNN 1D AE / LSTM AE | Coberto historico | `Trabalho/notebook/Treinamento/Cnn-1d/treino.py`, `Trabalho/notebook/Treinamento/LSTM/treino.py`, `Trabalho/notebook/Treinamento/Optuna/` | Verificar quais resultados finais entram no texto. |
 | Tiny CNN classifier | Coberto no notebook | `Trabalho/notebooks/Metricas_Alvaro.ipynb` | Falta extrair para script canonico se virar resultado final. |
-| Tiny TCN classifier | Coberto no notebook + edge | `Trabalho/notebooks/Metricas_Alvaro.ipynb`, `Trabalho/edge/platformio_snapshot/` | Melhor candidato observado. |
-| Conversao `.tflite` | Parcial | `Trabalho/notebooks/Metricas_Alvaro.ipynb`, `Trabalho/edge/platformio_snapshot/include/TCN/` | Falta script canonico de conversao/export se for usado na banca. |
-| Quantizacao float32/float16/int8 | Pendente consolidar | Ainda falta apontar arquivo final | Usuario vai enviar resultados/codigos. Deve virar `scripts/convert_and_evaluate_tflite.py` ou notebook documentado. |
+| Tiny TCN classifier | Coberto no notebook + script canonico | `Trabalho/notebooks/Metricas_Alvaro.ipynb`, `Trabalho/scripts/train_generic_classifier.py`, `Trabalho/edge/platformio_snapshot/` | Melhor candidato observado. Novo retreino deve usar o script generico. |
+| Conversao `.tflite` | Parcial | `Trabalho/scripts/train_generic_classifier.py`, `Trabalho/notebooks/Metricas_Alvaro.ipynb`, `Trabalho/edge/platformio_snapshot/include/TCN/` | O script novo exporta float32/float16/int8; falta anexar os resultados finais. |
+| Quantizacao float32/float16/int8 | Pendente consolidar | `Trabalho/scripts/train_generic_classifier.py` | Usuario vai enviar resultados/codigos. Falta registrar metricas finais, tamanho e latencia. |
 | Teste embarcado ESP32 | Parcial | `Trabalho/edge/platformio_snapshot/src/main.cpp` | Falta anexar logs CSV/resultados finais e script de analise. |
 | Preprocessing embarcado | Coberto | `Trabalho/edge/platformio_snapshot/include/preprocessing.h` | Aproxima pipeline offline sem `remove_response`. |
 | Export de `real_dataset.h` | Coberto | `Trabalho/edge/platformio_snapshot/scripts/export_real_dataset.py`, `export_balanced_dataset.py`, `create_cru_dataset.py` | Usado para testar dados reais/simulados no ESP32. |
