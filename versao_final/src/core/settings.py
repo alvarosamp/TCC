@@ -50,7 +50,7 @@ MLFLOW_TRACKING_URI = CFG['mlflow']['tracking_uri']
 QUALITY_GATE = CFG['quality_gate']
 
 #funcoes auxiliares
-def ensure_directiores() -> Path:
+def ensure_directories() -> Path:
     '''cria os diretorios principais de saida'''
     for path in [
         PROCESSED_DIR,
