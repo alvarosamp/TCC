@@ -1,0 +1,62 @@
+#Contrato do dataset sismico edge
+profile_name: seismic_edge_v1
+profile_version: 1.0.0
+
+task : binary_anomaly_detection
+domain: seismic
+
+#Amostragem e janelamento
+sampling_rate : 40.0
+window_size: 800
+window_seconds: 20.0
+step_seconds: 10.0
+overlap: 0.5
+
+#labels
+normal_label: 0
+anomaly_label: 1
+normal_name: normal
+anomaly_name: anomalia
+
+#Split principal
+#Para o tcc evento e o split principal, mas o formato é flexivel para outros tipos de split
+split_name: evento
+
+#metricas
+primary_metric: auc_pr
+secondary_metrics: [f1, auc_roc, precision, recall]
+
+#Pipeline pra gerar o dataset 
+preprocessing:
+  offline_pipeline:
+    - resample_40hz
+    - detrend-linear
+    - demean
+    - taper_5pct
+    - bandpass_0p5_15hz_zerophase
+    - zscore_per_window
+
+  edge_pipeline:
+    - detrend-linear
+    - taper-5pct
+    - bandpass-0p5_15hz_zerophase
+    - zscore-per_window
+
+  remove_response_offline: false
+  remove_response_edge: false
+  stationxml_required: false
+
+  bandpass_hz:
+    - 0.5
+    - 15.0
+  
+  normalization : zscore_per_window
+
+#Confiuracao embarcada
+embedded:
+  target: esp32
+  runtime: tensorflow_lite_micro
+  decision_interval_ms: 10000
+  preprocessing_version: seismic_edge_prepoc_v1
+  ota_strategy_initial: firmware_full_image
+  ota_strategy_future: separate_model_update
