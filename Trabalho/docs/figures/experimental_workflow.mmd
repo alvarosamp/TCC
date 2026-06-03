@@ -1,0 +1,26 @@
+flowchart LR
+  %% Experimental workflow figure for the methodology/evaluation section.
+
+  A["Raw seismic archive<br/>waveforms + metadata"]
+  B["Offline preprocessing<br/>resample, detrend, taper,<br/>remove response, bandpass"]
+  C["Sliding windows<br/>20 s / 10 s step"]
+  D["Event-level split<br/>train, validation, test"]
+  E["Candidate models<br/>STA/LTA, RF, ExtraTrees,<br/>autoencoders, Tiny CNN/TCN"]
+  F["Validation phase<br/>hyperparameters + threshold"]
+  G["Held-out test phase<br/>AUC-PR, F1, precision, recall"]
+  H["TinyML export<br/>TFLite float32/float16/int8"]
+  I["ESP32 benchmark<br/>latency, memory, score agreement"]
+  J["Article outputs<br/>tables, PR curves,<br/>confusion matrices"]
+
+  A --> B --> C --> D --> E --> F --> G --> H --> I --> J
+  F -. "select best model" .-> E
+  I -. "deployment constraints" .-> H
+
+  classDef data fill:#f8fafc,stroke:#475569,color:#111827,stroke-width:1px;
+  classDef method fill:#eaf5f2,stroke:#2f7668,color:#10231f,stroke-width:1px;
+  classDef eval fill:#fff7ed,stroke:#b45309,color:#111827,stroke-width:1px;
+  classDef edge fill:#eef2ff,stroke:#4456a6,color:#111827,stroke-width:1px;
+  class A,D data;
+  class B,C,E,F method;
+  class G,J eval;
+  class H,I edge;
