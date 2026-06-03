@@ -1,0 +1,24 @@
+defaults:
+  - model: Tiny TCN
+  - training: default
+  - _self_
+
+experiment:
+  name: anomaly-detection
+
+paths:
+  train_data: src/data/processed/train_features.parquet
+  test_data: src/data/processed/test_features.parquet
+  optuna_output: artifacts/optuna/optuna_results.json
+  model_output: artifacts/model
+  metrics_output: artifacts/reports/metrics.json
+
+mlflow:
+  experiment_name: turbofan-rul-prediction
+  tracking_uri: sqlite:///mlflow.db
+
+optuna:
+  n_trials: 50
+
+training:
+  random_state: 42

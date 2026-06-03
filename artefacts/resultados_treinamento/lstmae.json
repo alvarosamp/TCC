@@ -1,0 +1,30 @@
+{
+  "model": "lstm_ae",
+  "family": "autoencoder",
+  "dataset": "/content/drive/MyDrive/AlvaroSampaio/TCC/TCC_data/processed_seismic_edge_v1/dataset_seismic_edge_v1_split_evento.npz",
+  "params": 257552,
+  "epochs_ran": 89,
+  "train_seconds": 753.888424873352,
+  "model_path": "/content/drive/MyDrive/AlvaroSampaio/TCC/TCC_GENERIC/artefacts/runs/lstm_ae/lstm_ae.keras",
+  "metrics": {
+    "escolhas_de_thresh": {
+      "max_f1": {
+        "auc_pr": 0.1901468124279237,
+        "auc_roc": 0.6317458240796824,
+        "threshold": 0.5,
+        "precision": 0.13212467925798174,
+        "recall": 0.9512416717141127,
+        "f1": 0.23202216066481995,
+        "tn": 1868,
+        "fp": 20632,
+        "fn": 161,
+        "tp": 3141,
+        "fpr": 0.9169777777777778,
+        "fp_per_hour_est": 330.112
+      }
+    },
+    "validacao": {},
+    "teste": {},
+    "primeiro_thresh": "max_f1"
+  }
+}
