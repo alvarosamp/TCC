@@ -15,3 +15,4 @@ pandera
 fastapi
 uvicorn
 pydantic
+optuna
