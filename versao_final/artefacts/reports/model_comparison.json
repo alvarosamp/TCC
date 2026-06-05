@@ -68,18 +68,18 @@
         }
       },
       "dataset": "data\\processed\\dataset_seismic_edge_v1_split_evento.npz",
-      "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\logistic_regression.joblib",
+      "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\versao_final\\artefacts\\models\\logistic_regression.joblib",
       "params": {
         "class_weight": "balanced",
         "max_iter": 200,
-        "C": 0.11315392104211279
+        "C": 5.870776330604835
       },
       "hpo": {
         "used_optuna": true,
         "best_params": {
           "class_weight": "balanced",
           "max_iter": 200,
-          "C": 0.11315392104211279
+          "C": 5.870776330604835
         },
         "best_value": 1.0,
         "n_trials": 3,
@@ -112,13 +112,13 @@
         "spectral_entropy"
       ],
       "evaluation": {
-        "threshold_from_val": 0.9881893396377563,
+        "threshold_from_val": 0.9999968409538269,
         "val": {
           "auc_pr": 1.0,
           "auc_roc": 1.0,
-          "threshold": 0.9881893396377563,
+          "threshold": 0.9999968409538269,
           "best_threshold_by_f1": {
-            "threshold": 0.9881893396377563,
+            "threshold": 0.9999968409538269,
             "precision": 1.0,
             "recall": 1.0,
             "f1": 0.999999995
@@ -136,21 +136,21 @@
         "test": {
           "auc_pr": 1.0,
           "auc_roc": 1.0,
-          "threshold": 0.9881893396377563,
+          "threshold": 0.9999968409538269,
           "best_threshold_by_f1": {
-            "threshold": 0.9787889122962952,
+            "threshold": 0.9999980926513672,
             "precision": 1.0,
             "recall": 1.0,
             "f1": 0.999999995
           },
-          "f1": 0.9873417721518988,
+          "f1": 1.0,
           "precision": 1.0,
-          "recall": 0.975,
+          "recall": 1.0,
           "confusion_matrix": {
             "tn": 120,
             "fp": 0,
-            "fn": 2,
-            "tp": 78
+            "fn": 0,
+            "tp": 80
           }
         }
       }
@@ -218,7 +218,7 @@
         }
       },
       "dataset": "data\\processed\\dataset_seismic_edge_v1_split_evento.npz",
-      "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\random_forest.joblib",
+      "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\versao_final\\artefacts\\models\\random_forest.joblib",
       "params": {
         "n_estimators": 50,
         "max_depth": 8,
@@ -369,7 +369,7 @@
         }
       },
       "dataset": "data\\processed\\dataset_seismic_edge_v1_split_evento.npz",
-      "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\tiny_cnn.keras",
+      "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\versao_final\\artefacts\\models\\tiny_cnn.keras",
       "params": {
         "filters": [
           8,

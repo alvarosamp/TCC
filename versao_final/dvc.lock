@@ -13,3 +13,134 @@ stages:
       md5: e6ed2779eb8d1cdd215a34e1a44bebba.dir
       size: 69355
       nfiles: 17
+  generate_data:
+    cmd: python scripts/generate_synthetic_data.py
+    deps:
+    - path: scripts/generate_synthetic_data.py
+      hash: md5
+      md5: ed7777b1d58f5a3b0adb32b6670708e5
+      size: 5458
+    outs:
+    - path: data/processed/dataset_seismic_edge_v1_split_evento.npz
+      hash: md5
+      md5: 21ffc68062ed90e958e5d2e245f6379c
+      size: 5938300
+  validate_dataset:
+    cmd: python -m src.data.validate_dataset
+    deps:
+    - path: config/configs/config.yaml
+      hash: md5
+      md5: efbd338f2c6feec76f1d7b577000357c
+      size: 986
+    - path: config/configs/profiles/seismic_edge_v1.yaml
+      hash: md5
+      md5: 049347844ea4709638cd61a43861bc94
+      size: 1344
+    - path: data/processed/dataset_seismic_edge_v1_split_evento.npz
+      hash: md5
+      md5: 21ffc68062ed90e958e5d2e245f6379c
+      size: 5938300
+    - path: src/core/profile.py
+      hash: md5
+      md5: f5416d5762b52e2baf0c23da27099423
+      size: 4475
+    - path: src/core/schemas.py
+      hash: md5
+      md5: a874d48e6ab9873eebd4e74296d99cbd
+      size: 4825
+    - path: src/core/settings.py
+      hash: md5
+      md5: cf6b7a4768e8a54117faca5ca68ed208
+      size: 2457
+    - path: src/data/validate_dataset.py
+      hash: md5
+      md5: 9e03de696e1987816f8e4bd79cfbb53c
+      size: 2566
+    outs:
+    - path: artefacts/reports/dataset_validation_report.json
+      hash: md5
+      md5: 924a32184eb2ce136827833ac5da5766
+      size: 2702
+  train_all:
+    cmd: python -m src.training.train_all --models-cfg 
+      config/model/models_smoke.yaml
+    deps:
+    - path: config/configs/config.yaml
+      hash: md5
+      md5: efbd338f2c6feec76f1d7b577000357c
+      size: 986
+    - path: config/configs/profiles/seismic_edge_v1.yaml
+      hash: md5
+      md5: 049347844ea4709638cd61a43861bc94
+      size: 1344
+    - path: config/model/models_smoke.yaml
+      hash: md5
+      md5: 0c3fca3b1fa79e7796dffc776f3661db
+      size: 2966
+    - path: data/processed/dataset_seismic_edge_v1_split_evento.npz
+      hash: md5
+      md5: 21ffc68062ed90e958e5d2e245f6379c
+      size: 5938300
+    - path: src/core/profile.py
+      hash: md5
+      md5: f5416d5762b52e2baf0c23da27099423
+      size: 4475
+    - path: src/core/schemas.py
+      hash: md5
+      md5: a874d48e6ab9873eebd4e74296d99cbd
+      size: 4825
+    - path: src/features/statistical_features.py
+      hash: md5
+      md5: 4a226a4f2513cee89ae6bc07f020d502
+      size: 4232
+    - path: src/training/evaluate.py
+      hash: md5
+      md5: 3c6c4429a8dcab8e5620fffb06856ad1
+      size: 4172
+    - path: src/training/hpo.py
+      hash: md5
+      md5: 785d6aea06bfb768dad9540a16686bbf
+      size: 1086
+    - path: src/training/model_registry.py
+      hash: md5
+      md5: f563faefc7579fbaf5ad227b4e2dcc30
+      size: 1809
+    - path: src/training/neural_models.py
+      hash: md5
+      md5: 04a0031c01d4b0692c89097e980aa67a
+      size: 7051
+    - path: src/training/train_all.py
+      hash: md5
+      md5: bda6f9e6bab9e635af1747311be82f27
+      size: 27411
+    outs:
+    - path: artefacts/models
+      hash: md5
+      md5: ec5fde559caf2e0d067789149e710a75.dir
+      size: 81677
+      nfiles: 3
+    - path: artefacts/reports/model_comparison.json
+      hash: md5
+      md5: cb7d096da9a04ce3ddeb7f02a0335d0a
+      size: 13426
+  export_tflite:
+    cmd: python -m src.export.export_tflite
+    deps:
+    - path: artefacts/reports/candidate_manifest.json
+      hash: md5
+      md5: f14ca8c49f1da88afece7de3d5048c1b
+      size: 3590
+    - path: src/export/export_header.py
+      hash: md5
+      md5: 747084d8dfda9a7ce7544c401ed57380
+      size: 2025
+    - path: src/export/export_tflite.py
+      hash: md5
+      md5: 029987c0da37f8b4518bedf6ca2787d6
+      size: 6574
+    outs:
+    - path: artefacts/edge
+      hash: md5
+      md5: 6b62b169231aed4dc3b3c9cc85dcdc22.dir
+      size: 25156
+      nfiles: 5

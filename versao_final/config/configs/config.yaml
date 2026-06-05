@@ -22,9 +22,9 @@ paths:
   runs_dir: "runs/"
 
 #Mlflow (collab da pra usar um file tracking)
-mlflow: 
+mlflow:
   experiment_name: tcc_tinyml_timeseries
-  tracking_uri: file:./artefacts/mlruns
+  tracking_uri: sqlite:///artefacts/mlruns/mlflow.db
 
 #Dataset principal
 dataset:
