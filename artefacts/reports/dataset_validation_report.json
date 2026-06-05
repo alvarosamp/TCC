@@ -1,0 +1,109 @@
+{
+  "dataset": "data\\processed\\dataset_seismic_edge_v1_split_evento.npz",
+  "profile": {
+    "profile_name": "seismic_edge_v1",
+    "profile_version": "1.0.0",
+    "task": "binary_anomaly_detection",
+    "domain": "seismic",
+    "description": null,
+    "sampling_rate": 40.0,
+    "window_size": 800,
+    "window_seconds": 20.0,
+    "step_seconds": 10.0,
+    "overlap": 0.5,
+    "normal_label": 0,
+    "anomaly_label": 1,
+    "normal_name": "normal",
+    "anomaly_name": "anomalia",
+    "split_name": "evento",
+    "primary_metric": "auc_pr",
+    "secondary_metrics": [
+      "f1",
+      "auc_roc",
+      "precision",
+      "recall"
+    ],
+    "preprocessing": {
+      "offline_pipeline": [
+        "resample_40hz",
+        "detrend-linear",
+        "demean",
+        "taper_5pct",
+        "bandpass_0p5_15hz_zerophase",
+        "zscore_per_window"
+      ],
+      "edge_pipeline": [
+        "detrend-linear",
+        "taper-5pct",
+        "bandpass-0p5_15hz_zerophase",
+        "zscore-per_window"
+      ],
+      "remove_response_offline": false,
+      "remove_response_edge": false,
+      "stationxml_required": false,
+      "bandpass_hz": [
+        0.5,
+        15.0
+      ],
+      "normalization": "zscore_per_window"
+    },
+    "embedded": {
+      "target": "esp32",
+      "runtime": "tensorflow_lite_micro",
+      "decision_interval_ms": 10000,
+      "preprocessing_version": "seismic_edge_prepoc_v1",
+      "ota_strategy_initial": "firmware_full_image",
+      "ota_strategy_future": "separate_model_update"
+    }
+  },
+  "splits": {
+    "train": {
+      "total": 1600,
+      "normal": 1280,
+      "anomaly": 320,
+      "baseline_auc_pr": 0.2,
+      "x_shape": [
+        1600,
+        800
+      ],
+      "x_dtype": "float32",
+      "y_dtype": "int32",
+      "x_mean": -2.518296127185238e-10,
+      "x_std": 1.0,
+      "x_min": -5.032538414001465,
+      "x_max": 16.200119018554688
+    },
+    "val": {
+      "total": 200,
+      "normal": 120,
+      "anomaly": 80,
+      "baseline_auc_pr": 0.4,
+      "x_shape": [
+        200,
+        800
+      ],
+      "x_dtype": "float32",
+      "y_dtype": "int32",
+      "x_mean": 1.1324882698282579e-10,
+      "x_std": 1.0,
+      "x_min": -5.130720615386963,
+      "x_max": 15.03822135925293
+    },
+    "test": {
+      "total": 200,
+      "normal": 120,
+      "anomaly": 80,
+      "baseline_auc_pr": 0.4,
+      "x_shape": [
+        200,
+        800
+      ],
+      "x_dtype": "float32",
+      "y_dtype": "int32",
+      "x_mean": -6.318092160562117e-10,
+      "x_std": 1.0,
+      "x_min": -4.479880332946777,
+      "x_max": 13.768799781799316
+    }
+  }
+}
