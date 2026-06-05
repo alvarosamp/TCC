@@ -66,48 +66,48 @@
     }
   },
   "dataset": "data\\processed\\dataset_seismic_edge_v1_split_evento.npz",
-  "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\versao_final\\artefacts\\models\\tiny_cnn.keras",
-  "threshold": 0.3671574592590332,
+  "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\tiny_cnn.keras",
+  "threshold": 0.5641331672668457,
   "metrics": {
-    "threshold_from_val": 0.3671574592590332,
+    "threshold_from_val": 0.5641331672668457,
     "val": {
-      "auc_pr": 1.0,
-      "auc_roc": 1.0,
-      "threshold": 0.3671574592590332,
+      "auc_pr": 0.9773658542091987,
+      "auc_roc": 0.9823958333333334,
+      "threshold": 0.5641331672668457,
       "best_threshold_by_f1": {
-        "threshold": 0.3671574592590332,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 0.999999995
+        "threshold": 0.5641331672668457,
+        "precision": 0.948051948051948,
+        "recall": 0.9125,
+        "f1": 0.9299363007343097
       },
-      "f1": 1.0,
-      "precision": 1.0,
-      "recall": 1.0,
+      "f1": 0.9299363057324841,
+      "precision": 0.948051948051948,
+      "recall": 0.9125,
       "confusion_matrix": {
-        "tn": 120,
-        "fp": 0,
-        "fn": 0,
-        "tp": 80
+        "tn": 116,
+        "fp": 4,
+        "fn": 7,
+        "tp": 73
       }
     },
     "test": {
-      "auc_pr": 1.0,
-      "auc_roc": 1.0,
-      "threshold": 0.3671574592590332,
+      "auc_pr": 0.9917825232259985,
+      "auc_roc": 0.9930208333333332,
+      "threshold": 0.5641331672668457,
       "best_threshold_by_f1": {
-        "threshold": 0.3855680525302887,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 0.999999995
+        "threshold": 0.48954716324806213,
+        "precision": 0.975,
+        "recall": 0.975,
+        "f1": 0.974999995
       },
-      "f1": 1.0,
-      "precision": 1.0,
-      "recall": 1.0,
+      "f1": 0.948051948051948,
+      "precision": 0.9864864864864865,
+      "recall": 0.9125,
       "confusion_matrix": {
-        "tn": 120,
-        "fp": 0,
-        "fn": 0,
-        "tp": 80
+        "tn": 119,
+        "fp": 1,
+        "fn": 7,
+        "tp": 73
       }
     }
   },

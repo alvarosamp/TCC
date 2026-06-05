@@ -40,30 +40,37 @@ OUTPUT_PATH = (
 # --------------------------------------------------------------------------
 
 def _make_normal(n: int, rng: np.random.Generator) -> np.ndarray:
-    """Ruido gaussiano de baixa amplitude — classe normal."""
-    return rng.normal(0.0, 0.3, size=(n, WINDOW_SIZE)).astype(np.float32)
+    """Ruido gaussiano com componente de baixa frequencia — classe normal."""
+    noise = rng.normal(0.0, 0.6, size=(n, WINDOW_SIZE)).astype(np.float32)
+    # adiciona deriva lenta para dificultar separacao por energia
+    t = np.linspace(0, 2 * np.pi, WINDOW_SIZE)
+    for i in range(n):
+        drift_amp = rng.uniform(0.0, 0.4)
+        drift_freq = rng.uniform(0.5, 2.0)
+        noise[i] += (drift_amp * np.sin(drift_freq * t)).astype(np.float32)
+    return noise
 
 
 def _make_anomaly(n: int, rng: np.random.Generator) -> np.ndarray:
     """
-    Sinal com burst de alta amplitude + spike aleatorio — classe anomalia.
+    Sinal com burst de amplitude moderada + spike sutil — classe anomalia.
 
-    Imita um evento sismico: tremor de fundo + chegada de onda de alta energia.
+    Anomalias mais proximas do normal para forcar diferenciacao entre modelos.
     """
-    X = rng.normal(0.0, 0.3, size=(n, WINDOW_SIZE)).astype(np.float32)
+    X = rng.normal(0.0, 0.6, size=(n, WINDOW_SIZE)).astype(np.float32)
 
     for i in range(n):
-        # burst no meio da janela
-        onset = rng.integers(WINDOW_SIZE // 4, WINDOW_SIZE // 2)
-        duration = rng.integers(50, 200)
+        # burst no meio da janela com amplitude reduzida
+        onset = rng.integers(WINDOW_SIZE // 4, 3 * WINDOW_SIZE // 4)
+        duration = rng.integers(30, 120)
         end = min(onset + duration, WINDOW_SIZE)
-        amp = rng.uniform(2.0, 5.0)
+        amp = rng.uniform(0.8, 2.0)
         t = np.linspace(0, np.pi, end - onset)
         X[i, onset:end] += amp * np.sin(t).astype(np.float32)
 
-        # spike pontual
+        # spike pontual mais sutil
         spike_pos = rng.integers(onset, end)
-        X[i, spike_pos] += rng.uniform(3.0, 8.0)
+        X[i, spike_pos] += rng.uniform(1.0, 3.0)
 
     return X
 
