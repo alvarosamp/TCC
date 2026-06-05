@@ -16,3 +16,5 @@ fastapi
 uvicorn
 pydantic
 optuna
+pytest
+pytest-cov
