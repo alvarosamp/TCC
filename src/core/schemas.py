@@ -4,16 +4,16 @@ from typing import Any
 import numpy as np
 from src.core.profile import PipelineProfile
 
-REQUIRED_NPZ_KEYZ = ['X_train', 'y_train', 'X_test', 'y_test', 'X_val', 'y_val']
+REQUIRED_NPZ_KEYS = ['X_train', 'y_train', 'X_test', 'y_test', 'X_val', 'y_val']
 
-def validate_npz_keys(npz_path: str | Path) -> None:
+def validate_npz_keys(npz_path: str | Path) -> list[str]:
     """Valida se temos as chaves necessarias"""
     npz_path = Path(npz_path)
     if not npz_path.exists():
         raise FileNotFoundError(f"Arquivo npz não encontrado: {npz_path}")
     
     data = np.load(npz_path)
-    missing = [key for key in REQUIRED_NPZ_KEYZ if key not in data.files]
+    missing = [key for key in REQUIRED_NPZ_KEYS if key not in data.files]
     if missing:
         raise ValueError(f"Chaves faltando no arquivo npz: {missing}")
     return list(data.files)
@@ -96,10 +96,10 @@ def load_validated_split(
     if x_key not in data.files or y_key not in data.files:
         raise KeyError(f"Chaves ausentes: {x_key}/{y_key}")
 
-    x = flatten_windows(data[x_key], profile.window_size)
+    x = flatten_window(data[x_key], profile.window_size)
     y = validate_labels(data[y_key], profile, split_name)
 
-    profile.validate_window_shape(x.shape)
+    profile.validate_window_size(x.shape)
 
     if len(x) != len(y):
         raise ValueError(

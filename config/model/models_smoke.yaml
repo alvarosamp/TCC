@@ -1,0 +1,149 @@
+# Configuracao leve para smoke tests e validacao rapida do pipeline.
+#
+# Diferente de models.yaml:
+#   - Optuna com 3 trials (nao 20-30)
+#   - tiny_cnn com 10 epochs, arquitetura menor
+#   - Outros modelos desabilitados
+
+selection:
+  metric: auc_pr
+  split: test
+  mode: maximize
+
+models:
+  logistic_regression:
+    enabled: true
+    family: classical_supervised
+    edge_candidate: false
+    export_tflite: false
+    priority: baseline
+    params:
+      class_weight: balanced
+      max_iter: 200
+      C: 1.0
+    tune:
+      enabled: true
+      n_trials: 3
+      search_space:
+        C:
+          type: float
+          low: 0.01
+          high: 10.0
+          log: true
+
+  random_forest:
+    enabled: true
+    family: classical_supervised
+    edge_candidate: false
+    export_tflite: false
+    priority: baseline
+    params:
+      n_estimators: 50
+      max_depth: 8
+      class_weight: balanced
+      n_jobs: -1
+    tune:
+      enabled: false
+      n_trials: 0
+
+  extra_trees:
+    enabled: false
+    family: classical_supervised
+    edge_candidate: false
+    export_tflite: false
+    priority: baseline
+    params:
+      n_estimators: 50
+      class_weight: balanced
+    tune:
+      enabled: false
+      n_trials: 0
+
+  isolation_forest:
+    enabled: false
+    family: classical_unsupervised
+    edge_candidate: false
+    export_tflite: false
+    priority: anomaly_baseline
+    params:
+      n_estimators: 50
+      contamination: 0.05
+    tune:
+      enabled: false
+      n_trials: 0
+
+  dense_autoencoder:
+    enabled: false
+    family: autoencoder
+    edge_candidate: true
+    export_tflite: true
+    priority: candidate
+    params:
+      hidden_units: [64, 32]
+      latent_dim: 16
+      dropout: 0.10
+      epochs: 10
+      batch_size: 32
+      learning_rate: 0.001
+      patience: 3
+    tune:
+      enabled: false
+      n_trials: 0
+
+  cnn_autoencoder:
+    enabled: false
+    family: autoencoder
+    edge_candidate: true
+    export_tflite: true
+    priority: candidate
+    params:
+      filters: [8, 16]
+      kernels: [5, 3]
+      bottleneck_filters: 8
+      dropout: 0.10
+      epochs: 10
+      batch_size: 32
+      learning_rate: 0.001
+      patience: 3
+    tune:
+      enabled: false
+      n_trials: 0
+
+  tiny_cnn:
+    enabled: true
+    family: neural_classifier
+    edge_candidate: true
+    export_tflite: true
+    priority: candidate
+    params:
+      filters: [8, 16]
+      kernels: [5, 3]
+      dense_units: 8
+      dropout: 0.10
+      epochs: 10
+      batch_size: 16
+      learning_rate: 0.001
+      patience: 3
+    tune:
+      enabled: false
+      n_trials: 0
+
+  tiny_tcn:
+    enabled: false
+    family: neural_classifier
+    edge_candidate: true
+    export_tflite: true
+    priority: main_candidate
+    params:
+      filters: 8
+      kernel_size: 5
+      dilations: [1, 2, 4]
+      dense_units: 8
+      dropout: 0.10
+      epochs: 10
+      batch_size: 16
+      learning_rate: 0.001
+      patience: 3
+    tune:
+      enabled: false
+      n_trials: 0

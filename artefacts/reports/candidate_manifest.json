@@ -1,0 +1,152 @@
+{
+  "selected_by": {
+    "metric": "auc_pr",
+    "split": "test",
+    "mode": "maximize"
+  },
+  "model_name": "tiny_cnn",
+  "family": "neural_classifier",
+  "priority": "candidate",
+  "edge_candidate": true,
+  "export_tflite": true,
+  "profile": {
+    "profile_name": "seismic_edge_v1",
+    "profile_version": "1.0.0",
+    "task": "binary_anomaly_detection",
+    "domain": "seismic",
+    "description": null,
+    "sampling_rate": 40.0,
+    "window_size": 800,
+    "window_seconds": 20.0,
+    "step_seconds": 10.0,
+    "overlap": 0.5,
+    "normal_label": 0,
+    "anomaly_label": 1,
+    "normal_name": "normal",
+    "anomaly_name": "anomalia",
+    "split_name": "evento",
+    "primary_metric": "auc_pr",
+    "secondary_metrics": [
+      "f1",
+      "auc_roc",
+      "precision",
+      "recall"
+    ],
+    "preprocessing": {
+      "offline_pipeline": [
+        "resample_40hz",
+        "detrend-linear",
+        "demean",
+        "taper_5pct",
+        "bandpass_0p5_15hz_zerophase",
+        "zscore_per_window"
+      ],
+      "edge_pipeline": [
+        "detrend-linear",
+        "taper-5pct",
+        "bandpass-0p5_15hz_zerophase",
+        "zscore-per_window"
+      ],
+      "remove_response_offline": false,
+      "remove_response_edge": false,
+      "stationxml_required": false,
+      "bandpass_hz": [
+        0.5,
+        15.0
+      ],
+      "normalization": "zscore_per_window"
+    },
+    "embedded": {
+      "target": "esp32",
+      "runtime": "tensorflow_lite_micro",
+      "decision_interval_ms": 10000,
+      "preprocessing_version": "seismic_edge_prepoc_v1",
+      "ota_strategy_initial": "firmware_full_image",
+      "ota_strategy_future": "separate_model_update"
+    }
+  },
+  "dataset": "data\\processed\\dataset_seismic_edge_v1_split_evento.npz",
+  "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\tiny_cnn.keras",
+  "threshold": 0.3671574592590332,
+  "metrics": {
+    "threshold_from_val": 0.3671574592590332,
+    "val": {
+      "auc_pr": 1.0,
+      "auc_roc": 1.0,
+      "threshold": 0.3671574592590332,
+      "best_threshold_by_f1": {
+        "threshold": 0.3671574592590332,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 0.999999995
+      },
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "confusion_matrix": {
+        "tn": 120,
+        "fp": 0,
+        "fn": 0,
+        "tp": 80
+      }
+    },
+    "test": {
+      "auc_pr": 1.0,
+      "auc_roc": 1.0,
+      "threshold": 0.3671574592590332,
+      "best_threshold_by_f1": {
+        "threshold": 0.3855680525302887,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 0.999999995
+      },
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "confusion_matrix": {
+        "tn": 120,
+        "fp": 0,
+        "fn": 0,
+        "tp": 80
+      }
+    }
+  },
+  "hpo": {
+    "used_optuna": false,
+    "best_params": {
+      "filters": [
+        8,
+        16
+      ],
+      "kernels": [
+        5,
+        3
+      ],
+      "dense_units": 8,
+      "dropout": 0.1,
+      "epochs": 10,
+      "batch_size": 16,
+      "learning_rate": 0.001,
+      "patience": 3
+    },
+    "best_value": null,
+    "n_trials": 0
+  },
+  "params": {
+    "filters": [
+      8,
+      16
+    ],
+    "kernels": [
+      5,
+      3
+    ],
+    "dense_units": 8,
+    "dropout": 0.1,
+    "epochs": 10,
+    "batch_size": 16,
+    "learning_rate": 0.001,
+    "patience": 3
+  },
+  "parameter_count": 593
+}

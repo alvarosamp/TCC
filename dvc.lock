@@ -1,0 +1,15 @@
+schema: '2.0'
+stages:
+  test:
+    cmd: python -m pytest -q
+    deps:
+    - path: src
+      hash: md5
+      md5: e7b6e2b6f20f1b8768bdb7a8920279ff.dir
+      size: 194046
+      nfiles: 44
+    - path: src/tests
+      hash: md5
+      md5: e6ed2779eb8d1cdd215a34e1a44bebba.dir
+      size: 69355
+      nfiles: 17

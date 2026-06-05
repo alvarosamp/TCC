@@ -1,0 +1,4 @@
+model_name,family,priority,edge_candidate,export_tflite,used_optuna,parameter_count,val_auc_pr,val_f1,test_auc_pr,test_f1,threshold_from_val,model_path
+logistic_regression,classical_supervised,baseline,False,False,True,,1.0,1.0,1.0,0.9873417721518988,0.9881893396377563,C:\Users\vish8\OneDrive\Documentos\GitHub\TCC\artefacts\models\logistic_regression.joblib
+random_forest,classical_supervised,baseline,False,False,False,,1.0,1.0,1.0,1.0,0.9200000166893005,C:\Users\vish8\OneDrive\Documentos\GitHub\TCC\artefacts\models\random_forest.joblib
+tiny_cnn,neural_classifier,candidate,True,True,False,593,1.0,1.0,1.0,1.0,0.3671574592590332,C:\Users\vish8\OneDrive\Documentos\GitHub\TCC\artefacts\models\tiny_cnn.keras

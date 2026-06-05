@@ -7,9 +7,9 @@ def suggest_params(trial: optuna.Trial,
     """
     Sugere parametros para um trial do Optuna.
     """
-    params = dict[str, Any] = {}
+    params: dict[str, Any] = {}
     for name, spec in search_space.items():
-        kind = spec['kind']
+        kind = spec['type']
         
         if kind == 'int':
             params[name] = trial.suggest_int(

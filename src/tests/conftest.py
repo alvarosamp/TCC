@@ -5,11 +5,14 @@ Define fixtures reutilizaveis
 from __future__ import annotations
 import json 
 import sys
-from anyio import Path
+from pathlib import Path
 import pytest
 import yaml
 import numpy as np
-ROOT_DIR = PATH(__file__).resolve.parents[1]
+
+# conftest.py lives in <root>/src/tests/conftest.py
+# parents[0] = tests, parents[1] = src, parents[2] = <root>
+ROOT_DIR = Path(__file__).resolve().parents[2]
 SRC_DIR = ROOT_DIR / 'src'
 
 if str(ROOT_DIR) not in sys.path:
@@ -69,13 +72,22 @@ def tiny_profile_json( tmp_path: Path, tiny_profile_dict: dict) -> Path:
 
     return path
 
+
+@pytest.fixture
+def tiny_profile_path(tmp_path: Path, tiny_profile_dict: dict) -> Path:
+    """Profile YAML minimo usado pelos testes."""
+    path = tmp_path / 'tiny_profile.yaml'
+    with open(path, 'w', encoding='utf-8') as f:
+        yaml.safe_dump(tiny_profile_dict, f, sort_keys=False, allow_unicode=True)
+    return path
+
 @pytest.fixture
 def tiny_dataset_path(tmp_path: Path) -> Path:
     '''Cria um dataset com base no do projeto'''
     rng = np.random.default_rng(seed=42)
     window_size = 32
     X_train = rng.normal(0, 1, size = (20, window_size)).astype(np.float32)
-    y_train = np.array([0]*14 + [1]*10, dtype=np.int8)
+    y_train = np.array([0]*14 + [1]*6, dtype=np.int8)
     X_val = rng.normal(0, 1, size = (10, window_size)).astype(np.float32)
     y_val = np.array([0]*5 + [1]*5, dtype=np.int8)
     X_test = rng.normal(0, 1, size = (10, window_size)).astype(np.float32)

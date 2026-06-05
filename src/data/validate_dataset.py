@@ -13,7 +13,13 @@ from pathlib import Path
 from typing import Any
 from src.core.profile import PipelineProfile
 from src.core.schemas import validate_full_dataset
-from src.core.schemas import DATASET_FILE, PROFILE_PATH, REPORTS_DIR, ensure_directories, print_settings
+from src.core.settings import (
+    DATASET_FILE,
+    PROFILE_PATH,
+    REPORTS_DIR,
+    ensure_directories,
+    print_settings,
+)
 
 # OBJETIVO DO ARQUIVO
 # ============================================================
@@ -54,8 +60,9 @@ def main():
     log.info("Carregando profile...")
     log.info(f"Profile path: {PROFILE_PATH}")
     profile = PipelineProfile.from_yaml(PROFILE_PATH)
-    report = validate_full_dataset(profile, DATASET_FILE)
-    output_path = REPORTS_DIR / f"{profile.full_version}_validation_report.json"
+    report = validate_full_dataset(npz_path=DATASET_FILE, profile=profile)
+    # Nome fixo para facilitar rastreamento via DVC.
+    output_path = REPORTS_DIR / "dataset_validation_report.json"
     save_json(output_path, report)
     log.info(f"Relatório de validação salvo em: {output_path}")
     

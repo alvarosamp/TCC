@@ -4,8 +4,9 @@ from pathlib import Path
 import yaml
 
 #Raiz do projeto
-#parents[2] sobe : src/core/settings.py -> src/core -> src
-PROJECT_ROOT = Path(__file__).parent.parents[2]
+# parents[3] de settings.py: src/core -> src -> versao_final -> TCC (project root)
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+ROOT_DIR = PROJECT_ROOT  # alias usado pelos modulos de treino
 CONFIG_PATH = PROJECT_ROOT / "config" / "configs" / "config.yaml"
 
 #Lendo config
@@ -43,7 +44,7 @@ SPLIT_NAME = CFG['dataset']['split_name']
 DATASET_FILE = PROCESSED_DIR / CFG['dataset']['file_name']
 
 #Mlflow
-MLFLOW_TRACKING_URI = CFG['mlflow']['experiment_name']
+MLFLOW_EXPERIMENT_NAME = CFG['mlflow']['experiment_name']
 MLFLOW_TRACKING_URI = CFG['mlflow']['tracking_uri']
 
 #Quality gate
