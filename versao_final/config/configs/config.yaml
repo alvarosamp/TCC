@@ -7,7 +7,7 @@ project:
 #Profile ativo ( trocar o valor permite rodar o mesmo pipeline em outro dominio)
 profile:
   name: seismic_edge_v1
-  path: configs/profiles/seismic_edge_v1.yaml
+  path: config/configs/profiles/seismic_edge_v1.yaml
 
 
 #Caminhos principais
@@ -15,7 +15,7 @@ paths:
   data_base: "data/"
   raw_dir: "data/raw/"
   processed_dir: "data/processed/"
-  artifacts_dir: "artifacts/"
+  artefacts_dir: "artefacts/"
   reports_dir: "reports/"
   models_dir: "models/"
   edge_dir: "edge/"
@@ -24,12 +24,12 @@ paths:
 #Mlflow (collab da pra usar um file tracking)
 mlflow: 
   experiment_name: tcc_tinyml_timeseries
-  tracking_uri: file:./artifacts/mlruns
+  tracking_uri: file:./artefacts/mlruns
 
 #Dataset principal
 dataset:
   split_name: evento
-  file_name: dataset_seismic_edge_v1_split.npz
+  file_name: dataset_seismic_edge_v1_split_evento.npz
 
 #Politica de presença do modelo
 #Um modelo novo so vira novo candidato se tiver uma performance melhor que o modelo atual

@@ -26,8 +26,17 @@ __pycache__/
 
 # Artefatos locais temporarios
 *.Zone.Identifier
+*.code-workspace
+.coverage
+
 # Artefatos locais do TCC que nao devem ir ao GitHub
 /Trabalho/artefacts/data/
 /Trabalho/artefacts/models/
 /Trabalho/artefacts/results/models/
-*.code-workspace
+
+# Artefatos gerados pelo pipeline (binarios e dados pesados)
+versao_final/artefacts/edge/
+versao_final/artefacts/models/
+versao_final/artefacts/mlruns/
+versao_final/artefacts/runs/
+versao_final/data/

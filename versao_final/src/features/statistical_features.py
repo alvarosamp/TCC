@@ -1,5 +1,4 @@
 from __future__ import annotations
-from curses import window
 import numpy as np
 from scipy.stats import kurtosis, skew
 '''
@@ -10,7 +9,7 @@ def _safe_stat(value: float) -> float:
     '''
     Garantee que o valor é finito, substituindo inf e nan por 0
     '''
-    if np.insnan(value) or np.isinf(value):
+    if not np.isfinite(value):
         return 0.0
     return float(value)
 
@@ -32,7 +31,9 @@ def time_domain_features(X:np.ndarray) -> list[float]:
     p75 = _safe_stat(float(np.percentile(X, 75)))
     p95 = _safe_stat(float(np.percentile(X, 95)))
     iqr = _safe_stat(float(p75 - p25))
-    zero_crossings = _safe_stat(float(np.sum(np.diff(np.signbit(X) != 0))))
+    # Conta mudancas de sinal (cruzamentos de zero)
+    signs = np.signbit(X)
+    zero_crossings = _safe_stat(float(np.count_nonzero(signs[1:] != signs[:-1])))
     zero_crossing_rate = _safe_stat(float(zero_crossings / len(X)))
     return [
         mean, std, minimum, maximum, median, abs_mean, rms, peak_to_peak,

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Any
 import numpy as np
-from sklearn.metrics import average_precision_score, f1_score, confusion_matrix, precision_recall_curve, precision_score, roc_auc_score
+from sklearn.metrics import average_precision_score, f1_score, confusion_matrix, precision_recall_curve, precision_score, recall_score, roc_auc_score
 
 # ============================================================
 # OBJETIVO DO ARQUIVO
@@ -69,7 +69,7 @@ def evaluate_scores(
     y_true = np.asarray(y_true).astype(np.int32, copy=False)
     scores = np.asarray(scores).astype(np.float32, copy=False)
 
-    threshold_info = choose_threshold_by_f1(
+    threshold_info = choose_threshold(
         y_true=y_true,
         scores=scores,
     )

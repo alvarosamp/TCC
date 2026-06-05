@@ -6,7 +6,21 @@ from typing import Any
 import yaml
 
 
-@dataclass(frozen = true)
+def infer_window_size(x_shape: tuple[int, ...]) -> int:
+    """Infere o tamanho da janela a partir da forma dos dados."""
+    if len(x_shape) == 2:
+        return int(x_shape[1])
+
+    if len(x_shape) == 3 and x_shape[-1] == 1:
+        return int(x_shape[1])
+
+    if len(x_shape) == 3 and x_shape[1] == 1:
+        return int(x_shape[2])
+
+    raise ValueError(f"Formato de X nao suportado: {x_shape}")
+
+
+@dataclass(frozen=True)
 class PipelineProfile:
     '''Contrato da serie temporal
     Esse objeto conecta : dataset -> treino -> metrics -> export p tiny -> edge
@@ -27,9 +41,14 @@ class PipelineProfile:
     anomaly_name: str
     split_name:str
     primary_metric: str
-    secondary_metric: list[str]
+    secondary_metrics: list[str]
     preprocessing: dict[str, Any]
     embedded: dict[str, Any]
+
+    @classmethod
+    def load_from_yaml(cls, path: Path) -> "PipelineProfile":
+        """Carrega um profile a partir de um arquivo YAML."""
+        return cls.from_yaml(path)
     
     @classmethod
     def from_yaml(cls,path: Path) -> PipelineProfile:
@@ -42,16 +61,17 @@ class PipelineProfile:
         with open(path, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f)
         required = [
-            'profile_name', 'profile_version', 'task', 'domain', 'description',
+            'profile_name', 'profile_version', 'task', 'domain',
             'sampling_rate', 'window_size', 'window_seconds', 'step_seconds',
             'overlap', 'normal_label', 'anomaly_label', 'normal_name',
-            'anomaly_name', 'split_name', 'primary_metric', 'secondary_metric',
+            'anomaly_name', 'split_name', 'primary_metric', 'secondary_metrics',
             'preprocessing', 'embedded'
         ]
         missing = [k for k in required if k not in data]
         if missing:
             raise ValueError(f"Missing required fields in profile: {missing}")
-        
+
+        data.setdefault('description', None)
         return cls(**data)
         
     @property
@@ -59,7 +79,7 @@ class PipelineProfile:
         """Retorna o nome completo do perfil, combinando nome e versão."""
         return f"{self.profile_name}_v{self.profile_version}"
         
-    def validate_window_shape(self, X_shape :tuple[int, ...]) -> None:
+    def validate_window_size(self, x_shape: tuple[int, ...]) -> None:
         """Valida se a forma da janela é compatível com o perfil."""
         actual_window = infer_window_size(x_shape)
         if actual_window != self.window_size:
@@ -68,6 +88,10 @@ class PipelineProfile:
                 f"Dataset tem {actual_window}, mas profile espera "
                 f"{self.window_size}."
             )
+
+    # Compatibilidade com nomes antigos no código
+    def validate_window_shape(self, x_shape: tuple[int, ...]) -> None:
+        self.validate_window_size(x_shape)
     
     def to_dict(self) -> dict[str, Any]:
         """Converte o perfil para um dicionário."""
@@ -88,25 +112,13 @@ class PipelineProfile:
             'anomaly_name': self.anomaly_name,
             'split_name': self.split_name,
             'primary_metric': self.primary_metric,
-            'secondary_metric': self.secondary_metric,
+            'secondary_metrics': self.secondary_metrics,
             'preprocessing': self.preprocessing,
             'embedded': self.embedded
         }
-        
-    def infer_window_size(self, x_shape: tuple[int, ...]) -> int:
-        """Infere o tamanho da janela a partir da forma dos dados."""
-        if len(x_shape) == 2:
-            return int(x_shape[1])
 
-        if len(x_shape) == 3 and x_shape[-1] == 1:
-            return int(x_shape[1])
-
-        if len(x_shape) == 3 and x_shape[1] == 1:
-            return int(x_shape[2])
-
-        raise ValueError(f"Formato de X nao suportado: {x_shape}")
-        
-    def _optional_float(value:Any) -> float | None:
+    @staticmethod
+    def _optional_float(value: Any) -> float | None:
         if value is None:
             return None
             
