@@ -1,0 +1,146 @@
+{
+  "status": "production",
+  "model_name": "tiny_cnn",
+  "family": "neural_classifier",
+  "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\tiny_cnn.keras",
+  "threshold": 0.3882924020290375,
+  "profile": {
+    "profile_name": "seismic_edge_v1",
+    "profile_version": "1.0.0",
+    "task": "binary_anomaly_detection",
+    "domain": "seismic",
+    "description": null,
+    "sampling_rate": 40.0,
+    "window_size": 800,
+    "window_seconds": 20.0,
+    "step_seconds": 10.0,
+    "overlap": 0.5,
+    "normal_label": 0,
+    "anomaly_label": 1,
+    "normal_name": "normal",
+    "anomaly_name": "anomalia",
+    "split_name": "evento",
+    "primary_metric": "auc_pr",
+    "secondary_metrics": [
+      "f1",
+      "auc_roc",
+      "precision",
+      "recall"
+    ],
+    "preprocessing": {
+      "offline_pipeline": [
+        "resample_40hz",
+        "detrend-linear",
+        "demean",
+        "taper_5pct",
+        "bandpass_0p5_15hz_zerophase",
+        "zscore_per_window"
+      ],
+      "edge_pipeline": [
+        "detrend-linear",
+        "taper-5pct",
+        "bandpass-0p5_15hz_zerophase",
+        "zscore-per_window"
+      ],
+      "remove_response_offline": false,
+      "remove_response_edge": false,
+      "stationxml_required": false,
+      "bandpass_hz": [
+        0.5,
+        15.0
+      ],
+      "normalization": "zscore_per_window"
+    },
+    "embedded": {
+      "target": "esp32",
+      "runtime": "tensorflow_lite_micro",
+      "decision_interval_ms": 10000,
+      "preprocessing_version": "seismic_edge_prepoc_v1",
+      "ota_strategy_initial": "firmware_full_image",
+      "ota_strategy_future": "separate_model_update"
+    }
+  },
+  "dataset": "data\\processed\\dataset_seismic_edge_v1_split_evento.npz",
+  "summary_metrics": {
+    "model_name": "tiny_cnn",
+    "family": "neural_classifier",
+    "priority": "main_candidate",
+    "edge_candidate": true,
+    "export_tflite": true,
+    "used_optuna": false,
+    "parameter_count": 15377,
+    "val_auc_pr": 1.0,
+    "val_auc_roc": 1.0,
+    "val_f1": 1.0,
+    "val_precision": 1.0,
+    "val_recall": 1.0,
+    "val_fp_per_hour": 0.0,
+    "test_auc_pr": 1.0,
+    "test_auc_roc": 1.0,
+    "test_f1": 1.0,
+    "test_precision": 1.0,
+    "test_recall": 1.0,
+    "test_fp_per_hour": 0.0,
+    "threshold_from_val": 0.3882924020290375,
+    "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\tiny_cnn.keras"
+  },
+  "params": {
+    "n_blocks": 3,
+    "base_filters": 16,
+    "kernel_first": 21,
+    "kernel_other": 5,
+    "dense_units": 48,
+    "dropout": 0.240293,
+    "spatial_dropout": 0.007913,
+    "learning_rate": 0.0027376,
+    "l2_reg": 8.261e-06,
+    "use_batch_norm": false,
+    "conv_type": "conv",
+    "head_pooling": "avgmax",
+    "label_smoothing": 0.008688,
+    "epochs": 80,
+    "batch_size": 128,
+    "patience": 12
+  },
+  "parameter_count": 15377,
+  "quality_gate": {
+    "approved": true,
+    "candidate_model": "tiny_cnn",
+    "candidate_family": "neural_classifier",
+    "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\tiny_cnn.keras",
+    "model_size_kb": 242.931640625,
+    "checks": [
+      {
+        "name": "min_auc_pr",
+        "passed": true,
+        "value": 1.0,
+        "rule": ">= 0.8"
+      },
+      {
+        "name": "min_f1",
+        "passed": true,
+        "value": 1.0,
+        "rule": ">= 0.7"
+      },
+      {
+        "name": "max_fp_per_hour",
+        "passed": true,
+        "value": 0.0,
+        "rule": "<= 10.0"
+      },
+      {
+        "name": "max_val_test_auc_pr_gap",
+        "passed": true,
+        "value": 0.0,
+        "rule": "<= 0.08"
+      },
+      {
+        "name": "max_model_size_kb",
+        "passed": true,
+        "value": 242.931640625,
+        "rule": "<= 300.0"
+      }
+    ],
+    "reasons": []
+  }
+}

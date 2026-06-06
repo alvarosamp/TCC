@@ -1,0 +1,40 @@
+{
+  "approved": true,
+  "candidate_model": "tiny_cnn",
+  "candidate_family": "neural_classifier",
+  "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\tiny_cnn.keras",
+  "model_size_kb": 242.931640625,
+  "checks": [
+    {
+      "name": "min_auc_pr",
+      "passed": true,
+      "value": 1.0,
+      "rule": ">= 0.8"
+    },
+    {
+      "name": "min_f1",
+      "passed": true,
+      "value": 1.0,
+      "rule": ">= 0.7"
+    },
+    {
+      "name": "max_fp_per_hour",
+      "passed": true,
+      "value": 0.0,
+      "rule": "<= 10.0"
+    },
+    {
+      "name": "max_val_test_auc_pr_gap",
+      "passed": true,
+      "value": 0.0,
+      "rule": "<= 0.08"
+    },
+    {
+      "name": "max_model_size_kb",
+      "passed": true,
+      "value": 242.931640625,
+      "rule": "<= 300.0"
+    }
+  ],
+  "reasons": []
+}
