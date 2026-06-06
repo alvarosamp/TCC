@@ -1,4 +1,4 @@
-"""
+﻿"""
 Pipeline completo de treinamento.
 
 Suporta familias:
@@ -527,30 +527,66 @@ def select_best_model(
     )[0]
 
 
+def _fp_per_hour(metrics: dict[str, Any], profile: dict[str, Any]) -> float | None:
+    """Estima falsos positivos por hora para uma avaliacao por janelas.
+
+    O denominador e o tempo coberto pelas decisoes avaliadas:
+      n_janelas * step_seconds.
+
+    Isso permite comparar modelos pensando em operacao real. Um modelo pode ter
+    AUC-PR alta, mas ainda assim incomodar se gerar muitos alarmes falsos por
+    hora.
+    """
+    step_seconds = profile.get("step_seconds")
+    if step_seconds is None or float(step_seconds) <= 0:
+        return None
+
+    cm = metrics.get("confusion_matrix", {})
+    n_windows = int(cm.get("tn", 0)) + int(cm.get("fp", 0)) + int(cm.get("fn", 0)) + int(cm.get("tp", 0))
+    if n_windows <= 0:
+        return None
+
+    fp = int(cm.get("fp", 0))
+    hours = (n_windows * float(step_seconds)) / 3600.0
+    return float(fp / hours) if hours > 0 else None
+
+
+def _metric_row(result: dict[str, Any]) -> dict[str, Any]:
+    val = result["evaluation"]["val"]
+    test = result["evaluation"]["test"]
+    profile = result["profile"]
+    return {
+        "model_name": result["model_name"],
+        "family": result["family"],
+        "priority": result["priority"],
+        "edge_candidate": result["edge_candidate"],
+        "export_tflite": result["export_tflite"],
+        "used_optuna": result["hpo"]["used_optuna"],
+        "parameter_count": result.get("parameter_count", ""),
+        "val_auc_pr": val["auc_pr"],
+        "val_auc_roc": val["auc_roc"],
+        "val_f1": val["f1"],
+        "val_precision": val["precision"],
+        "val_recall": val["recall"],
+        "val_fp_per_hour": _fp_per_hour(val, profile),
+        "test_auc_pr": test["auc_pr"],
+        "test_auc_roc": test["auc_roc"],
+        "test_f1": test["f1"],
+        "test_precision": test["precision"],
+        "test_recall": test["recall"],
+        "test_fp_per_hour": _fp_per_hour(test, profile),
+        "threshold_from_val": result["evaluation"]["threshold_from_val"],
+        "model_path": result["model_path"],
+    }
+
+
 def save_comparison_reports(
     results: list[dict[str, Any]],
     best_overall: dict[str, Any],
     best_edge: dict[str, Any] | None,
     selection_cfg: dict[str, Any],
 ) -> None:
-    rows = [
-        {
-            "model_name": r["model_name"],
-            "family": r["family"],
-            "priority": r["priority"],
-            "edge_candidate": r["edge_candidate"],
-            "export_tflite": r["export_tflite"],
-            "used_optuna": r["hpo"]["used_optuna"],
-            "parameter_count": r.get("parameter_count", ""),
-            "val_auc_pr": r["evaluation"]["val"]["auc_pr"],
-            "val_f1": r["evaluation"]["val"]["f1"],
-            "test_auc_pr": r["evaluation"]["test"]["auc_pr"],
-            "test_f1": r["evaluation"]["test"]["f1"],
-            "threshold_from_val": r["evaluation"]["threshold_from_val"],
-            "model_path": r["model_path"],
-        }
-        for r in results
-    ]
+    rows = [_metric_row(r) for r in results]
 
     csv_path = REPORTS_DIR / "model_comparison.csv"
     md_path = REPORTS_DIR / "model_comparison.md"
@@ -563,14 +599,22 @@ def save_comparison_reports(
         writer.writerows(rows)
 
     with open(md_path, "w", encoding="utf-8") as f:
-        f.write("| Modelo | Familia | AUC-PR Test | F1 Test | Params | Edge | Optuna |\n")
-        f.write("|---|---|---:|---:|---:|---:|---:|\n")
+        f.write(
+            "| Modelo | Familia | AUC-PR | AUC-ROC | F1 | Precision | Recall | FP/h | Params | Edge | Optuna |\n"
+        )
+        f.write("|---|---|---:|---:|---:|---:|---:|---:|---:|:---:|:---:|\n")
         for row in rows:
+            fp_h = row["test_fp_per_hour"]
+            fp_h_text = "" if fp_h is None else f"{fp_h:.3f}"
             f.write(
                 f"| {row['model_name']} "
                 f"| {row['family']} "
                 f"| {row['test_auc_pr']:.4f} "
+                f"| {row['test_auc_roc']:.4f} "
                 f"| {row['test_f1']:.4f} "
+                f"| {row['test_precision']:.4f} "
+                f"| {row['test_recall']:.4f} "
+                f"| {fp_h_text} "
                 f"| {row['parameter_count']} "
                 f"| {row['edge_candidate']} "
                 f"| {row['used_optuna']} |\n"
@@ -581,14 +625,14 @@ def save_comparison_reports(
         {
             "selection": selection_cfg,
             "results": results,
+            "comparison_rows": rows,
             "best_overall": best_overall["model_name"],
             "best_edge": best_edge["model_name"] if best_edge else None,
         },
     )
 
-    # candidate_manifest usa o melhor edge candidate (para export TFLite)
-    # se nao houver edge candidate, usa o melhor geral
     candidate = best_edge if best_edge is not None else best_overall
+    candidate_row = _metric_row(candidate)
     save_json(
         candidate_path,
         {
@@ -602,6 +646,7 @@ def save_comparison_reports(
             "dataset": candidate["dataset"],
             "model_path": candidate["model_path"],
             "threshold": candidate["evaluation"]["threshold_from_val"],
+            "summary_metrics": candidate_row,
             "metrics": candidate["evaluation"],
             "hpo": candidate["hpo"],
             "params": candidate["params"],
@@ -777,7 +822,7 @@ def main() -> None:
                 }
 
             else:
-                log.warning(f"Familia nao suportada: {family} — pulando {model_name}")
+                log.warning(f"Familia nao suportada: {family} â€” pulando {model_name}")
                 continue
 
             log_result_to_mlflow(result)
@@ -817,3 +862,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

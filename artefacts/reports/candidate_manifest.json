@@ -6,7 +6,7 @@
   },
   "model_name": "tiny_cnn",
   "family": "neural_classifier",
-  "priority": "candidate",
+  "priority": "main_candidate",
   "edge_candidate": true,
   "export_tflite": true,
   "profile": {
@@ -67,86 +67,113 @@
   },
   "dataset": "data\\processed\\dataset_seismic_edge_v1_split_evento.npz",
   "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\tiny_cnn.keras",
-  "threshold": 0.5641331672668457,
+  "threshold": 0.3882924020290375,
+  "summary_metrics": {
+    "model_name": "tiny_cnn",
+    "family": "neural_classifier",
+    "priority": "main_candidate",
+    "edge_candidate": true,
+    "export_tflite": true,
+    "used_optuna": false,
+    "parameter_count": 15377,
+    "val_auc_pr": 1.0,
+    "val_auc_roc": 1.0,
+    "val_f1": 1.0,
+    "val_precision": 1.0,
+    "val_recall": 1.0,
+    "val_fp_per_hour": 0.0,
+    "test_auc_pr": 1.0,
+    "test_auc_roc": 1.0,
+    "test_f1": 1.0,
+    "test_precision": 1.0,
+    "test_recall": 1.0,
+    "test_fp_per_hour": 0.0,
+    "threshold_from_val": 0.3882924020290375,
+    "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\tiny_cnn.keras"
+  },
   "metrics": {
-    "threshold_from_val": 0.5641331672668457,
+    "threshold_from_val": 0.3882924020290375,
     "val": {
-      "auc_pr": 0.9773658542091987,
-      "auc_roc": 0.9823958333333334,
-      "threshold": 0.5641331672668457,
+      "auc_pr": 1.0,
+      "auc_roc": 1.0,
+      "threshold": 0.3882924020290375,
       "best_threshold_by_f1": {
-        "threshold": 0.5641331672668457,
-        "precision": 0.948051948051948,
-        "recall": 0.9125,
-        "f1": 0.9299363007343097
+        "threshold": 0.3882924020290375,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 0.999999995
       },
-      "f1": 0.9299363057324841,
-      "precision": 0.948051948051948,
-      "recall": 0.9125,
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
       "confusion_matrix": {
-        "tn": 116,
-        "fp": 4,
-        "fn": 7,
-        "tp": 73
+        "tn": 120,
+        "fp": 0,
+        "fn": 0,
+        "tp": 80
       }
     },
     "test": {
-      "auc_pr": 0.9917825232259985,
-      "auc_roc": 0.9930208333333332,
-      "threshold": 0.5641331672668457,
+      "auc_pr": 1.0,
+      "auc_roc": 1.0,
+      "threshold": 0.3882924020290375,
       "best_threshold_by_f1": {
-        "threshold": 0.48954716324806213,
-        "precision": 0.975,
-        "recall": 0.975,
-        "f1": 0.974999995
+        "threshold": 0.5374898910522461,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 0.999999995
       },
-      "f1": 0.948051948051948,
-      "precision": 0.9864864864864865,
-      "recall": 0.9125,
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
       "confusion_matrix": {
-        "tn": 119,
-        "fp": 1,
-        "fn": 7,
-        "tp": 73
+        "tn": 120,
+        "fp": 0,
+        "fn": 0,
+        "tp": 80
       }
     }
   },
   "hpo": {
     "used_optuna": false,
     "best_params": {
-      "filters": [
-        8,
-        16
-      ],
-      "kernels": [
-        5,
-        3
-      ],
-      "dense_units": 8,
-      "dropout": 0.1,
-      "epochs": 10,
-      "batch_size": 16,
-      "learning_rate": 0.001,
-      "patience": 3
+      "n_blocks": 3,
+      "base_filters": 16,
+      "kernel_first": 21,
+      "kernel_other": 5,
+      "dense_units": 48,
+      "dropout": 0.240293,
+      "spatial_dropout": 0.007913,
+      "learning_rate": 0.0027376,
+      "l2_reg": 8.261e-06,
+      "use_batch_norm": false,
+      "conv_type": "conv",
+      "head_pooling": "avgmax",
+      "label_smoothing": 0.008688,
+      "epochs": 80,
+      "batch_size": 128,
+      "patience": 12
     },
     "best_value": null,
     "n_trials": 0
   },
   "params": {
-    "filters": [
-      8,
-      16
-    ],
-    "kernels": [
-      5,
-      3
-    ],
-    "dense_units": 8,
-    "dropout": 0.1,
-    "epochs": 10,
-    "batch_size": 16,
-    "learning_rate": 0.001,
-    "patience": 3
+    "n_blocks": 3,
+    "base_filters": 16,
+    "kernel_first": 21,
+    "kernel_other": 5,
+    "dense_units": 48,
+    "dropout": 0.240293,
+    "spatial_dropout": 0.007913,
+    "learning_rate": 0.0027376,
+    "l2_reg": 8.261e-06,
+    "use_batch_norm": false,
+    "conv_type": "conv",
+    "head_pooling": "avgmax",
+    "label_smoothing": 0.008688,
+    "epochs": 80,
+    "batch_size": 128,
+    "patience": 12
   },
-  "parameter_count": 593
+  "parameter_count": 15377
 }
