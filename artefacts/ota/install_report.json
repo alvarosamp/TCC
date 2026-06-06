@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0.0",
+  "installed_at_utc": "2026-06-06T21:04:37.234573+00:00",
+  "status": "installed_simulated",
+  "device_id": "esp32-dev-001",
+  "previous_model": {
+    "name": null,
+    "version": null,
+    "sha256": null,
+    "threshold": null
+  },
+  "installed_model": {
+    "name": "tiny_cnn",
+    "version": "seismic_edge_v1_tiny_cnn_20260606",
+    "sha256": "0979b5bc9bf4a115f88ee81f83d9fd0e9153a6342c7d82d1b1b91535046811fe",
+    "threshold": 0.3882924020290375,
+    "artifact_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\releases\\seismic_edge_v1_tiny_cnn_20260606\\artifact.keras"
+  },
+  "release": {
+    "release_dir": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\releases\\seismic_edge_v1_tiny_cnn_20260606",
+    "target": {
+      "device": "esp32",
+      "runtime": "tensorflow_lite_micro"
+    },
+    "artifact": {
+      "path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\releases\\seismic_edge_v1_tiny_cnn_20260606\\artifact.keras",
+      "sha256": "0979b5bc9bf4a115f88ee81f83d9fd0e9153a6342c7d82d1b1b91535046811fe"
+    }
+  },
+  "decision_reasons": [
+    "versao diferente: atual=None disponivel=seismic_edge_v1_tiny_cnn_20260606",
+    "sha256 diferente entre modelo atual e release disponivel"
+  ],
+  "notes": [
+    "Instalacao simulada em device_state.json.",
+    "Nenhum ESP32 real foi atualizado nesta etapa.",
+    "No firmware real, esta etapa envolveria download, escrita em particao OTA e reboot controlado."
+  ]
+}

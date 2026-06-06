@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "published_at_utc": "2026-06-06T19:10:33.013392+00:00",
+  "status": "published_local",
+  "release_dir": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\releases\\seismic_edge_v1_tiny_cnn_20260606",
+  "model": {
+    "name": "tiny_cnn",
+    "family": "neural_classifier",
+    "version": "seismic_edge_v1_tiny_cnn_20260606",
+    "threshold": 0.3882924020290375,
+    "parameter_count": 15377
+  },
+  "target": {
+    "device": "esp32",
+    "runtime": "tensorflow_lite_micro"
+  },
+  "artifact": {
+    "path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\releases\\seismic_edge_v1_tiny_cnn_20260606\\artifact.keras",
+    "sha256": "0979b5bc9bf4a115f88ee81f83d9fd0e9153a6342c7d82d1b1b91535046811fe"
+  },
+  "validation": {
+    "approved": true,
+    "validated_at_utc": "2026-06-06T19:04:04.160552+00:00"
+  },
+  "notes": [
+    "Publicacao local para simular repositorio OTA.",
+    "Ainda nao ha servidor HTTP nem download pelo ESP32.",
+    "No OTA real, latest.json seria exposto por um endpoint ou storage."
+  ]
+}

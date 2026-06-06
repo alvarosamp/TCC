@@ -1,0 +1,46 @@
+{
+  "device_id": "esp32-dev-001",
+  "target": {
+    "device": "esp32",
+    "runtime": "tensorflow_lite_micro"
+  },
+  "current_model": {
+    "name": "tiny_cnn",
+    "version": "seismic_edge_v1_tiny_cnn_20260606",
+    "sha256": "0979b5bc9bf4a115f88ee81f83d9fd0e9153a6342c7d82d1b1b91535046811fe",
+    "threshold": 0.3882924020290375,
+    "artifact_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\releases\\seismic_edge_v1_tiny_cnn_20260606\\artifact.keras"
+  },
+  "last_update": {
+    "updated_at_utc": "2026-06-06T21:04:37.234573+00:00",
+    "source": "local_release_simulation",
+    "status": "installed"
+  },
+  "last_rollback": {
+    "rolled_back_at_utc": "2026-06-06T21:07:40.423751+00:00",
+    "from_failed_update": {
+      "status": "failed",
+      "failed_at_utc": "2026-06-06T21:07:40.423751+00:00",
+      "attempted_model": {
+        "name": "tiny_cnn",
+        "family": "neural_classifier",
+        "version": "seismic_edge_v1_tiny_cnn_20260606",
+        "threshold": 0.3882924020290375,
+        "parameter_count": 15377
+      },
+      "attempted_artifact": {
+        "path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\releases\\seismic_edge_v1_tiny_cnn_20260606\\artifact.keras",
+        "sha256": "0979b5bc9bf4a115f88ee81f83d9fd0e9153a6342c7d82d1b1b91535046811fe"
+      },
+      "reason": "simulated_install_failure"
+    },
+    "restored_model": {
+      "name": "tiny_cnn",
+      "version": "seismic_edge_v1_tiny_cnn_20260606",
+      "sha256": "0979b5bc9bf4a115f88ee81f83d9fd0e9153a6342c7d82d1b1b91535046811fe",
+      "threshold": 0.3882924020290375,
+      "artifact_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\releases\\seismic_edge_v1_tiny_cnn_20260606\\artifact.keras"
+    },
+    "status": "rollback_completed"
+  }
+}

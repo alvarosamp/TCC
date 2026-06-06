@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0.0",
+  "validated_at_utc": "2026-06-06T19:04:04.160552+00:00",
+  "package_dir": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\packages\\seismic_edge_v1_tiny_cnn_20260606",
+  "approved": true,
+  "model": {
+    "name": "tiny_cnn",
+    "family": "neural_classifier",
+    "version": "seismic_edge_v1_tiny_cnn_20260606",
+    "threshold": 0.3882924020290375,
+    "parameter_count": 15377
+  },
+  "target": {
+    "device": "esp32",
+    "runtime": "tensorflow_lite_micro"
+  },
+  "artifact": {
+    "path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\packages\\seismic_edge_v1_tiny_cnn_20260606\\artifact.keras",
+    "expected_sha256": "0979b5bc9bf4a115f88ee81f83d9fd0e9153a6342c7d82d1b1b91535046811fe",
+    "actual_sha256": "0979b5bc9bf4a115f88ee81f83d9fd0e9153a6342c7d82d1b1b91535046811fe"
+  },
+  "checks": [
+    {
+      "name": "package_dir_exists",
+      "passed": true,
+      "value": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\packages\\seismic_edge_v1_tiny_cnn_20260606",
+      "expected": "existing directory"
+    },
+    {
+      "name": "package_info_exists",
+      "passed": true,
+      "value": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\packages\\seismic_edge_v1_tiny_cnn_20260606\\package_info.json",
+      "expected": "existing file"
+    },
+    {
+      "name": "ota_manifest_exists",
+      "passed": true,
+      "value": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\packages\\seismic_edge_v1_tiny_cnn_20260606\\ota_manifest.json",
+      "expected": "existing file"
+    },
+    {
+      "name": "artifact_exists",
+      "passed": true,
+      "value": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\packages\\seismic_edge_v1_tiny_cnn_20260606\\artifact.keras",
+      "expected": "existing file"
+    },
+    {
+      "name": "artifact_sha256_matches",
+      "passed": true,
+      "value": "0979b5bc9bf4a115f88ee81f83d9fd0e9153a6342c7d82d1b1b91535046811fe",
+      "expected": "0979b5bc9bf4a115f88ee81f83d9fd0e9153a6342c7d82d1b1b91535046811fe"
+    },
+    {
+      "name": "target_device",
+      "passed": true,
+      "value": "esp32",
+      "expected": "esp32"
+    },
+    {
+      "name": "target_runtime",
+      "passed": true,
+      "value": "tensorflow_lite_micro",
+      "expected": "tensorflow_lite_micro"
+    },
+    {
+      "name": "manifest_status",
+      "passed": true,
+      "value": "ready_for_packaging",
+      "expected": "ready_for_packaging or packaged"
+    },
+    {
+      "name": "model_version_matches_package",
+      "passed": true,
+      "value": "seismic_edge_v1_tiny_cnn_20260606",
+      "expected": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\ota\\packages\\seismic_edge_v1_tiny_cnn_20260606"
+    }
+  ],
+  "reasons": []
+}
