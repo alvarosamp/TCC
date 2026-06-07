@@ -465,77 +465,259 @@ A aprovação atual ocorreu sobre dataset sintético/fácil. Portanto, valida o 
 
 ---
 
-## 15. Preparação Para OTA
+Sim. Aqui está a parte do **OTA** no mesmo estilo de resumo/anotação para o caderno/TCC.
+
+```md
+## Etapa OTA - Atualização Over-the-Air Simulada Para Modelos TinyML
 
 ### Objetivo
 
-Criar a ponte entre o modelo aprovado e a atualização do dispositivo embarcado.
+Nesta etapa, foi implementado um fluxo simulado de atualização OTA para conectar o pipeline MLOps ao dispositivo de borda. O objetivo não foi atualizar fisicamente um ESP32 nesta fase, mas construir a lógica necessária para controlar, versionar, validar e simular a entrega de um novo modelo aprovado para implantação.
 
-### Ideia
+### Motivação
 
-Antes de fazer OTA real, é necessário gerar um manifesto OTA.
+Em um sistema TinyML real, o modelo embarcado pode precisar ser atualizado ao longo do tempo devido a melhoria de desempenho, detecção de drift, mudança no comportamento dos dados ou correção de falhas. Entretanto, uma atualização OTA não deve ocorrer de forma direta e sem controle.
 
-### Fluxo Planejado
+Antes de enviar um modelo ou firmware para o dispositivo, é necessário garantir:
+
+- qual modelo foi aprovado;
+- qual versão será enviada;
+- qual threshold acompanha o modelo;
+- qual profile e preprocessamento são esperados;
+- se o artefato está íntegro;
+- se o pacote é compatível com o dispositivo;
+- se existe mecanismo de rollback em caso de falha.
+
+### Fluxo Implementado
+
+O fluxo OTA simulado foi construído em etapas:
 
 ```text
 production_manifest.json
 → ota_manifest.json
-→ pacote de atualização
-→ validação no ESP32
-→ aplicação da atualização
-→ rollback se falhar
+→ pacote OTA local
+→ validação do pacote
+→ publicação local
+→ verificação pelo dispositivo
+→ aplicação simulada
+→ rollback simulado
 ```
 
-### Informações Do Manifesto OTA
+### 1. Geração Do Manifesto OTA
 
-O manifesto deve conter:
+Após o modelo ser aprovado pelo Quality Gate, o arquivo `production_manifest.json` passa a representar o modelo de produção local. A partir dele, foi gerado um `ota_manifest.json`.
+
+Esse manifesto contém informações como:
 
 - nome do modelo;
-- versão;
+- versão do modelo;
+- target do dispositivo;
+- runtime esperado;
 - threshold;
-- target;
-- runtime;
 - caminho do artefato;
-- checksum SHA-256;
-- estratégia OTA;
-- profile;
-- métricas;
-- regras de qualidade.
+- tamanho do artefato;
+- hash SHA-256;
+- profile do pipeline;
+- preprocessamento esperado;
+- métricas do modelo;
+- estratégia OTA.
 
-### Importância
+O SHA-256 foi incluído para permitir validação de integridade do artefato antes da instalação.
 
-OTA sem manifesto é arriscado, pois não há rastreabilidade sobre qual modelo foi enviado, com qual threshold e para qual versão de preprocessamento.
+### 2. Criação Do Pacote OTA Local
 
----
+Em seguida, foi criado um pacote OTA local versionado. O pacote organiza os arquivos necessários para uma possível atualização.
 
-## 16. Estado Atual Do Projeto
-
-### O Que Já Funciona
-
-```text
-dataset sintético
-→ validação
-→ treino
-→ comparação
-→ seleção de candidato
-→ quality gate
-→ produção local
-```
-
-### O Que Ainda Precisa Ser Feito
+Estrutura gerada:
 
 ```text
-rodar com dataset real
-validar splits reais
-exportar modelo final
-testar no ESP32
-gerar manifesto OTA
-implementar OTA real
-monitorar drift
-retreinar quando necessário
+artefacts/ota/packages/seismic_edge_v1_tiny_cnn_20260606/
+  ├── ota_manifest.json
+  ├── package_info.json
+  └── artifact.keras
 ```
 
-### Conclusão Parcial
+Nesta fase, o artefato empacotado ainda foi o modelo `.keras`, pois a etapa serviu para validar o fluxo. Para implantação real em ESP32, o artefato deverá ser substituído por `.tflite`, `.h` ou firmware `.bin`.
 
-O pipeline técnico está tomando forma como um sistema completo de TinyML/MLOps. A estrutura já permite treinar, comparar, selecionar, promover e preparar modelos para implantação. A próxima etapa crítica é substituir o dataset sintético pelo dataset real e validar se os resultados continuam consistentes.
+### 3. Validação Do Pacote OTA
+
+Foi implementada uma etapa de validação do pacote. O script verifica:
+
+- se `package_info.json` existe;
+- se `ota_manifest.json` existe;
+- se o artefato existe;
+- se o SHA-256 calculado bate com o valor registrado no manifesto;
+- se o target é `esp32`;
+- se o runtime é `tensorflow_lite_micro`;
+- se a versão do modelo é compatível com o pacote.
+
+O pacote foi aprovado na validação, gerando:
+
+```text
+validation_report.json
+```
+
+Essa etapa é importante porque uma atualização OTA não deve ser publicada ou aplicada caso o pacote esteja corrompido, incompleto ou incompatível.
+
+### 4. Publicação Local Da Release
+
+Após a validação, o pacote foi publicado localmente em uma estrutura de releases:
+
+```text
+artefacts/ota/releases/
+  ├── latest.json
+  └── seismic_edge_v1_tiny_cnn_20260606/
+```
+
+O arquivo `latest.json` simula o endpoint que um dispositivo ou backend consultaria para descobrir a versão mais recente disponível.
+
+Em um sistema real, esse arquivo poderia estar em:
+
+- servidor HTTP;
+- bucket S3/MinIO;
+- GitHub Release;
+- API de atualização;
+- storage privado da aplicação.
+
+### 5. Simulação De Verificação Pelo Dispositivo
+
+Foi criado um estado simulado do dispositivo em:
+
+```text
+device_state.json
+```
+
+O script de verificação compara o estado atual do dispositivo com o `latest.json`.
+
+Na primeira execução, o dispositivo ainda não possuía modelo instalado. Assim, o sistema detectou corretamente que havia uma atualização disponível.
+
+Resultado:
+
+```text
+Update disponível: True
+Próxima ação: download_and_validate_package
+```
+
+Os motivos foram:
+
+```text
+versão diferente
+sha256 diferente
+```
+
+Essa etapa representa a lógica que o firmware ou agente OTA deve executar antes de aplicar qualquer atualização.
+
+### 6. Simulação Da Aplicação Da Atualização
+
+Em seguida, foi simulada a aplicação da atualização. O estado do dispositivo foi atualizado para registrar o modelo instalado:
+
+```text
+Modelo instalado: tiny_cnn
+Versão instalada: seismic_edge_v1_tiny_cnn_20260606
+```
+
+Após isso, uma nova verificação OTA foi executada. O sistema respondeu:
+
+```text
+Update disponível: False
+Próxima ação: keep_current_version
+```
+
+Isso confirma que o dispositivo passou a reconhecer a versão instalada e não tenta reinstalar o mesmo modelo repetidamente.
+
+### 7. Simulação De Rollback
+
+Por fim, foi implementada uma simulação de rollback. O script salva o estado atual, simula uma falha de instalação e restaura o estado anterior.
+
+Resultado:
+
+```text
+Status: rollback_completed
+Modelo restaurado: tiny_cnn
+Versão restaurada: seismic_edge_v1_tiny_cnn_20260606
+```
+
+Essa etapa representa um mecanismo essencial para segurança operacional. Em um sistema embarcado real, uma atualização pode falhar por:
+
+- download incompleto;
+- checksum inválido;
+- falha ao gravar a partição OTA;
+- incompatibilidade do modelo;
+- reboot inesperado;
+- falha na confirmação de boot.
+
+O rollback garante que o dispositivo possa retornar para a última versão funcional.
+
+### Arquivos Implementados
+
+```text
+src/ota/__init__.py
+src/ota/build_ota_manifest.py
+src/ota/build_ota_package.py
+src/ota/validate_ota_package.py
+src/ota/publish_local_release.py
+src/ota/simulate_device_update_check.py
+src/ota/simulate_apply_update.py
+src/ota/simulate_rollback.py
+```
+
+### Artefatos Gerados
+
+```text
+artefacts/ota/ota_manifest.json
+artefacts/ota/packages/<versao>/package_info.json
+artefacts/ota/packages/<versao>/validation_report.json
+artefacts/ota/releases/latest.json
+artefacts/ota/device_state.json
+artefacts/ota/device_update_check_report.json
+artefacts/ota/install_report.json
+artefacts/ota/rollback_report.json
+```
+
+### Resultado Da Etapa
+
+O fluxo OTA simulado foi concluído com sucesso. O sistema agora consegue:
+
+- gerar manifesto OTA;
+- criar pacote versionado;
+- validar integridade com SHA-256;
+- publicar release local;
+- simular verificação pelo dispositivo;
+- simular instalação;
+- evitar reinstalação desnecessária;
+- simular rollback em caso de falha.
+
+### Limitação Atual
+
+A etapa ainda não realiza atualização OTA real no ESP32. Além disso, o pacote atual utiliza `artifact.keras`, que não é o formato final para TensorFlow Lite Micro.
+
+Para implantação real, será necessário substituir o artefato por:
+
+```text
+.tflite
+```
+
+ou:
+
+```text
+firmware .bin
+```
+
+### Próxima Etapa
+
+A próxima etapa é exportar o modelo aprovado para TensorFlow Lite e gerar um header C/C++ compatível com TensorFlow Lite Micro. Depois disso, o fluxo OTA poderá ser ajustado para empacotar o artefato correto para o ESP32.
+
+Fluxo futuro:
+
+```text
+.keras
+→ .tflite
+→ .h
+→ pacote OTA com artefato edge
+→ validação no ESP32
+```
+
+### Conclusão
+
+A etapa OTA criou uma ponte entre MLOps e sistemas embarcados. O modelo aprovado pelo pipeline não é tratado apenas como um arquivo, mas como um artefato versionado, validado e rastreável. Essa abordagem aumenta a segurança, a organização e a confiabilidade do processo de atualização de modelos TinyML em dispositivos de borda.
 ```
