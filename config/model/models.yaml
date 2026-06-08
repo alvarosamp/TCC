@@ -39,7 +39,7 @@ models:
           log: true
 
   random_forest:
-    enabled: true
+    enabled: false
     family: classical_supervised
     edge_candidate: false
     export_tflite: false
@@ -68,7 +68,7 @@ models:
           high: 5
 
   extra_trees:
-    enabled: true
+    enabled: false
     family: classical_supervised
     edge_candidate: false
     export_tflite: false
@@ -162,7 +162,7 @@ models:
   # Preset baseado no melhor modelo completo visto nas rodadas externas:
   # optuna_tiny_cnn_classifier_v4.
   tiny_cnn:
-    enabled: true
+    enabled: false
     family: neural_classifier
     edge_candidate: true
     export_tflite: true
@@ -197,26 +197,28 @@ models:
     export_tflite: true
     priority: candidate
     params:
-      filters: 16
-      kernel_size: 11
-      n_blocks: 6
-      dilation_base: 3
-      dense_units: 32
-      dropout: 0.258533
-      spatial_dropout: 0.285220
-      learning_rate: 0.002320
-      l2_reg: 0.000008961
+      params:
+      batch_size : 64
+      pos_multiplier: 1.274375423547668
+      filters : 24
+      n_blocks : 3
+      dilation_base : 2
+      dropout : 0.1142415531888814
+      spatial_dropout : 0.1142415531888814
+      dense_units : 32
+      learning_rate : 0.0019901844880576103
+      l2_reg : 0.0000008596266772391992
+      head_pooling : avg
+      label_smoothing : 0.012938050702971032
       padding: same
       conv_type: separable
-      use_batch_norm: true
-      head_pooling: avgmax
-      label_smoothing: 0.027348
+      use_batch_norm: false
       epochs: 80
-      batch_size: 512
       patience: 12
+
     tune:
       enabled: false
-      n_trials: 20
+      n_trials: 0
 
   lstm_classifier:
     enabled: false

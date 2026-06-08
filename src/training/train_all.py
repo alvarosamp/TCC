@@ -103,14 +103,19 @@ def as_conv_input(X: np.ndarray) -> np.ndarray:
     return X[..., np.newaxis].astype(np.float32, copy=False)
 
 
-def class_weight_from_labels(y: np.ndarray) -> dict[int, float]:
+def class_weight_from_labels(y: np.ndarray,
+                             pos_multiplier: float = 1.0,
+                                ) -> dict[int, float]:
     labels, counts = np.unique(y.astype(int), return_counts=True)
     total = float(len(y))
     n_classes = float(len(labels))
-    return {
-        int(label): total / (n_classes * float(count))
+    weights = {
+        int(label): (total / (n_classes * count))
         for label, count in zip(labels, counts)
     }
+    if 1 in weights:
+        weights[1] *= float(pos_multiplier)
+    return weights
 
 
 # ============================================================
@@ -308,7 +313,8 @@ def train_neural_classifier(
         validation_data=(as_conv_input(X_val), y_val),
         epochs=epochs,
         batch_size=batch_size,
-        class_weight=class_weight_from_labels(y_train),
+        class_weight=class_weight_from_labels(y_train,
+                                              pos_multiplier = float(params.get("pos_multiplier", 1.0))),
         callbacks=callbacks,
         verbose=2,
     )
