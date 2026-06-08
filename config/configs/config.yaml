@@ -12,9 +12,9 @@ profile:
 
 #Caminhos principais
 paths:
-  data_base: "data/"
-  raw_dir: "data/raw/"
-  processed_dir: "data/processed/"
+  data_base: "G:/.shortcut-targets-by-id/1DdZ9qoIZHY5X52h-jkzfpvXuCXs8RwMr/TCC/TCC_data/"
+  raw_dir: "G:/.shortcut-targets-by-id/1DdZ9qoIZHY5X52h-jkzfpvXuCXs8RwMr/TCC/TCC_data/Pipeline_generico/data2/raw/"
+  processed_dir: "G:/.shortcut-targets-by-id/1DdZ9qoIZHY5X52h-jkzfpvXuCXs8RwMr/TCC/TCC_data/processed_seismic_edge_v1/"
   artefacts_dir: "artefacts/"
   reports_dir: "reports/"
   models_dir: "models/"

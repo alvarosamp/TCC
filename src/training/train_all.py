@@ -27,6 +27,7 @@ import argparse
 import csv
 import json
 import logging
+import time
 from pathlib import Path
 from typing import Any
 
@@ -700,17 +701,18 @@ def main() -> None:
     log.info(f"Modelos habilitados: {list(models_to_train)}")
     log.info("=" * 80)
 
+    t_dataset = time.time()
     X_train, y_train = load_validated_split(DATASET_FILE, "train", profile)
     X_val, y_val = load_validated_split(DATASET_FILE, "val", profile)
     X_test, y_test = load_validated_split(DATASET_FILE, "test", profile)
-
+    log.info(f"Dataset carregado em {time.time() - t_dataset:.1f}s")
     log.info(f"X_train: {X_train.shape}  X_val: {X_val.shape}  X_test: {X_test.shape}")
 
+    t_feat = time.time()
     X_train_f = extract_statistical_features(X_train, profile.sampling_rate)
     X_val_f = extract_statistical_features(X_val, profile.sampling_rate)
     X_test_f = extract_statistical_features(X_test, profile.sampling_rate)
-
-    log.info(f"Features: {X_train_f.shape[1]} dimensoes")
+    log.info(f"Features extraidas em {time.time() - t_feat:.1f}s  ({X_train_f.shape[1]} dimensoes)")
 
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
     mlflow.set_experiment(MLFLOW_EXPERIMENT_NAME)
@@ -725,6 +727,7 @@ def main() -> None:
         log.info(f"MODELO: {model_name}  |  FAMILIA: {family}")
         log.info("=" * 80)
 
+        t_model = time.time()
         with mlflow.start_run(run_name=model_name):
             hpo_result = {
                 "used_optuna": False,
@@ -834,10 +837,12 @@ def main() -> None:
             log_result_to_mlflow(result)
             all_results.append(result)
 
+            elapsed = time.time() - t_model
             log.info(
                 f"{model_name}: "
                 f"test_auc_pr={result['evaluation']['test']['auc_pr']:.4f}  "
-                f"test_f1={result['evaluation']['test']['f1']:.4f}"
+                f"test_f1={result['evaluation']['test']['f1']:.4f}  "
+                f"tempo={elapsed/60:.1f}min"
             )
 
     if not all_results:

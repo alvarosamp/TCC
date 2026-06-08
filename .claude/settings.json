@@ -3,7 +3,8 @@
     "allow": [
       "Bash(git ls-tree *)",
       "Bash(.venv/Scripts/python scripts/generate_synthetic_data.py)",
-      "Bash(.venv/Scripts/python -m src.training.train_all --models-cfg config/model/models_smoke.yaml)"
+      "Bash(.venv/Scripts/python -m src.training.train_all --models-cfg config/model/models_smoke.yaml)",
+      "Bash(Test-Path \"G:\\\\.shortcut-targets-by-id\\\\1DdZ9qoIZHY5X52h-jkzfpvXuCXs8RwMr\\\\TCC\\\\TCC_data\\\\processed_seismic_edge_v1\\\\dataset_seismic_edge_v1_split_evento.npz\")"
     ]
   }
 }

@@ -197,19 +197,19 @@ models:
     export_tflite: true
     priority: candidate
     params:
-      params:
-      batch_size : 64
+      batch_size: 64
       pos_multiplier: 1.274375423547668
-      filters : 24
-      n_blocks : 3
-      dilation_base : 2
-      dropout : 0.1142415531888814
-      spatial_dropout : 0.1142415531888814
-      dense_units : 32
-      learning_rate : 0.0019901844880576103
-      l2_reg : 0.0000008596266772391992
-      head_pooling : avg
-      label_smoothing : 0.012938050702971032
+      filters: 24
+      kernel_size: 11
+      n_blocks: 3
+      dilation_base: 2
+      dropout: 0.03544702294960163
+      spatial_dropout: 0.1142415531888814
+      dense_units: 32
+      learning_rate: 0.0019901844880576103
+      l2_reg: 0.0000008596266772391992
+      head_pooling: avg
+      label_smoothing: 0.012938050702971032
       padding: same
       conv_type: separable
       use_batch_norm: false
