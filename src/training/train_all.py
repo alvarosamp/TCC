@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import gc
 import json
 import logging
 import time
@@ -209,8 +210,21 @@ def tune_classical_model(
         )
         return float(result["val_metrics"][selection_metric])
 
-    study = optuna.create_study(direction="maximize")
+    sampler = optuna.samplers.TPESampler(seed=SEED)
+    study = optuna.create_study(
+        study_name=f"{model_name}_hpo",
+        direction="maximize",
+        sampler=sampler,
+    )
     study.optimize(objective, n_trials=n_trials)
+
+    trials_path: str | None = None
+    try:
+        trials_path = str(REPORTS_DIR / f"{model_name}_hpo_trials.csv")
+        study.trials_dataframe().to_csv(trials_path, index=False)
+    except Exception as exc:
+        log.warning(f"Nao foi possivel salvar trials HPO: {exc}")
+        trials_path = None
 
     best_params = dict(base_params)
     best_params.update(study.best_params)
@@ -220,6 +234,7 @@ def tune_classical_model(
         "best_value": float(study.best_value),
         "n_trials": n_trials,
         "best_trial": int(study.best_trial.number),
+        "trials_path": trials_path,
     }
 
 
@@ -266,6 +281,193 @@ def train_classical_final(
 # ============================================================
 # NEURAL CLASSIFIER
 # ============================================================
+
+class _OptunaKerasPruner(tf.keras.callbacks.Callback):
+    """Reporta val_auc_pr ao Optuna ao fim de cada época e interrompe se pruned."""
+
+    def __init__(self, trial: optuna.Trial) -> None:
+        super().__init__()
+        self._trial = trial
+
+    def on_epoch_end(self, epoch: int, logs: dict | None = None) -> None:
+        val_auc_pr = float((logs or {}).get("val_auc_pr", 0.0))
+        self._trial.report(val_auc_pr, epoch)
+        if self._trial.should_prune():
+            raise optuna.exceptions.TrialPruned()
+
+
+def tune_neural_classifier(
+    model_name: str,
+    model_cfg: dict[str, Any],
+    X_train: np.ndarray,
+    y_train: np.ndarray,
+    X_val: np.ndarray,
+    y_val: np.ndarray,
+    profile: PipelineProfile,
+    selection_metric: str,
+) -> dict[str, Any]:
+    base_params = dict(model_cfg.get("params", {}))
+    tune_cfg = dict(model_cfg.get("tune", {}))
+    search_space = dict(tune_cfg.get("search_space", {}))
+
+    if not tune_cfg.get("enabled", False) or not search_space:
+        return {
+            "used_optuna": False,
+            "best_params": base_params,
+            "best_value": None,
+            "n_trials": 0,
+        }
+
+    n_trials = int(tune_cfg.get("n_trials", 60))
+    trial_epochs = int(tune_cfg.get("epochs_per_trial", 80))
+    trial_patience = int(tune_cfg.get("patience_per_trial", 8))
+    max_params = int(tune_cfg.get("max_params", 20000))
+    profile_dict = profile.to_dict()
+
+    def objective(trial: optuna.Trial) -> float:
+        tf.keras.backend.clear_session()
+        gc.collect()
+        tf.keras.utils.set_random_seed(SEED + trial.number)
+
+        trial_params = dict(base_params)
+        trial_params.update(suggest_params(trial=trial, search_space=search_space))
+        trial_params["epochs"] = trial_epochs
+        trial_params["patience"] = trial_patience
+
+        oom_occurred = False
+        try:
+            model = build_neural_model(
+                model_name=model_name,
+                window_size=profile.window_size,
+                params=trial_params,
+            )
+
+            n_params = int(model.count_params())
+            trial.set_user_attr("params", n_params)
+            if n_params > max_params:
+                raise optuna.exceptions.TrialPruned(f"params={n_params} > max_params={max_params}")
+
+            batch_size = int(trial_params.get("batch_size", 256))
+
+            history = model.fit(
+                as_conv_input(X_train),
+                y_train,
+                validation_data=(as_conv_input(X_val), y_val),
+                epochs=trial_epochs,
+                batch_size=batch_size,
+                class_weight=class_weight_from_labels(
+                    y_train,
+                    pos_multiplier=float(trial_params.get("pos_multiplier", 1.0)),
+                ),
+                callbacks=[
+                    tf.keras.callbacks.EarlyStopping(
+                        monitor="val_auc_pr",
+                        mode="max",
+                        patience=trial_patience,
+                        restore_best_weights=True,
+                    ),
+                    _OptunaKerasPruner(trial),
+                ],
+                verbose=0,
+            )
+
+            scores_val = model.predict(
+                as_conv_input(X_val), batch_size=2048, verbose=0
+            ).reshape(-1)
+            val_metrics = evaluate_scores(y_true=y_val, scores=scores_val, threshold=None)
+
+            auc_pr = float(val_metrics["auc_pr"])
+            f1 = float(val_metrics["f1"])
+            fp_per_hour = float(_fp_per_hour(val_metrics, profile_dict) or 0.0)
+
+            trial.set_user_attr("val_auc_pr", auc_pr)
+            trial.set_user_attr("val_f1", f1)
+            trial.set_user_attr("fp_per_hour", fp_per_hour)
+            trial.set_user_attr("epochs_ran", len(history.history["loss"]))
+
+            return (
+                auc_pr
+                + 0.10 * f1
+                - 0.002 * (n_params / max_params)
+                - 0.02 * min(fp_per_hour / 30.0, 1.0)
+            )
+
+        except optuna.exceptions.TrialPruned:
+            raise
+        except tf.errors.ResourceExhaustedError:
+            oom_occurred = True
+            log.warning(f"[HPO {model_name}] trial {trial.number} OOM — pulando")
+            raise optuna.exceptions.TrialPruned("OOM: batch_size muito grande para a VRAM")
+        except Exception as exc:
+            log.warning(f"[HPO {model_name}] trial {trial.number} falhou: {exc}")
+            raise
+        finally:
+            if not oom_occurred:
+                tf.keras.backend.clear_session()
+            gc.collect()
+
+    def _log_trial(study: optuna.Study, trial: optuna.trial.FrozenTrial) -> None:
+        if trial.state in (optuna.trial.TrialState.PRUNED, optuna.trial.TrialState.FAIL):
+            state_str = trial.state.name
+        else:
+            auc_pr = trial.user_attrs.get("val_auc_pr")
+            state_str = f"val_auc_pr={auc_pr:.4f}" if auc_pr is not None else f"obj={trial.value:.4f}"
+        try:
+            best_str = f"best_obj={study.best_value:.4f} @ trial {study.best_trial.number + 1}"
+        except ValueError:
+            best_str = "sem best ainda"
+        log.info(f"[HPO {model_name}] trial {trial.number + 1}/{n_trials}  {state_str}  {best_str}")
+
+    db_path = REPORTS_DIR / f"{model_name}_hpo.db"
+    sampler = optuna.samplers.TPESampler(seed=SEED, multivariate=True)
+    pruner = optuna.pruners.MedianPruner(n_startup_trials=10, n_warmup_steps=10)
+    study = optuna.create_study(
+        study_name=f"{model_name}_hpo",
+        direction="maximize",
+        sampler=sampler,
+        pruner=pruner,
+        storage=f"sqlite:///{db_path}",
+        load_if_exists=True,
+    )
+    log.info(f"[HPO] trials existentes no estudo: {len(study.trials)}")
+    study.optimize(
+        objective,
+        n_trials=n_trials,
+        callbacks=[_log_trial],
+        catch=(ValueError, tf.errors.ResourceExhaustedError),
+        show_progress_bar=True,
+    )
+
+    trials_path: str | None = None
+    study_path: str | None = None
+    try:
+        trials_path = str(REPORTS_DIR / f"{model_name}_hpo_trials.csv")
+        study.trials_dataframe().to_csv(trials_path, index=False)
+        study_path = str(REPORTS_DIR / f"{model_name}_hpo_study.pkl")
+        joblib.dump(study, study_path)
+    except Exception as exc:
+        log.warning(f"Nao foi possivel salvar artefatos HPO: {exc}")
+        trials_path = None
+        study_path = None
+
+    best_params = dict(base_params)
+    best_params.update(study.best_params)
+
+    n_pruned = sum(
+        1 for t in study.trials if t.state == optuna.trial.TrialState.PRUNED
+    )
+
+    return {
+        "used_optuna": True,
+        "best_params": best_params,
+        "best_value": float(study.best_value),
+        "n_trials": n_trials,
+        "n_pruned": n_pruned,
+        "best_trial": int(study.best_trial.number),
+        "trials_path": trials_path,
+        "study_path": study_path,
+    }
+
 
 def train_neural_classifier(
     model_name: str,
@@ -474,7 +676,15 @@ def log_result_to_mlflow(result: dict[str, Any]) -> None:
     mlflow.log_param("edge_candidate", result["edge_candidate"])
     mlflow.log_param("export_tflite", result["export_tflite"])
     mlflow.log_param("priority", result["priority"])
-    mlflow.log_param("used_optuna", result["hpo"]["used_optuna"])
+    hpo = result["hpo"]
+    mlflow.log_param("used_optuna", hpo["used_optuna"])
+
+    if hpo.get("used_optuna"):
+        mlflow.log_metric("hpo_best_val_auc_pr", float(hpo["best_value"]))
+        mlflow.log_param("hpo_n_trials", hpo["n_trials"])
+        mlflow.log_param("hpo_best_trial", hpo["best_trial"])
+        if hpo.get("n_pruned") is not None:
+            mlflow.log_param("hpo_n_pruned", hpo["n_pruned"])
 
     if "parameter_count" in result:
         mlflow.log_metric("parameter_count", result["parameter_count"])
@@ -491,6 +701,10 @@ def log_result_to_mlflow(result: dict[str, Any]) -> None:
 
     mlflow.log_artifact(str(metrics_path))
     mlflow.log_artifact(result["model_path"])
+    if hpo.get("trials_path"):
+        mlflow.log_artifact(hpo["trials_path"])
+    if hpo.get("study_path"):
+        mlflow.log_artifact(hpo["study_path"])
 
 
 def metric_value(result: dict[str, Any], split: str, metric: str) -> float:
@@ -775,9 +989,21 @@ def main() -> None:
                 }
 
             elif family == "neural_classifier":
-                final = train_neural_classifier(
+                hpo_result = tune_neural_classifier(
                     model_name=model_name,
                     model_cfg=model_cfg,
+                    X_train=X_train,
+                    y_train=y_train,
+                    X_val=X_val,
+                    y_val=y_val,
+                    profile=profile,
+                    selection_metric=selection_cfg.get("metric", "auc_pr"),
+                )
+                tuned_cfg = dict(model_cfg)
+                tuned_cfg["params"] = hpo_result["best_params"]
+                final = train_neural_classifier(
+                    model_name=model_name,
+                    model_cfg=tuned_cfg,
                     X_train=X_train,
                     y_train=y_train,
                     X_val=X_val,
@@ -795,7 +1021,7 @@ def main() -> None:
                     "profile": profile.to_dict(),
                     "dataset": str(DATASET_FILE),
                     "model_path": final["model_path"],
-                    "params": params,
+                    "params": hpo_result["best_params"],
                     "hpo": hpo_result,
                     "evaluation": final["evaluation"],
                     "history": final["history"],

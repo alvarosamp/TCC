@@ -115,7 +115,8 @@ def build_tiny_tcn(window_size: int, params: dict[str, Any]) -> tf.keras.Model:
     regularizer = tf.keras.regularizers.l2(l2_reg) if l2_reg > 0 else None
 
     inp = tf.keras.Input(shape=(window_size, 1))
-    x = inp
+    x = tf.keras.layers.Conv1D(filters, kernel_size=1, padding="same")(inp)
+
     for d in dilations:
         residual = x
         x = _conv1d_layer(
@@ -132,12 +133,24 @@ def build_tiny_tcn(window_size: int, params: dict[str, Any]) -> tf.keras.Model:
             x = tf.keras.layers.SpatialDropout1D(spatial_dropout)(x)
         if dropout > 0:
             x = tf.keras.layers.Dropout(dropout)(x)
+        x = tf.keras.layers.Conv1D(
+            filters, kernel_size=1, padding="same",
+            use_bias=not use_batch_norm, kernel_regularizer=regularizer,
+        )(x)
+        if use_batch_norm:
+            x = tf.keras.layers.BatchNormalization()(x)
         if residual.shape[-1] != filters:
-            residual = tf.keras.layers.Conv1D(filters, 1, padding="same")(residual)
+            residual = tf.keras.layers.Conv1D(
+                filters, 1, padding="same", kernel_regularizer=regularizer,
+            )(residual)
         x = tf.keras.layers.Add()([x, residual])
+        x = tf.keras.layers.Activation("relu")(x)
 
     x = _head_pooling(x, head_pooling)
-    x = tf.keras.layers.Dense(dense_units, activation="relu", kernel_regularizer=regularizer)(x)
+    if dense_units > 0:
+        x = tf.keras.layers.Dense(dense_units, activation="relu", kernel_regularizer=regularizer)(x)
+        if dropout > 0:
+            x = tf.keras.layers.Dropout(dropout)(x)
     out = tf.keras.layers.Dense(1, activation="sigmoid")(x)
     return _compile_classifier(tf.keras.Model(inp, out), params)
 
