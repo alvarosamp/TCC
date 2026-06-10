@@ -403,7 +403,10 @@ def tune_neural_classifier(
             raise
         finally:
             if not oom_occurred:
-                tf.keras.backend.clear_session()
+                try:
+                    tf.keras.backend.clear_session()
+                except Exception:
+                    pass
             gc.collect()
 
     def _log_trial(study: optuna.Study, trial: optuna.trial.FrozenTrial) -> None:
@@ -429,14 +432,17 @@ def tune_neural_classifier(
         storage=f"sqlite:///{db_path}",
         load_if_exists=True,
     )
-    log.info(f"[HPO] trials existentes no estudo: {len(study.trials)}")
-    study.optimize(
-        objective,
-        n_trials=n_trials,
-        callbacks=[_log_trial],
-        catch=(ValueError, tf.errors.ResourceExhaustedError),
-        show_progress_bar=True,
-    )
+    already_done = sum(1 for t in study.trials if t.state == optuna.trial.TrialState.COMPLETE)
+    remaining = max(0, n_trials - already_done)
+    log.info(f"[HPO] trials completos: {already_done}/{n_trials}  — rodando mais {remaining}")
+    if remaining > 0:
+        study.optimize(
+            objective,
+            n_trials=remaining,
+            callbacks=[_log_trial],
+            catch=(ValueError, tf.errors.ResourceExhaustedError, tf.errors.InternalError),
+            show_progress_bar=True,
+        )
 
     trials_path: str | None = None
     study_path: str | None = None
@@ -894,6 +900,9 @@ def main() -> None:
     )
     args = parser.parse_args()
     models_config_path: Path = args.models_cfg
+
+    for gpu in tf.config.list_physical_devices('GPU'):
+        tf.config.experimental.set_memory_growth(gpu, True)
 
     ensure_directories()
 

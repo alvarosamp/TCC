@@ -114,27 +114,19 @@ modelos selecionados
 
 ## Resultados Atuais
 
-Resultados consolidados a partir das rodadas externas em `D:\PipelineGenerico\data` no dia 2026-06-05.
+Resultados consolidados. Modelos v4 rodados em `D:\PipelineGenerico\data` em 2026-06-05. Optuna Tiny TCN v4-2 finalizado em 2026-06-09 (trial 24 de 88, parametros: 14.897).
 
-| Modelo | AUC-PR teste | F1 teste | Precisao | Recall | FP/h | Observacao |
-|---|---:|---:|---:|---:|---:|---|
-| Optuna Tiny CNN classifier v4 | 0.9127 | 0.8526 | 0.8982 | 0.8114 | 4.896 | Melhor modelo completo ate agora |
-| Tiny CNN classifier | 0.8982 | 0.7951 | 0.7310 | 0.8716 | 16.944 | Boa rede leve sem HPO final |
-| Tiny TCN classifier | 0.8964 | 0.7666 | 0.6790 | 0.8801 | 21.984 | Boa, mas com mais falsos positivos |
-| Optuna Random Forest v4 | 0.8127 | 0.7367 | 0.7974 | 0.6846 | 9.264 | Melhor baseline classico completo |
-| Optuna Extra Trees v4 | 0.7901 | 0.7102 | 0.7589 | 0.6675 | 11.296 | Forte, porem pesado |
-| STA/LTA v4 | 0.1662 | 0.2760 | 0.1773 | 0.6230 | - | Baseline tradicional |
+| Modelo | AUC-PR teste | F1 teste | Precisao | Recall | FP/h | Params | Candidato Edge |
+|---|---:|---:|---:|---:|---:|---:|:---:|
+| **Optuna Tiny TCN v4-2** | **0.9416** | **0.8885** | **0.9266** | **0.8534** | **3.136** | **14.897** | Sim |
+| Optuna Tiny CNN v4 | 0.9127 | 0.8526 | 0.8982 | 0.8114 | 4.896 | 15.377 | Sim |
+| Tiny CNN (sem HPO) | 0.8982 | 0.7951 | 0.7310 | 0.8716 | 16.944 | ~15k | Sim |
+| Tiny TCN (sem HPO) | 0.8964 | 0.7666 | 0.6790 | 0.8801 | 21.984 | ~15k | Sim |
+| Optuna Random Forest v4 | 0.8127 | 0.7367 | 0.7974 | 0.6846 | 9.264 | - | Nao |
+| Optuna Extra Trees v4 | 0.7901 | 0.7102 | 0.7589 | 0.6675 | 11.296 | - | Nao |
+| STA/LTA v4 | 0.1662 | 0.2760 | 0.1773 | 0.6230 | - | - | Nao |
 
-O `optuna_tiny_tcn_classifier_v4-2` ainda estava em otimizacao. Resultado parcial de validacao:
-
-```text
-val_auc_pr = 0.8811
-val_f1     = 0.8230
-val_fp_h   = 6.976
-params     = 6.017
-```
-
-Por enquanto, o melhor candidato completo para TinyML e o `optuna_tiny_cnn_classifier_v4`.
+O melhor candidato para TinyML e o `Optuna Tiny TCN v4-2`: maior AUC-PR (0.9416), menor FP/h (3.136) e apenas 14.897 parametros. O modelo foi promovido pelo quality gate e empacotado no pipeline OTA.
 
 ## Interpretabilidade
 
@@ -206,13 +198,12 @@ O repositorio deve guardar codigo, configuracoes, documentacao e relatorios leve
 
 ## Proximos Passos
 
-1. Finalizar a otimizacao do Tiny TCN e comparar com o Tiny CNN.
-2. Exportar o melhor modelo para TFLite float32, float16 e int8.
-3. Converter o modelo escolhido para header C/C++.
-4. Validar no ESP32 com `preprocessing.h` equivalente ao pipeline de treino.
-5. Criar quality gate para promocao do modelo.
-6. Implementar monitoramento de drift.
-7. Planejar OTA com manifestos assinados, rollback e validacao de versao.
+1. **[ATUAL] Validar no ESP32** com `preprocessing.h` equivalente ao pipeline de treino (detrend, taper, bandpass, zscore).
+2. Substituir artefato OTA de `.keras` para `.tflite` / header `.h` gerado para TensorFlow Lite Micro.
+3. Medir latencia de inferencia e consumo de memoria no ESP32 (RAM, flash).
+4. Comparar decisao embarcada com resultado do pipeline offline.
+5. Implementar monitoramento de drift.
+6. Evoluir OTA para manifesto assinado e particao separada de modelo.
 
 ## Tese Tecnica Do Projeto
 

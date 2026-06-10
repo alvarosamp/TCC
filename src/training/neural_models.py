@@ -87,8 +87,9 @@ def build_tiny_cnn(window_size: int, params: dict[str, Any]) -> tf.keras.Model:
             x = tf.keras.layers.SpatialDropout1D(spatial_dropout)(x)
 
     x = _head_pooling(x, head_pooling)
-    x = tf.keras.layers.Dropout(dropout)(x)
-    x = tf.keras.layers.Dense(dense_units, activation="relu", kernel_regularizer=regularizer)(x)
+    if dense_units > 0:
+        x = tf.keras.layers.Dropout(dropout)(x)
+        x = tf.keras.layers.Dense(dense_units, activation="relu", kernel_regularizer=regularizer)(x)
     out = tf.keras.layers.Dense(1, activation="sigmoid")(x)
     return _compile_classifier(tf.keras.Model(inp, out), params)
 
