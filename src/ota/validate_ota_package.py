@@ -27,7 +27,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from src.core.settings import ARTEFACTS_DIR
+from src.core.settings import ARTEFACTS_DIR, OTA_CONFIG
 
 
 OTA_DIR = ARTEFACTS_DIR / "ota"
@@ -206,6 +206,17 @@ def validate_package(package_dir: Path) -> dict[str, Any]:
         value=manifest["model"]["version"],
         expected=str(package_dir),
     )
+
+    max_tflite_kb = OTA_CONFIG.get("max_tflite_int8_size_kb")
+    if max_tflite_kb is not None:
+        artifact_size_kb = manifest["artifact"].get("size_kb")
+        add_check(
+            checks,
+            name="max_tflite_int8_size_kb",
+            passed=artifact_size_kb is not None and artifact_size_kb <= float(max_tflite_kb),
+            value=artifact_size_kb,
+            expected=f"<= {max_tflite_kb}",
+        )
 
     approved = all(check["passed"] for check in checks)
 

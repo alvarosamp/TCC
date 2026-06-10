@@ -66,18 +66,6 @@ def get_nested(payload: dict[str, Any], path: list[str], default: Any = None) ->
     return current
 
 
-def model_size_kb(model_path: str | None) -> float | None:
-    """Calcula tamanho do arquivo do modelo em KB."""
-    if not model_path:
-        return None
-
-    path = Path(model_path)
-    if not path.exists():
-        return None
-
-    return path.stat().st_size / 1024.0
-
-
 def evaluate_gate(candidate: dict[str, Any]) -> dict[str, Any]:
     """
     Aplica as regras do quality gate.
@@ -95,11 +83,9 @@ def evaluate_gate(candidate: dict[str, Any]) -> dict[str, Any]:
     val_auc_pr = summary.get("val_auc_pr")
 
     model_path = candidate.get("model_path")
-    size_kb = model_size_kb(model_path)
 
     min_auc_pr = float(QUALITY_GATE.get("min_auc_pr", 0.0))
     min_f1 = float(QUALITY_GATE.get("min_f1", 0.0))
-    max_model_size_kb = QUALITY_GATE.get("max_model_size_kb")
     max_fp_per_hour = QUALITY_GATE.get("max_fp_per_hour")
     max_val_test_auc_pr_gap = QUALITY_GATE.get("max_val_test_auc_pr_gap")
 
@@ -166,15 +152,6 @@ def evaluate_gate(candidate: dict[str, Any]) -> dict[str, Any]:
             rule=f"<= {max_val_test_auc_pr_gap}",
         )
 
-    if max_model_size_kb is not None:
-        max_model_size_kb = float(max_model_size_kb)
-        add_check(
-            name="max_model_size_kb",
-            passed=size_kb is not None and size_kb <= max_model_size_kb,
-            value=size_kb,
-            rule=f"<= {max_model_size_kb}",
-        )
-
     approved = all(check["passed"] for check in checks)
 
     return {
@@ -182,7 +159,6 @@ def evaluate_gate(candidate: dict[str, Any]) -> dict[str, Any]:
         "candidate_model": candidate.get("model_name"),
         "candidate_family": candidate.get("family"),
         "model_path": model_path,
-        "model_size_kb": size_kb,
         "checks": checks,
         "reasons": reasons,
     }

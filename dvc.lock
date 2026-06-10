@@ -128,12 +128,12 @@ stages:
     deps:
     - path: artefacts/reports/candidate_manifest.json
       hash: md5
-      md5: f14ca8c49f1da88afece7de3d5048c1b
-      size: 3590
+      md5: bc63b49cd2e4f525c149f9efa599c57c
+      size: 5191
     - path: src/export/export_header.py
       hash: md5
-      md5: 747084d8dfda9a7ce7544c401ed57380
-      size: 2025
+      md5: 71e0ebfb61216e4a6f989cf73fd5dc48
+      size: 1952
     - path: src/export/export_tflite.py
       hash: md5
       md5: 029987c0da37f8b4518bedf6ca2787d6
@@ -141,6 +141,91 @@ stages:
     outs:
     - path: artefacts/edge
       hash: md5
-      md5: 6b62b169231aed4dc3b3c9cc85dcdc22.dir
-      size: 25156
+      md5: af9d3138dfd5d7bc26a804ce11e520e1.dir
+      size: 207617
+      nfiles: 5
+  promote_model:
+    cmd: python -m src.mlops.promote_model
+    deps:
+    - path: artefacts/reports/candidate_manifest.json
+      hash: md5
+      md5: bc63b49cd2e4f525c149f9efa599c57c
+      size: 5191
+    - path: config/configs/config.yaml
+      hash: md5
+      md5: 7f783840c9b2b2e6aa4c75283b4ab545
+      size: 1177
+    - path: src/mlops/promote_model.py
+      hash: md5
+      md5: 64f3b9de60aaafec35a429bda7858413
+      size: 6326
+    outs:
+    - path: artefacts/registry/production_manifest.json
+      hash: md5
+      md5: 3b9b2de59afd09a0eb015f5188538637
+      size: 4009
+    - path: artefacts/reports/promotion_report.json
+      hash: md5
+      md5: 0ed7ee4fac308e1a7d6d8118330f94b5
+      size: 712
+  build_ota_manifest:
+    cmd: python -m src.ota.build_ota_manifest
+    deps:
+    - path: artefacts/edge
+      hash: md5
+      md5: af9d3138dfd5d7bc26a804ce11e520e1.dir
+      size: 207617
+      nfiles: 5
+    - path: artefacts/registry/production_manifest.json
+      hash: md5
+      md5: 3b9b2de59afd09a0eb015f5188538637
+      size: 4009
+    - path: src/ota/build_ota_manifest.py
+      hash: md5
+      md5: 58908701d3e9c2c5b43eaea8a6b6ddb2
+      size: 5765
+    outs:
+    - path: artefacts/ota/ota_manifest.json
+      hash: md5
+      md5: 5541e3d69e59c9bbf42bdeb8e6290f26
+      size: 3523
+  package_and_validate_ota:
+    cmd: python -m src.ota.build_ota_package && python -m 
+      src.ota.validate_ota_package
+    deps:
+    - path: artefacts/ota/ota_manifest.json
+      hash: md5
+      md5: 5541e3d69e59c9bbf42bdeb8e6290f26
+      size: 3523
+    - path: src/ota/build_ota_package.py
+      hash: md5
+      md5: 147f53751c40a4394b9384160f75796c
+      size: 4406
+    - path: src/ota/validate_ota_package.py
+      hash: md5
+      md5: f01b84f2b8db075ed92707c28a7c898e
+      size: 7753
+    outs:
+    - path: artefacts/ota/packages
+      hash: md5
+      md5: 49e00c5c2827e12e84b65c01051e7acf.dir
+      size: 66398
+      nfiles: 4
+  publish_ota:
+    cmd: python -m src.ota.publish_local_release
+    deps:
+    - path: artefacts/ota/packages
+      hash: md5
+      md5: 49e00c5c2827e12e84b65c01051e7acf.dir
+      size: 66398
+      nfiles: 4
+    - path: src/ota/publish_local_release.py
+      hash: md5
+      md5: 95a9f3db737910119c31b1792cbae679
+      size: 5498
+    outs:
+    - path: artefacts/ota/releases
+      hash: md5
+      md5: 088d26eb87837ae0eec4bc94e06b0c80.dir
+      size: 67421
       nfiles: 5

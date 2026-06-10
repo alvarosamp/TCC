@@ -50,6 +50,9 @@ MLFLOW_TRACKING_URI = CFG['mlflow']['tracking_uri']
 #Quality gate
 QUALITY_GATE = CFG['quality_gate']
 
+#OTA
+OTA_CONFIG = CFG.get('ota', {})
+
 #funcoes auxiliares
 def ensure_directories() -> Path:
     '''cria os diretorios principais de saida'''

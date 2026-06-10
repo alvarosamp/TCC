@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "created_at_utc": "2026-06-06T17:19:02.537069+00:00",
+  "created_at_utc": "2026-06-10T17:05:26.576188+00:00",
   "status": "ready_for_packaging",
   "target": {
     "device": "esp32",
@@ -14,17 +14,20 @@
     "signature_required_future": true
   },
   "artifact": {
-    "type": "model_file",
-    "path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\tiny_cnn.keras",
-    "sha256": "0979b5bc9bf4a115f88ee81f83d9fd0e9153a6342c7d82d1b1b91535046811fe",
-    "size_bytes": 248762
+    "type": "tflite_int8",
+    "path": "/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_tcn_int8.tflite",
+    "sha256": "6b26ea8895784aa19b308e78b07cc7ebb68d3a679215fbfca9dabe272c782e9c",
+    "size_bytes": 59080,
+    "size_kb": 57.7,
+    "quantization": "int8",
+    "source_model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras"
   },
   "model": {
-    "name": "tiny_cnn",
+    "name": "tiny_tcn",
     "family": "neural_classifier",
-    "version": "seismic_edge_v1_tiny_cnn_20260606",
-    "threshold": 0.3882924020290375,
-    "parameter_count": 15377
+    "version": "seismic_edge_v1_tiny_tcn_20260610",
+    "threshold": 0.8439759612083435,
+    "parameter_count": 14897
   },
   "profile": {
     "name": "seismic_edge_v1",
@@ -61,64 +64,57 @@
   },
   "quality": {
     "summary_metrics": {
-      "model_name": "tiny_cnn",
+      "model_name": "tiny_tcn",
       "family": "neural_classifier",
-      "priority": "main_candidate",
+      "priority": "candidate",
       "edge_candidate": true,
       "export_tflite": true,
       "used_optuna": false,
-      "parameter_count": 15377,
-      "val_auc_pr": 1.0,
-      "val_auc_roc": 1.0,
-      "val_f1": 1.0,
-      "val_precision": 1.0,
-      "val_recall": 1.0,
-      "val_fp_per_hour": 0.0,
-      "test_auc_pr": 1.0,
-      "test_auc_roc": 1.0,
-      "test_f1": 1.0,
-      "test_precision": 1.0,
-      "test_recall": 1.0,
-      "test_fp_per_hour": 0.0,
-      "threshold_from_val": 0.3882924020290375,
-      "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\tiny_cnn.keras"
+      "parameter_count": 14897,
+      "val_auc_pr": 0.9336696016536805,
+      "val_auc_roc": 0.9761549498620363,
+      "val_f1": 0.883868915049316,
+      "val_precision": 0.9309651474530831,
+      "val_recall": 0.8413082980012114,
+      "val_fp_per_hour": 2.874195798775289,
+      "test_auc_pr": 0.9415702360285394,
+      "test_auc_roc": 0.9799241347084544,
+      "test_f1": 0.8885066458170445,
+      "test_precision": 0.9266144814090019,
+      "test_recall": 0.8534094322619405,
+      "test_fp_per_hour": 3.1360099113399666,
+      "threshold_from_val": 0.8439759612083435,
+      "model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras"
     },
     "quality_gate": {
       "approved": true,
-      "candidate_model": "tiny_cnn",
+      "candidate_model": "tiny_tcn",
       "candidate_family": "neural_classifier",
-      "model_path": "C:\\Users\\vish8\\OneDrive\\Documentos\\GitHub\\TCC\\artefacts\\models\\tiny_cnn.keras",
-      "model_size_kb": 242.931640625,
+      "model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras",
       "checks": [
         {
           "name": "min_auc_pr",
           "passed": true,
-          "value": 1.0,
+          "value": 0.9415702360285394,
           "rule": ">= 0.8"
         },
         {
           "name": "min_f1",
           "passed": true,
-          "value": 1.0,
+          "value": 0.8885066458170445,
           "rule": ">= 0.7"
         },
         {
           "name": "max_fp_per_hour",
           "passed": true,
-          "value": 0.0,
+          "value": 3.1360099113399666,
           "rule": "<= 10.0"
         },
         {
           "name": "max_val_test_auc_pr_gap",
           "passed": true,
-          "value": 0.0,
+          "value": 0.007900634374858884,
           "rule": "<= 0.08"
-        },
-        {
-          "name": "max_model_size_kb",
-          "passed": true,
-          "value": 242.931640625,
-          "rule": "<= 300.0"
         }
       ],
       "reasons": []

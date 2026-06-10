@@ -51,3 +51,55 @@ stages:
     outs:
       - artefacts/edge:
           cache: false
+
+  evaluate_tflite:
+    cmd: python -m src.export.evaluate_tflite
+    deps:
+      - src/export/evaluate_tflite.py
+      - artefacts/edge
+      - artefacts/reports/candidate_manifest.json
+    metrics:
+      - artefacts/reports/tflite_evaluation.json:
+          cache: false
+
+  promote_model:
+    cmd: python -m src.mlops.promote_model
+    deps:
+      - src/mlops/promote_model.py
+      - artefacts/reports/candidate_manifest.json
+      - config/configs/config.yaml
+    outs:
+      - artefacts/registry/production_manifest.json:
+          cache: false
+    metrics:
+      - artefacts/reports/promotion_report.json:
+          cache: false
+
+  build_ota_manifest:
+    cmd: python -m src.ota.build_ota_manifest
+    deps:
+      - src/ota/build_ota_manifest.py
+      - artefacts/registry/production_manifest.json
+      - artefacts/edge
+    outs:
+      - artefacts/ota/ota_manifest.json:
+          cache: false
+
+  package_and_validate_ota:
+    cmd: python -m src.ota.build_ota_package && python -m src.ota.validate_ota_package
+    deps:
+      - src/ota/build_ota_package.py
+      - src/ota/validate_ota_package.py
+      - artefacts/ota/ota_manifest.json
+    outs:
+      - artefacts/ota/packages:
+          cache: false
+
+  publish_ota:
+    cmd: python -m src.ota.publish_local_release
+    deps:
+      - src/ota/publish_local_release.py
+      - artefacts/ota/packages
+    outs:
+      - artefacts/ota/releases:
+          cache: false

@@ -1,0 +1,25 @@
+# DVC
+.dvc/cache/
+.dvc/tmp/
+
+# Dataset (gerenciado pelo DVC)
+data/processed/
+
+# MLflow
+mlruns/
+
+# Artefato de execucao Windows
+C:/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+
+# Banco de dados locais
+*.db
+
+# Env
+.env

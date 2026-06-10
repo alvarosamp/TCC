@@ -7,7 +7,8 @@ acompanhar o modelo, qual preprocessamento e esperado e como validar a
 integridade do arquivo.
 
 Entrada:
-  artefacts/registry/production_manifest.json
+  artefacts/registry/production_manifest.json  (metadados, metricas, quality gate)
+  artefacts/edge/<model_name>_export_manifest.json  (caminho do .tflite int8)
 
 Saida:
   artefacts/ota/ota_manifest.json
@@ -20,7 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from src.core.settings import ARTEFACTS_DIR
+from src.core.settings import ARTEFACTS_DIR, EDGE_DIR
 
 
 REGISTRY_DIR = ARTEFACTS_DIR / "registry"
@@ -64,19 +65,30 @@ def build_model_version(production: dict[str, Any]) -> str:
     return f"{profile_name}_{model_name}_{date}"
 
 
-def build_ota_manifest(production: dict[str, Any]) -> dict[str, Any]:
-    model_path = Path(production["model_path"])
-    if not model_path.exists():
+def load_export_manifest(model_name: str) -> dict[str, Any]:
+    path = EDGE_DIR / f"{model_name}_export_manifest.json"
+    if not path.exists():
         raise FileNotFoundError(
-            "Modelo de producao nao encontrado. "
-            f"Caminho informado: {model_path}"
+            f"Export manifest nao encontrado: {path}\n"
+            "Rode antes: python -m src.export.export_tflite"
+        )
+    return load_json(path)
+
+
+def build_ota_manifest(production: dict[str, Any], export: dict[str, Any]) -> dict[str, Any]:
+    int8_info = export["exports"]["int8"]
+    artifact_path = Path(int8_info["path"])
+
+    if not artifact_path.exists():
+        raise FileNotFoundError(
+            f"Artefato int8 nao encontrado: {artifact_path}\n"
+            "Rode antes: python -m src.export.export_tflite"
         )
 
     profile = production.get("profile", {})
     embedded = profile.get("embedded", {})
 
-    artifact_sha256 = sha256_file(model_path)
-    artifact_size_bytes = model_path.stat().st_size
+    artifact_sha256 = sha256_file(artifact_path)
     model_version = build_model_version(production)
 
     return {
@@ -101,10 +113,13 @@ def build_ota_manifest(production: dict[str, Any]) -> dict[str, Any]:
             "signature_required_future": True,
         },
         "artifact": {
-            "type": "model_file",
-            "path": str(model_path),
+            "type": "tflite_int8",
+            "path": str(artifact_path),
             "sha256": artifact_sha256,
-            "size_bytes": artifact_size_bytes,
+            "size_bytes": int8_info["size_bytes"],
+            "size_kb": int8_info["size_kb"],
+            "quantization": "int8",
+            "source_model_path": export.get("source_model_path"),
         },
         "model": {
             "name": production.get("model_name"),
@@ -132,17 +147,22 @@ def build_ota_manifest(production: dict[str, Any]) -> dict[str, Any]:
 
 def main() -> None:
     production = load_json(PRODUCTION_MANIFEST)
-    ota_manifest = build_ota_manifest(production)
+    model_name = production.get("model_name")
+    export = load_export_manifest(model_name)
+
+    ota_manifest = build_ota_manifest(production, export)
     save_json(OTA_MANIFEST, ota_manifest)
 
+    int8_info = export["exports"]["int8"]
     print("=" * 80)
     print("MANIFESTO OTA GERADO")
     print("=" * 80)
-    print(f"Modelo:   {ota_manifest['model']['name']}")
-    print(f"Versao:   {ota_manifest['model']['version']}")
-    print(f"Destino:  {ota_manifest['target']['device']}")
-    print(f"SHA-256:  {ota_manifest['artifact']['sha256']}")
-    print(f"Saida:    {OTA_MANIFEST}")
+    print(f"Modelo:       {ota_manifest['model']['name']}")
+    print(f"Versao:       {ota_manifest['model']['version']}")
+    print(f"Destino:      {ota_manifest['target']['device']}")
+    print(f"Artefato:     {int8_info['path']} ({int8_info['size_kb']:.1f} KB)")
+    print(f"SHA-256:      {ota_manifest['artifact']['sha256']}")
+    print(f"Saida:        {OTA_MANIFEST}")
 
 
 if __name__ == "__main__":

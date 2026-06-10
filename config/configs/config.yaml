@@ -39,4 +39,6 @@ quality_gate:
   min_f1: 0.70
   max_fp_per_hour: 10
   max_val_test_auc_pr_gap: 0.08
-  max_model_size_kb: 300
+
+ota:
+  max_tflite_int8_size_kb: 300

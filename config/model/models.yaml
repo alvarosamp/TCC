@@ -19,7 +19,7 @@ selection:
 
 models:
   logistic_regression:
-    enabled: true
+    enabled: false
     family: classical_supervised
     edge_candidate: false
     export_tflite: false
@@ -39,7 +39,7 @@ models:
           log: true
 
   random_forest:
-    enabled: true
+    enabled: false
     family: classical_supervised
     edge_candidate: false
     export_tflite: false
@@ -68,7 +68,7 @@ models:
           high: 5
 
   extra_trees:
-    enabled: true
+    enabled: false
     family: classical_supervised
     edge_candidate: false
     export_tflite: false
@@ -97,7 +97,7 @@ models:
           high: 5
 
   isolation_forest:
-    enabled: true
+    enabled: false
     family: classical_unsupervised
     edge_candidate: false
     export_tflite: false
@@ -123,7 +123,7 @@ models:
   # Mantidos como experimentos. Nos resultados atuais, os autoencoders ficaram
   # bem abaixo dos classificadores supervisionados e geraram muitos falsos positivos.
   dense_autoencoder:
-    enabled: true
+    enabled: false
     family: autoencoder
     edge_candidate: true
     export_tflite: true
