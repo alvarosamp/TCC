@@ -807,6 +807,43 @@ def _metric_row(result: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def load_existing_metrics(reports_dir: Path) -> dict[str, dict[str, Any]]:
+    """Carrega todos os *_metrics.json salvos de runs anteriores."""
+    existing: dict[str, dict[str, Any]] = {}
+    for path in reports_dir.glob("*_metrics.json"):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            model_name = data.get("model_name")
+            if model_name:
+                existing[model_name] = data
+        except Exception:
+            pass
+    return existing
+
+
+def merge_with_existing_metrics(
+    current_results: list[dict[str, Any]],
+    reports_dir: Path,
+) -> list[dict[str, Any]]:
+    """
+    Combina resultados do run atual com modelos treinados anteriormente.
+
+    Modelos do run atual sobrescrevem versoes antigas.
+    Modelos so existentes em disco sao adicionados ao pool de selecao.
+    """
+    existing = load_existing_metrics(reports_dir)
+    current_names = {r["model_name"] for r in current_results}
+
+    merged = list(current_results)
+    for model_name, data in existing.items():
+        if model_name not in current_names:
+            merged.append(data)
+            log.info(f"[registry] carregado do disco: {model_name}")
+
+    return merged
+
+
 def save_comparison_reports(
     results: list[dict[str, Any]],
     best_overall: dict[str, Any],
@@ -1080,8 +1117,10 @@ def main() -> None:
                 f"tempo={elapsed/60:.1f}min"
             )
 
+    all_results = merge_with_existing_metrics(all_results, REPORTS_DIR)
+
     if not all_results:
-        log.error("Nenhum modelo foi treinado. Verifique models.yaml.")
+        log.error("Nenhum modelo disponivel (treino atual + historico). Verifique models.yaml.")
         return
 
     best_overall = select_best_model(all_results, selection_cfg)
@@ -1094,15 +1133,44 @@ def main() -> None:
         selection_cfg=selection_cfg,
     )
 
-    log.info("=" * 80)
-    log.info("MELHOR MODELO GERAL")
-    log.info("=" * 80)
-    log.info(f"  {best_overall['model_name']}  AUC-PR={best_overall['evaluation']['test']['auc_pr']:.4f}")
+    metric = selection_cfg.get("metric", "auc_pr")
+    split = selection_cfg.get("split", "test")
+    reverse = selection_cfg.get("mode", "maximize") == "maximize"
 
-    if best_edge:
-        log.info("MELHOR EDGE CANDIDATE (para TFLite)")
-        log.info(f"  {best_edge['model_name']}  AUC-PR={best_edge['evaluation']['test']['auc_pr']:.4f}")
-    else:
+    ranked = sorted(
+        all_results,
+        key=lambda r: metric_value(r, split, metric),
+        reverse=reverse,
+    )
+    top3 = ranked[:3]
+
+    log.info("=" * 80)
+    log.info("TOP 3 MODELOS")
+    log.info("=" * 80)
+    medals = ["1o", "2o", "3o"]
+    for i, r in enumerate(top3):
+        t = r["evaluation"]["test"]
+        edge_tag = " [EDGE]" if r.get("edge_candidate") else ""
+        log.info(
+            f"  {medals[i]}  {r['model_name']:<22}{edge_tag}"
+            f"  AUC-PR={t['auc_pr']:.4f}"
+            f"  F1={t['f1']:.4f}"
+            f"  FP/h={_fp_per_hour(t, r['profile']) or 0:.2f}"
+        )
+
+    log.info("")
+    log.info("=" * 80)
+    log.info("CANDIDATO SELECIONADO")
+    log.info("=" * 80)
+    candidate = best_edge if best_edge is not None else best_overall
+    t = candidate["evaluation"]["test"]
+    reason = "melhor edge candidate" if best_edge else "melhor geral (sem edge candidate)"
+    log.info(f"  {candidate['model_name']}  ({reason})")
+    log.info(f"  AUC-PR={t['auc_pr']:.4f}  AUC-ROC={t['auc_roc']:.4f}  F1={t['f1']:.4f}")
+    log.info(f"  Precision={t['precision']:.4f}  Recall={t['recall']:.4f}")
+    log.info(f"  Threshold={candidate['evaluation']['threshold_from_val']:.4f}")
+    log.info(f"  Parametros={candidate.get('parameter_count', 'N/A')}")
+    if not best_edge:
         log.warning("Nenhum modelo marcado como edge_candidate=true.")
 
 
