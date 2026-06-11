@@ -45,8 +45,21 @@ class EventCreateRequest(BaseModel):
 
 class EventResponse(BaseModel):
     event_id: str
-    status: str
-    saved: bool
+    received_at_utc: str
+    event_timestamp: str
+    device_id: str
+    model_version: str
+    prediction: PredictionLabel
+    score: float
+    threshold: Optional[float]
+    priority: str
+    window_size: Optional[int]
+    sampling_rate: Optional[float]
+    features: Optional[dict[str, Any]]
+    signal_window: Optional[list[float]]
+    extra: Optional[dict[str, Any]]
+    feedback_status: str
+    human_label: Optional[str]
 
 
 class FeedbackCreateRequest(BaseModel):

@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
-from src.core.settings import PROJECT_ROOT, settings
+from src.core.settings import PROJECT_ROOT
 
 
 SERVER_DATA_DIR = PROJECT_ROOT/'server'/'data'
