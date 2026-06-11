@@ -1,4 +1,4 @@
-﻿# TCC - Pipeline Generico de TinyML para Series Temporais Complexas
+# TCC - Pipeline Generico de TinyML para Series Temporais Complexas
 
 Este repositorio organiza o projeto de TCC para deteccao de anomalias em series temporais complexas, com foco em uma aplicacao TinyML executavel em microcontroladores. O primeiro dominio de validacao e sismico, mas a arquitetura foi pensada para ser reutilizada em outros sensores, como vibracao industrial, corrente eletrica, audio, telemetria ou sinais de manutencao preditiva.
 
@@ -25,7 +25,18 @@ raw data
   -> comparacao por metrica principal
   -> candidate_manifest.json
   -> exportacao TFLite / C header
-  -> validacao no ESP32
+  -> promote_model -> production_manifest.json
+  -> build_ota_manifest -> ota_manifest.json
+  -> package_and_validate_ota
+  -> publish_ota -> releases/latest.json
+
+  ESP32 (PlatformIO)
+    -> GET /ota/latest  -> detecta nova versao
+    -> POST /events     -> envia resultado de inferencia
+    -> POST /devices/status -> heartbeat com metricas de hardware
+
+  Servidor FastAPI (server/)
+    -> armazena eventos, dispositivos, feedback e relatorios OTA
 ```
 
 O ponto mais importante e que o nucleo do pipeline nao depende de sismologia. O dado sismico entra por um adapter especifico; depois disso, o treinamento recebe apenas matrizes `X` e rotulos `y`.
@@ -78,6 +89,21 @@ src/
   training/      # treinamento, Optuna, avaliacao e selecao
   export/        # exportacao TFLite e header C/C++
   mlops/         # quality gate, promocao e manifestos
+  ota/           # build, validacao e publicacao local de pacotes OTA
+
+server/
+  app/
+    main.py      # FastAPI app (rotas, health)
+    routes/      # devices, events, feedback, ota
+    schemas.py   # Pydantic models de request/response
+    storage.py   # helpers de leitura/escrita JSON
+
+PlatformIO/
+  Projects/TCC/
+    src/main.cpp # firmware ESP32 (WiFi, eventos, OTA, heartbeat)
+    include/
+      config.h   # constantes de hardware (DEVICE_ID, intervalos, threshold)
+      secrets.h  # credenciais WiFi e URL do servidor (nao versionado)
 
 config/          # configuracoes do pipeline e modelos
 profiles/        # perfis de dominio/dataset
@@ -85,6 +111,59 @@ scripts/         # scripts utilitarios
 docs/            # documentacao tecnica e resultados
 artefacts/       # saidas locais do pipeline, nao deve receber datasets pesados
 ```
+
+## Servidor FastAPI
+
+O servidor centraliza os dados enviados pelo ESP32 e expoe o manifesto OTA.
+
+Rodar o servidor:
+
+```bash
+uvicorn server.app.main:app --reload
+```
+
+Endpoints disponíveis:
+
+| Metodo | Endpoint | Descricao |
+|---|---|---|
+| GET | `/` | Status do servidor |
+| GET | `/health` | Health check |
+| POST | `/devices/register` | Registra um dispositivo |
+| POST | `/devices/status` | Atualiza heartbeat e metricas de hardware |
+| GET | `/devices` | Lista dispositivos registrados |
+| POST | `/events/` | Recebe evento de inferencia do ESP32 |
+| GET | `/events/` | Lista eventos (filtro por `status`) |
+| GET | `/events/{event_id}` | Detalhe de um evento |
+| POST | `/feedback` | Rotulo humano para um evento |
+| GET | `/feedback` | Lista feedbacks registrados |
+| GET | `/ota/latest` | Retorna o manifesto da release OTA mais recente |
+| GET | `/ota/artifact` | Download do `.tflite` mais recente |
+| POST | `/ota/report` | ESP32 reporta resultado da atualizacao OTA |
+
+Cada evento recebe automaticamente uma prioridade (`high_anomaly`, `uncertain`, `high_normal`, `low_priority`) com base no score e na predicao do modelo.
+
+## Firmware ESP32 (PlatformIO)
+
+O firmware foi desenvolvido com PlatformIO para `esp32doit-devkit-v1`. Funcionalidades implementadas:
+
+- Conexao WiFi com reconexao automatica.
+- Registro do dispositivo no servidor (`/devices/register`) no boot.
+- Heartbeat periodico com metricas de hardware: heap livre, RSSI, frequencia de CPU, versao de firmware (`/devices/status`).
+- Consulta periodica ao manifesto OTA (`/ota/latest`) com deteccao de nova versao e reporte do resultado (`/ota/report`).
+- Envio periodico de eventos de inferencia (`/events`) com score, predicao, threshold e features simuladas.
+
+Estado atual da inferencia: **simulada**. A funcao `simulateTinyMLScore()` gera um score aleatorio. A substituicao por inferencia real com TensorFlow Lite Micro e o proximo passo.
+
+Parametros configurados em `config.h`:
+
+| Parametro | Valor |
+|---|---|
+| `WINDOW_SIZE` | 800 amostras |
+| `SAMPLING_RATE` | 40 Hz |
+| `MODEL_THRESHOLD` | 0.5 |
+| `EVENT_INTERVAL_MS` | 10 s |
+| `STATUS_INTERVAL_MS` | 10 s |
+| `OTA_CHECK_INTERVAL_MS` | 60 s |
 
 ## Modelos Comparados
 
@@ -126,7 +205,7 @@ Resultados consolidados. Modelos v4 rodados em `D:\PipelineGenerico\data` em 202
 | Optuna Extra Trees v4 | 0.7901 | 0.7102 | 0.7589 | 0.6675 | 11.296 | - | Nao |
 | STA/LTA v4 | 0.1662 | 0.2760 | 0.1773 | 0.6230 | - | - | Nao |
 
-O melhor candidato para TinyML e o `Optuna Tiny TCN v4-2`: maior AUC-PR (0.9416), menor FP/h (3.136) e apenas 14.897 parametros. O modelo foi promovido pelo quality gate e empacotado no pipeline OTA.
+O melhor candidato para TinyML e o `Optuna Tiny TCN v4-2`: maior AUC-PR (0.9416), menor FP/h (3.136) e apenas 14.897 parametros. O modelo foi promovido pelo quality gate, exportado para `.tflite` e empacotado no pipeline OTA (`seismic_edge_v1_tiny_tcn_20260610`).
 
 ## Interpretabilidade
 
@@ -152,7 +231,7 @@ Ferramentas usadas ou previstas:
 - Manifestos JSON: registro de datasets, modelos, metricas e candidatos.
 - Quality gate: criterio minimo antes de promover modelo.
 - Drift monitoring: etapa futura para decidir retreinamento.
-- OTA: etapa futura para atualizar o firmware/modelo embarcado com seguranca.
+- OTA: manifesto local publicado; download real pelo ESP32 ainda nao implementado.
 
 ## Como Executar
 
@@ -180,6 +259,12 @@ Abrir MLflow:
 mlflow ui --backend-store-uri sqlite:///artefacts/mlruns/mlflow.db
 ```
 
+Subir o servidor FastAPI:
+
+```bash
+uvicorn server.app.main:app --reload
+```
+
 ## Artefatos Pesados
 
 Datasets, modelos grandes e runs completos nao devem ser versionados no Git. Exemplos que devem ficar fora do repositorio:
@@ -198,11 +283,11 @@ O repositorio deve guardar codigo, configuracoes, documentacao e relatorios leve
 
 ## Proximos Passos
 
-1. **[ATUAL] Validar no ESP32** com `preprocessing.h` equivalente ao pipeline de treino (detrend, taper, bandpass, zscore).
-2. Substituir artefato OTA de `.keras` para `.tflite` / header `.h` gerado para TensorFlow Lite Micro.
+1. **[ATUAL] Substituir inferencia simulada no ESP32** pela chamada real ao TensorFlow Lite Micro: coletar janela do sensor, executar preprocessamento (`detrend`, `taper`, `bandpass`, `zscore`) e rodar o modelo `.tflite`.
+2. Implementar download do `.tflite` via `/ota/artifact` no firmware e aplicar o modelo sem reflash completo.
 3. Medir latencia de inferencia e consumo de memoria no ESP32 (RAM, flash).
 4. Comparar decisao embarcada com resultado do pipeline offline.
-5. Implementar monitoramento de drift.
+5. Implementar monitoramento de drift usando o feedback humano acumulado no servidor.
 6. Evoluir OTA para manifesto assinado e particao separada de modelo.
 
 ## Tese Tecnica Do Projeto
