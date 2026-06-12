@@ -1,0 +1,1 @@
+usbipd attach --wsl --busid 1-3 -> Rodar no powershell adm p wsl ver a porta

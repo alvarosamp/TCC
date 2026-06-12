@@ -5,7 +5,7 @@
 #include "secrets.h"
 #include "config.h"
 
-String currentModelVersion = 'unknown';
+String currentModelVersion = "unknown";
 unsigned long lastEventTime = 0;
 unsigned long lastStatusTime = 0;
 unsigned long lastOtaCheckTime = 0;
@@ -13,12 +13,11 @@ unsigned long lastOtaCheckTime = 0;
 bool wifiConnected(){
   return WiFi.status() == WL_CONNECTED;
 }
-
-void connectWifi(){
-  Serial.println('Conectando ao wifi');
-  Serial.print('SSID: ');
+void connectWiFi() {
+  Serial.println("Conectando ao wifi");
+  Serial.print("SSID: ");
   Serial.println(WIFI_SSID);
-  Wifi.mode(WIFI_STA);
+  WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   int attempts = 0;
 
@@ -30,34 +29,37 @@ void connectWifi(){
   Serial.println();
 
   if (wifiConnected()){
-    Serial.println('Conectado ao wifi');
-    Serial.print('IP: ');
+    Serial.println("Conectado ao wifi");
+    Serial.print("IP: ");
     Serial.println(WiFi.localIP());
-    Serial.println('RSSI: ' + String(WiFi.RSSI()));
+    Serial.println("RSSI: " + String(WiFi.RSSI()));
   } else {
-    Serial.println('Falha ao conectar ao wifi');
+    Serial.println("Falha ao conectar ao wifi");
   }
 }
 
-bool postJson(const String& endpoint, const String& payload, String* responseBody = nullptr){
-  if(!wifiConnected()){
-    Serial.println('Wifi desconectado. POST cancelado');
-    return false;
-  }
-  HTTPClient http;
-  String url = String(SERVER_URL) + endpoint;
-  Serial.println();
-  Serial.println('POST ' + url);
-  Serial.println('Payload: ' + payload);
+bool postJson(const String& endpoint, const String& payload, String* responseBody = nullptr) {
+    if (!wifiConnected()) {
+        Serial.println("Wifi desconectado. POST cancelado");
+        return false;
+    }
 
-  http.begin(url);
-  http.addHeader('Content-Type', 'application/json');
+    HTTPClient http;
+    String url = String(SERVER_URL) + endpoint;
 
-  int httpCode = http.POST(payload);
-  Serial.println('HTTP Code: ' + String(httpCode));
+    Serial.println();
+    Serial.println("POST " + url);
+    Serial.println("Payload: " + payload);
+
+    http.begin(url);
+    http.addHeader("Content-Type", "application/json");
+
+    int httpCode = http.POST(payload);
+
+    Serial.println("HTTP Code: " + String(httpCode));
+
     if (httpCode > 0) {
         String response = http.getString();
-
         Serial.println("Resposta:");
         Serial.println(response);
 
@@ -68,12 +70,14 @@ bool postJson(const String& endpoint, const String& payload, String* responseBod
         Serial.print("Erro no POST: ");
         Serial.println(http.errorToString(httpCode));
     }
+
     http.end();
+
     return httpCode >= 200 && httpCode < 300;
 }
 bool getJson(const String& endpoint, String& responseBody) {
     if (!wifiConnected()) {
-        Serial.println("Wi-Fi desconectado. GET cancelado.");
+        Serial.println("Wifi desconectado. GET cancelado");
         return false;
     }
 
@@ -81,19 +85,16 @@ bool getJson(const String& endpoint, String& responseBody) {
     String url = String(SERVER_URL) + endpoint;
 
     Serial.println();
-    Serial.print("GET ");
-    Serial.println(url);
+    Serial.println("GET " + url);
 
     http.begin(url);
 
     int httpCode = http.GET();
 
-    Serial.print("HTTP code: ");
-    Serial.println(httpCode);
+    Serial.println("HTTP Code: " + String(httpCode));
 
     if (httpCode > 0) {
         responseBody = http.getString();
-
         Serial.println("Resposta:");
         Serial.println(responseBody);
     } else {
