@@ -1,25 +1,27 @@
-# DVC
-.dvc/cache/
-.dvc/tmp/
+﻿# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
 
-# Dataset (gerenciado pelo DVC)
-data/processed/
-
-# MLflow
+# Local datasets and generated artifacts
+data/
+artefacts/
 mlruns/
 
-# Artefato de execucao Windows
-C:/
+# Heavy ML artifacts anywhere
+*.npz
+*.joblib
+*.keras
+*.h5
+*.tflite
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-.pytest_cache/
-*.egg-info/
+# DVC local cache/state is not ignored entirely because .dvc config may be tracked
+.dvc/tmp/
+.dvc/cache/
 
-# Banco de dados locais
-*.db
-
-# Env
-.env
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

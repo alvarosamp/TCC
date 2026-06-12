@@ -1,3 +1,0 @@
-battery_level,chip_model,cpu_freq_mhz,device_id,device_type,firmware_version,flash_size_mb,free_memory_kb,last_seen_at_utc,last_status_id,location,model_version,registered_at_utc,sdk_version,signal_quality,status,wifi_ip
-100.0,ESP32-D0WD-V3,240,esp32_001,esp32,1.0.0,4,238.328125,2026-06-12T01:13:08.681641+00:00,,teste_laboratorio,seismic_edge_v1_tiny_tcn_20260610,2026-06-12T01:11:58.190163+00:00,v4.4.7-dirty,-36.0,registered,192.168.0.100
-100.0,ESP8266,80,esp8266_001,esp8266,fw_1.0.0,4,45.7109375,2026-06-12T14:45:23.632763+00:00,dst_37f0f149bf8e,teste_laboratorio,unknown,2026-06-12T14:24:18.872802+00:00,2.2.2-dev(38a443e),-67.0,registered,192.168.66.70
