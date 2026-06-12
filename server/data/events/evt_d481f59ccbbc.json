@@ -1,0 +1,29 @@
+{
+  "event_id": "evt_d481f59ccbbc",
+  "received_at_utc": "2026-06-12T01:12:19.401250+00:00",
+  "event_timestamp": "2026-06-12T01:12:19.401237+00:00",
+  "device_id": "esp32_001",
+  "model_version": "seismic_edge_v1_tiny_tcn_20260610",
+  "prediction": "anomaly",
+  "score": 0.850000024,
+  "threshold": 0.5,
+  "priority": "high_anomaly",
+  "window_size": 800,
+  "sampling_rate": 40.0,
+  "features": {
+    "mean": 0.135000005,
+    "std": 0.616999984,
+    "max": 0.887000024,
+    "min": -3.572000027,
+    "free_heap_kb": 240.140625,
+    "rssi": -36
+  },
+  "signal_window": null,
+  "extra": {
+    "source": "esp32_platformio_physical_test",
+    "firmware_version": "1.0.0",
+    "tinyml_mode": "simulated_inference"
+  },
+  "feedback_status": "pending_review",
+  "human_label": null
+}

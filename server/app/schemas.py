@@ -25,7 +25,7 @@ class DeviceStatusRequest(BaseModel):
     firmware_version: Optional[str] = None
     model_version: Optional[str] = None
     battery_level: Optional[float] = None
-    free_memory_kb: Optional[int] = None
+    free_memory_kb: Optional[float] = None
     signal_quality: Optional[float] = None
     extra: Optional[dict[str, Any]] = None
     

@@ -5,7 +5,8 @@ from server.app.routes import ota,events,feedback, devices
 app = FastAPI(
     title = 'TCC API',
     description ='Servidor para o ota',
-    version = '1.0.0'
+    version = '1.0.0',
+    redirect_slashes=False,
 )
 
 app.include_router(ota.router, prefix='/ota', tags=['OTA'])

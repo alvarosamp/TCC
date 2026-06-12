@@ -19,17 +19,22 @@ def infer_priority(score: float, prediction: str) -> str:
     return "low_priority"
 
 
-@router.post("/", response_model=EventResponse)
+@router.post("", response_model=EventResponse)
+@router.post("/", response_model=EventResponse, include_in_schema=False)
 def create_event(payload: EventCreateRequest):
     event_id = generate_id('evt')
     event_timestamp = payload.timestamp
     if event_timestamp is None:
-        event_timestamp = datetime.now(timezone.utc).isoformat()
-        
+        event_timestamp_str = datetime.now(timezone.utc).isoformat()
+    elif isinstance(event_timestamp, str):
+        event_timestamp_str = event_timestamp
+    else:
+        event_timestamp_str = event_timestamp.isoformat()
+
     event = {
         "event_id": event_id,
         "received_at_utc": utc_now_iso(),
-        "event_timestamp": event_timestamp.isoformat(),
+        "event_timestamp": event_timestamp_str,
         "device_id": payload.device_id,
         "model_version": payload.model_version,
         "prediction": payload.prediction,

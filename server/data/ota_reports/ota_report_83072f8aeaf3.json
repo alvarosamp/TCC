@@ -1,0 +1,9 @@
+{
+  "report_id": "ota_report_83072f8aeaf3",
+  "received_at_utc": "2026-06-12T01:11:58.417624+00:00",
+  "device_id": "esp32_001",
+  "previous_model_version": "unknown",
+  "new_model_version": "seismic_edge_v1_tiny_tcn_20260610",
+  "status": "success",
+  "message": "Manifesto OTA consultado com sucesso. Download real ainda nao aplicado neste MVP."
+}
