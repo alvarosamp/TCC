@@ -103,3 +103,15 @@ stages:
     outs:
       - artefacts/ota/releases:
           cache: false
+
+  prepare_feedback_dataset:
+    cmd: python -m src.feedback.prepare_feedback_dataset
+    deps:
+      - src/feedback/build_feedback_dataset.py
+      - server/data/events
+      - server/data/feedback
+    outs:
+      - data/processed/feedback_dataset.npz
+    metrics:
+      - artefacts/reports/feedback_dataset_report.json:
+          cache: false

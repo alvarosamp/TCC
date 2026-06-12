@@ -1,9 +1,10 @@
 #pragma once
 
-#define DEVICE_ID "esp32_001"
-#define DEVICE_TYPE "esp32"
+#define DEVICE_ID "esp8266_001"
+#define DEVICE_TYPE "esp8266"
 #define DEVICE_LOCATION "teste_laboratorio"
-#define FIRMWARE_VERSION "1.0.0"
+
+#define FIRMWARE_VERSION "fw_1.0.0"
 
 #define EVENT_INTERVAL_MS 10000
 #define STATUS_INTERVAL_MS 10000

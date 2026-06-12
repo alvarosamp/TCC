@@ -1,0 +1,17 @@
+{
+  "status_id": "dst_f05fb8885126",
+  "received_at_utc": "2026-06-12T14:58:50.348568+00:00",
+  "device_id": "esp8266_001",
+  "firmware_version": "fw_1.0.0",
+  "model_version": "seismic_edge_v1_tiny_tcn_20260610",
+  "battery_level": 100.0,
+  "free_memory_kb": 45.6953125,
+  "signal_quality": -64.0,
+  "extra": {
+    "wifi_ip": "192.168.66.70",
+    "chip_model": "ESP8266",
+    "cpu_freq_mhz": 80,
+    "flash_size_mb": 4,
+    "sdk_version": "2.2.2-dev(38a443e)"
+  }
+}

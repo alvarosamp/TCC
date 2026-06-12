@@ -6,10 +6,10 @@
   "firmware_version": "1.0.0",
   "model_version": "seismic_edge_v1_tiny_tcn_20260610",
   "status": "registered",
-  "last_seen_at_utc": "2026-06-12T01:12:28.934787+00:00",
+  "last_seen_at_utc": "2026-06-12T01:13:08.681641+00:00",
   "battery_level": 100.0,
-  "free_memory_kb": 240.078125,
-  "signal_quality": -41.0,
+  "free_memory_kb": 238.328125,
+  "signal_quality": -36.0,
   "extra": {
     "wifi_ip": "192.168.0.100",
     "chip_model": "ESP32-D0WD-V3",

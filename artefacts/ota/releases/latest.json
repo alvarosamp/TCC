@@ -11,7 +11,7 @@
     "parameter_count": 14897
   },
   "target": {
-    "device": "esp32",
+    "device": "esp8266",
     "runtime": "tensorflow_lite_micro"
   },
   "artifact": {
@@ -24,7 +24,7 @@
   },
   "notes": [
     "Publicacao local para simular repositorio OTA.",
-    "Ainda nao ha servidor HTTP nem download pelo ESP32.",
+    "Ainda nao ha servidor HTTP nem download pelo ESP8266.",
     "No OTA real, latest.json seria exposto por um endpoint ou storage."
   ]
 }

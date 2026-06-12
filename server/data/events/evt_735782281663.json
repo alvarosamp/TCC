@@ -1,0 +1,29 @@
+{
+  "event_id": "evt_735782281663",
+  "received_at_utc": "2026-06-12T14:49:14.339335+00:00",
+  "event_timestamp": "2026-06-12T14:49:14.339325+00:00",
+  "device_id": "esp8266_001",
+  "model_version": "unknown",
+  "prediction": "anomaly",
+  "score": 0.871999979,
+  "threshold": 0.5,
+  "priority": "high_anomaly",
+  "window_size": 800,
+  "sampling_rate": 40.0,
+  "features": {
+    "mean": -0.150000006,
+    "std": 0.736999989,
+    "max": 2.937000036,
+    "min": -1.789000034,
+    "free_heap_kb": 45.7109375,
+    "rssi": -69
+  },
+  "signal_window": null,
+  "extra": {
+    "source": "esp8266_platformio_physical_test",
+    "firmware_version": "fw_1.0.0",
+    "tinyml_mode": "simulated_inference"
+  },
+  "feedback_status": "pending_review",
+  "human_label": null
+}

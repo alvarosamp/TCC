@@ -1,0 +1,29 @@
+{
+  "event_id": "evt_3daa53c32e93",
+  "received_at_utc": "2026-06-12T14:57:10.352964+00:00",
+  "event_timestamp": "2026-06-12T14:57:10.352951+00:00",
+  "device_id": "esp8266_001",
+  "model_version": "seismic_edge_v1_tiny_tcn_20260610",
+  "prediction": "uncertain",
+  "score": 0.437000006,
+  "threshold": 0.5,
+  "priority": "uncertain",
+  "window_size": 800,
+  "sampling_rate": 40.0,
+  "features": {
+    "mean": -0.179000005,
+    "std": 1.819000006,
+    "max": 2.931999922,
+    "min": -3.34100008,
+    "free_heap_kb": 46.09375,
+    "rssi": -65
+  },
+  "signal_window": null,
+  "extra": {
+    "source": "esp8266_platformio_physical_test",
+    "firmware_version": "fw_1.0.0",
+    "tinyml_mode": "simulated_inference"
+  },
+  "feedback_status": "pending_review",
+  "human_label": null
+}

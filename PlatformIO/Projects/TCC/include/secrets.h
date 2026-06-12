@@ -2,8 +2,8 @@
 
 #pragma once
 
-#define WIFI_SSID "tudolento_2.4GHz"
-#define WIFI_PASSWORD "244466666"
+#define WIFI_SSID "CSI-Lab"
+#define WIFI_PASSWORD "In@teLCS&I"
 
 //Ip do computador
-#define SERVER_URL "http://192.168.0.103:8000"
+#define SERVER_URL "http://192.168.66.64:8000"

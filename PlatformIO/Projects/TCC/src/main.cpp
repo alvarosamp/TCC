@@ -1,70 +1,114 @@
+//<|include <Arduino.h>
+//#include <WiFi.h>
+//#include <HTTPClient.h>
+//#include <ArduinoJson.h>
+//#include "secrets.h"
+//#include "config.h"
 #include <Arduino.h>
-#include <WiFi.h>
-#include <HTTPClient.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
-#include "secrets.h"
+
 #include "config.h"
+#include "secrets.h"
 
 String currentModelVersion = "unknown";
+
 unsigned long lastEventTime = 0;
 unsigned long lastStatusTime = 0;
 unsigned long lastOtaCheckTime = 0;
 
-bool wifiConnected(){
-  return WiFi.status() == WL_CONNECTED;
+bool wifiConnected() {
+    return WiFi.status() == WL_CONNECTED;
 }
+
+void printFreeHeap(const String& label) {
+    Serial.print("[HEAP] ");
+    Serial.print(label);
+    Serial.print(": ");
+    Serial.print(ESP.getFreeHeap());
+    Serial.println(" bytes");
+}
+
 void connectWiFi() {
-  Serial.println("Conectando ao wifi");
-  Serial.print("SSID: ");
-  Serial.println(WIFI_SSID);
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  int attempts = 0;
+    Serial.println();
+    Serial.println("Conectando ao Wi-Fi");
+    Serial.print("SSID: ");
+    Serial.println(WIFI_SSID);
 
-  while (!wifiConnected() && attempts < 40){
-    delay(500);
-    Serial.print('.');
-    attempts++;
-  }
-  Serial.println();
+    WiFi.mode(WIFI_STA);
+    WiFi.persistent(false);
+    WiFi.setAutoReconnect(true);
 
-  if (wifiConnected()){
-    Serial.println("Conectado ao wifi");
-    Serial.print("IP: ");
-    Serial.println(WiFi.localIP());
-    Serial.println("RSSI: " + String(WiFi.RSSI()));
-  } else {
-    Serial.println("Falha ao conectar ao wifi");
-  }
+    if (WiFi.status() != WL_CONNECTED) {
+        WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    }
+
+    int attempts = 0;
+
+    while (!wifiConnected() && attempts < 40) {
+        delay(500);
+        Serial.print(".");
+        yield();
+        attempts++;
+    }
+
+    Serial.println();
+
+    if (wifiConnected()) {
+        Serial.println("Conectado ao Wi-Fi");
+        Serial.print("IP: ");
+        Serial.println(WiFi.localIP());
+        Serial.print("RSSI: ");
+        Serial.println(WiFi.RSSI());
+    } else {
+        Serial.println("Falha ao conectar ao Wi-Fi");
+        Serial.print("WiFi.status(): ");
+        Serial.println(WiFi.status());
+    }
+
+    printFreeHeap("Depois do Wi-Fi");
 }
 
 bool postJson(const String& endpoint, const String& payload, String* responseBody = nullptr) {
     if (!wifiConnected()) {
-        Serial.println("Wifi desconectado. POST cancelado");
+        Serial.println("Wi-Fi desconectado. POST cancelado.");
         return false;
     }
 
+    printFreeHeap("Antes do POST " + endpoint);
+
+    WiFiClient client;
     HTTPClient http;
+
     String url = String(SERVER_URL) + endpoint;
 
     Serial.println();
     Serial.println("POST " + url);
     Serial.println("Payload: " + payload);
 
-    http.begin(url);
+    if (!http.begin(client, url)) {
+        Serial.println("Falha ao iniciar HTTPClient no POST.");
+        return false;
+    }
+
+    http.setTimeout(5000);
+    http.setReuse(false);
     http.addHeader("Content-Type", "application/json");
+    http.addHeader("Connection", "close");
 
     int httpCode = http.POST(payload);
 
     Serial.println("HTTP Code: " + String(httpCode));
 
     if (httpCode > 0) {
-        String response = http.getString();
-        Serial.println("Resposta:");
-        Serial.println(response);
-
         if (responseBody != nullptr) {
-            *responseBody = response;
+            *responseBody = http.getString();
+
+            Serial.println("Resposta:");
+            Serial.println(*responseBody);
+        } else {
+            Serial.println("POST enviado com sucesso. Resposta ignorada para economizar memoria.");
         }
     } else {
         Serial.print("Erro no POST: ");
@@ -72,22 +116,40 @@ bool postJson(const String& endpoint, const String& payload, String* responseBod
     }
 
     http.end();
+    client.stop();
+
+    yield();
+    delay(100);
+
+    printFreeHeap("Depois do POST " + endpoint);
 
     return httpCode >= 200 && httpCode < 300;
 }
+
 bool getJson(const String& endpoint, String& responseBody) {
     if (!wifiConnected()) {
-        Serial.println("Wifi desconectado. GET cancelado");
+        Serial.println("Wi-Fi desconectado. GET cancelado.");
         return false;
     }
 
+    printFreeHeap("Antes do GET " + endpoint);
+
+    WiFiClient client;
     HTTPClient http;
+
     String url = String(SERVER_URL) + endpoint;
 
     Serial.println();
     Serial.println("GET " + url);
 
-    http.begin(url);
+    if (!http.begin(client, url)) {
+        Serial.println("Falha ao iniciar HTTPClient no GET.");
+        return false;
+    }
+
+    http.setTimeout(5000);
+    http.setReuse(false);
+    http.addHeader("Connection", "close");
 
     int httpCode = http.GET();
 
@@ -95,6 +157,7 @@ bool getJson(const String& endpoint, String& responseBody) {
 
     if (httpCode > 0) {
         responseBody = http.getString();
+
         Serial.println("Resposta:");
         Serial.println(responseBody);
     } else {
@@ -103,12 +166,22 @@ bool getJson(const String& endpoint, String& responseBody) {
     }
 
     http.end();
+    client.stop();
+
+    yield();
+    delay(100);
+
+    printFreeHeap("Depois do GET " + endpoint);
 
     return httpCode >= 200 && httpCode < 300;
 }
 
 void registerDevice() {
-    StaticJsonDocument<512> doc;
+    Serial.println();
+    Serial.println("[ETAPA] registerDevice - inicio");
+    printFreeHeap("Antes de montar JSON registerDevice");
+
+    StaticJsonDocument<384> doc;
 
     doc["device_id"] = DEVICE_ID;
     doc["device_type"] = DEVICE_TYPE;
@@ -117,13 +190,27 @@ void registerDevice() {
     doc["model_version"] = currentModelVersion;
 
     String payload;
+    payload.reserve(256);
     serializeJson(doc, payload);
 
-    postJson("/devices/register", payload);
+    bool ok = postJson("/devices/register", payload);
+
+    if (ok) {
+        Serial.println("[ETAPA] registerDevice - sucesso");
+    } else {
+        Serial.println("[ETAPA] registerDevice - falhou");
+    }
+
+    printFreeHeap("Depois de registerDevice");
+    Serial.println("[ETAPA] registerDevice - fim");
 }
 
 void sendDeviceStatus() {
-    StaticJsonDocument<768> doc;
+    Serial.println();
+    Serial.println("[ETAPA] sendDeviceStatus - inicio");
+    printFreeHeap("Antes de montar JSON sendDeviceStatus");
+
+    StaticJsonDocument<640> doc;
 
     doc["device_id"] = DEVICE_ID;
     doc["firmware_version"] = FIRMWARE_VERSION;
@@ -134,15 +221,25 @@ void sendDeviceStatus() {
 
     JsonObject extra = doc.createNestedObject("extra");
     extra["wifi_ip"] = WiFi.localIP().toString();
-    extra["chip_model"] = ESP.getChipModel();
+    extra["chip_model"] = "ESP8266";
     extra["cpu_freq_mhz"] = ESP.getCpuFreqMHz();
-    extra["flash_size_mb"] = ESP.getFlashChipSize() / (1024 * 1024);
+    extra["flash_size_mb"] = ESP.getFlashChipRealSize() / (1024 * 1024);
     extra["sdk_version"] = ESP.getSdkVersion();
 
     String payload;
+    payload.reserve(512);
     serializeJson(doc, payload);
 
-    postJson("/devices/status", payload);
+    bool ok = postJson("/devices/status", payload);
+
+    if (ok) {
+        Serial.println("[ETAPA] sendDeviceStatus - sucesso");
+    } else {
+        Serial.println("[ETAPA] sendDeviceStatus - falhou");
+    }
+
+    printFreeHeap("Depois de sendDeviceStatus");
+    Serial.println("[ETAPA] sendDeviceStatus - fim");
 }
 
 void sendOtaReport(
@@ -151,6 +248,9 @@ void sendOtaReport(
     const String& status,
     const String& message
 ) {
+    Serial.println();
+    Serial.println("[ETAPA] sendOtaReport - inicio");
+
     StaticJsonDocument<512> doc;
 
     doc["device_id"] = DEVICE_ID;
@@ -160,27 +260,60 @@ void sendOtaReport(
     doc["message"] = message;
 
     String payload;
+    payload.reserve(512);
     serializeJson(doc, payload);
 
-    postJson("/ota/report", payload);
+    bool ok = postJson("/ota/report", payload);
+
+    if (ok) {
+        Serial.println("[ETAPA] sendOtaReport - sucesso");
+    } else {
+        Serial.println("[ETAPA] sendOtaReport - falhou");
+    }
+
+    Serial.println("[ETAPA] sendOtaReport - fim");
 }
+
 void checkOtaLatest() {
+    Serial.println();
+    Serial.println("[ETAPA] checkOtaLatest - inicio");
+    printFreeHeap("Antes de consultar OTA");
+
     String response;
+    response.reserve(2048);
 
     bool ok = getJson("/ota/latest", response);
 
     if (!ok) {
         Serial.println("Nao foi possivel consultar /ota/latest.");
+        Serial.println("[ETAPA] checkOtaLatest - fim com erro HTTP");
         return;
     }
 
-    StaticJsonDocument<4096> doc;
+    Serial.print("Tamanho da resposta OTA: ");
+    Serial.println(response.length());
+
+    if (response.length() == 0) {
+        Serial.println("Resposta OTA vazia.");
+        Serial.println("[ETAPA] checkOtaLatest - fim resposta vazia");
+        return;
+    }
+
+    if (response.length() > 1800) {
+        Serial.println("Resposta OTA muito grande para o buffer atual.");
+        Serial.println("Aumente o DynamicJsonDocument ou reduza o manifesto no servidor.");
+        Serial.println("[ETAPA] checkOtaLatest - fim resposta grande");
+        return;
+    }
+
+    DynamicJsonDocument doc(2048);
 
     DeserializationError error = deserializeJson(doc, response);
 
     if (error) {
         Serial.print("Erro ao interpretar JSON do OTA: ");
         Serial.println(error.c_str());
+        Serial.println("[ETAPA] checkOtaLatest - fim erro JSON");
         return;
     }
 
@@ -201,7 +334,8 @@ void checkOtaLatest() {
     Serial.println(artifactSha);
 
     if (String(targetDevice) != DEVICE_TYPE) {
-        Serial.println("Manifesto OTA ignorado: target incompatível.");
+        Serial.println("Manifesto OTA ignorado: target incompativel.");
+        Serial.println("[ETAPA] checkOtaLatest - fim target incompativel");
         return;
     }
 
@@ -210,6 +344,9 @@ void checkOtaLatest() {
 
         String previousVersion = currentModelVersion;
         currentModelVersion = String(newVersion);
+
+        delay(500);
+        yield();
 
         sendOtaReport(
             previousVersion,
@@ -220,19 +357,12 @@ void checkOtaLatest() {
     } else {
         Serial.println("Modelo ja esta atualizado.");
     }
+
+    printFreeHeap("Depois de checkOtaLatest");
+    Serial.println("[ETAPA] checkOtaLatest - fim");
 }
 
 float simulateTinyMLScore() {
-    /*
-      Aqui ainda estamos simulando a inferencia.
-
-      Depois voce troca esta funcao por:
-      1. coleta da janela temporal
-      2. preprocessamento
-      3. chamada do TensorFlow Lite Micro
-      4. retorno do score real do modelo
-    */
-
     return random(0, 1000) / 1000.0f;
 }
 
@@ -258,10 +388,14 @@ void fillSimulatedFeatures(JsonObject features) {
 }
 
 void sendInferenceEvent() {
+    Serial.println();
+    Serial.println("[ETAPA] sendInferenceEvent - inicio");
+    printFreeHeap("Antes de montar JSON sendInferenceEvent");
+
     float score = simulateTinyMLScore();
     String prediction = classifyPrediction(score);
 
-    StaticJsonDocument<1024> doc;
+    StaticJsonDocument<768> doc;
 
     doc["device_id"] = DEVICE_ID;
     doc["model_version"] = currentModelVersion;
@@ -275,38 +409,73 @@ void sendInferenceEvent() {
     fillSimulatedFeatures(features);
 
     JsonObject extra = doc.createNestedObject("extra");
-    extra["source"] = "esp32_platformio_physical_test";
+    extra["source"] = "esp8266_platformio_physical_test";
     extra["firmware_version"] = FIRMWARE_VERSION;
     extra["tinyml_mode"] = "simulated_inference";
 
     String payload;
+    payload.reserve(768);
     serializeJson(doc, payload);
 
-    postJson("/events", payload);
+    bool ok = postJson("/events", payload);
+
+    if (ok) {
+        Serial.println("[ETAPA] sendInferenceEvent - sucesso");
+    } else {
+        Serial.println("[ETAPA] sendInferenceEvent - falhou");
+    }
+
+    printFreeHeap("Depois de sendInferenceEvent");
+    Serial.println("[ETAPA] sendInferenceEvent - fim");
 }
 
 void setup() {
     Serial.begin(115200);
     delay(1000);
 
-    randomSeed(analogRead(0));
+    randomSeed(analogRead(A0));
 
     Serial.println();
-    Serial.println("=====================================");
-    Serial.println("TCC TinyML ESP32 Client - PlatformIO");
-    Serial.println("=====================================");
+    Serial.println("=======================================");
+    Serial.println("TCC TinyML ESP8266 Client - PlatformIO");
+    Serial.println("=======================================");
+
+    printFreeHeap("Inicio do setup");
 
     connectWiFi();
 
     if (wifiConnected()) {
+        Serial.println();
+        Serial.println("[SETUP] ANTES registerDevice");
         registerDevice();
+        Serial.println("[SETUP] DEPOIS registerDevice");
+
+        delay(1000);
+        yield();
+
+        Serial.println("[SETUP] ANTES checkOtaLatest");
         checkOtaLatest();
+        Serial.println("[SETUP] DEPOIS checkOtaLatest");
+
+        delay(1000);
+        yield();
+
+        Serial.println("[SETUP] ANTES sendDeviceStatus");
         sendDeviceStatus();
+        Serial.println("[SETUP] DEPOIS sendDeviceStatus");
+
+        delay(1000);
+        yield();
     }
 
     lastEventTime = millis();
     lastStatusTime = millis();
     lastOtaCheckTime = millis();
+
+    printFreeHeap("Fim do setup");
+
+    Serial.println();
+    Serial.println("[SETUP] Finalizado. Entrando no loop.");
 }
 
 void loop() {
@@ -314,6 +483,7 @@ void loop() {
         Serial.println("Wi-Fi caiu. Tentando reconectar...");
         connectWiFi();
         delay(1000);
+        yield();
         return;
     }
 
@@ -322,15 +492,24 @@ void loop() {
     if (now - lastStatusTime >= STATUS_INTERVAL_MS) {
         lastStatusTime = now;
         sendDeviceStatus();
+        delay(500);
+        yield();
     }
 
     if (now - lastEventTime >= EVENT_INTERVAL_MS) {
         lastEventTime = now;
         sendInferenceEvent();
+        delay(500);
+        yield();
     }
 
     if (now - lastOtaCheckTime >= OTA_CHECK_INTERVAL_MS) {
         lastOtaCheckTime = now;
         checkOtaLatest();
+        delay(500);
+        yield();
     }
+
+    delay(10);
+    yield();
 }

@@ -1,0 +1,5 @@
+report_id,received_at_utc,device_id,previous_model_version,new_model_version,status,message
+ota_report_276d5c365dd0,2026-06-12T14:56:18.306727+00:00,esp8266_001,unknown,seismic_edge_v1_tiny_tcn_20260610,success,Manifesto OTA consultado com sucesso. Download real ainda nao aplicado neste MVP.
+ota_report_712475acf642,2026-06-12T01:09:05.163469+00:00,esp32_001,unknown,seismic_edge_v1_tiny_tcn_20260610,success,Manifesto OTA consultado com sucesso. Download real ainda nao aplicado neste MVP.
+ota_report_83072f8aeaf3,2026-06-12T01:11:58.417624+00:00,esp32_001,unknown,seismic_edge_v1_tiny_tcn_20260610,success,Manifesto OTA consultado com sucesso. Download real ainda nao aplicado neste MVP.
+ota_report_a4dbff19b724,2026-06-12T14:56:57.255376+00:00,esp8266_001,unknown,seismic_edge_v1_tiny_tcn_20260610,success,Manifesto OTA consultado com sucesso. Download real ainda nao aplicado neste MVP.
