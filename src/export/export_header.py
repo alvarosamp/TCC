@@ -60,7 +60,7 @@ def export_tflite_to_header(
     text = f'''#ifndef {guard}
 #define {guard}
 #include <stdint.h>
-alignas(16) const unsigned char {array_name}[] = {{c_array}};
+alignas(16) const unsigned char {array_name}[] = {c_array};
 const unsigned int {array_name}_len = {len(data)};
 #endif // {guard}
 '''

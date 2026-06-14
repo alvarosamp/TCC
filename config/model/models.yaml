@@ -19,7 +19,7 @@ selection:
 
 models:
   logistic_regression:
-    enabled: false
+    enabled: true
     family: classical_supervised
     edge_candidate: false
     export_tflite: false
@@ -29,7 +29,7 @@ models:
       max_iter: 2000
       C: 1.0
     tune:
-      enabled: true
+      enabled: false
       n_trials: 20
       search_space:
         C:
@@ -39,20 +39,20 @@ models:
           log: true
 
   random_forest:
-    enabled: false
+    enabled: true
     family: classical_supervised
     edge_candidate: false
     export_tflite: false
     priority: interpretable_baseline
     params:
-      n_estimators: 300
+      n_estimators: 100
       max_depth: null
       min_samples_split: 2
       min_samples_leaf: 1
       class_weight: balanced
       n_jobs: -1
     tune:
-      enabled: true
+      enabled: false
       n_trials: 30
       search_space:
         n_estimators:
@@ -141,7 +141,7 @@ models:
       n_trials: 20
 
   cnn_autoencoder:
-    enabled: 
+    enabled: v
     family: autoencoder
     edge_candidate: true
     export_tflite: true
@@ -182,11 +182,11 @@ models:
       head_pooling: avgmax
       label_smoothing: 0.008688
       pos_multiplier: 1.0
-      epochs: 100
+      epochs: 20
       batch_size: 128
-      patience: 12
+      patience: 5
     tune:
-      enabled: true
+      enabled: false
       n_trials: 60
       epochs_per_trial: 80
       patience_per_trial: 8

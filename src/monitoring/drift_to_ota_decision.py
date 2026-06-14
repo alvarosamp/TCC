@@ -7,7 +7,7 @@ Ele decide se o sistema está pronto para acionar o fluxo OTA.
 Entrada:
   - artefacts/monitoring/retrain_policy.json
   - artefacts/registry/production_manifest.json
-  - artefacts/registry/candidate_manifest.json opcional
+  - artefacts/reports/candidate_manifest.json opcional
 
 Saída:
   - artefacts/monitoring/ota_decision.json
@@ -15,7 +15,7 @@ Saída:
 Lógica:
   - Se não precisa retreinar: não aciona OTA.
   - Se precisa retreinar, mas não existe candidato: aguarda treinamento.
-  - Se existe candidato aprovado: recomenda gerar OTA.
+  - Se o candidato ja foi promovido para producao: recomenda gerar OTA.
   - Se candidato não aprovado: mantém modelo atual.
 """
 
@@ -26,7 +26,7 @@ from pathlib import Path
 
 DEFAULT_POLICY_PATH = Path("artefacts/monitoring/retrain_policy.json")
 DEFAULT_PRODUCTION_MANIFEST_PATH = Path("artefacts/registry/production_manifest.json")
-DEFAULT_CANDIDATE_MANIFEST_PATH = Path("artefacts/registry/candidate_manifest.json")
+DEFAULT_CANDIDATE_MANIFEST_PATH = Path("artefacts/reports/candidate_manifest.json")
 DEFAULT_OUTPUT_PATH = Path("artefacts/monitoring/ota_decision.json")
 
 
@@ -38,12 +38,72 @@ def read_json_if_exists(path: Path):
         return json.load(f)
 
 
-def candidate_is_approved(candidate_manifest: dict | None) -> bool:
+def manifest_value(manifest: dict | None, keys: tuple[str, ...]):
+    """Retorna o primeiro valor existente em uma lista de chaves."""
+    if manifest is None:
+        return None
+
+    for key in keys:
+        value = manifest.get(key)
+        if value is not None:
+            return value
+
+    return None
+
+
+def same_candidate_as_production(
+    candidate_manifest: dict | None,
+    production_manifest: dict | None,
+) -> bool:
+    """
+    Confere se o modelo candidato e o modelo promovido sao o mesmo artefato logico.
+
+    O train_all gera candidate_manifest em artefacts/reports.
+    O promote_model, quando aprova, copia esse candidato para
+    production_manifest em artefacts/registry.
+    """
+    if candidate_manifest is None or production_manifest is None:
+        return False
+
+    candidate_model = manifest_value(candidate_manifest, ("model_name", "model"))
+    production_model = manifest_value(production_manifest, ("model_name", "model"))
+
+    if candidate_model is None or candidate_model != production_model:
+        return False
+
+    candidate_path = manifest_value(candidate_manifest, ("model_path", "artifact_path"))
+    production_path = manifest_value(production_manifest, ("model_path", "artifact_path"))
+
+    if candidate_path is not None and production_path is not None:
+        return str(candidate_path) == str(production_path)
+
+    candidate_metrics = candidate_manifest.get("summary_metrics")
+    production_metrics = production_manifest.get("summary_metrics")
+    return candidate_metrics == production_metrics
+
+
+def production_gate_is_approved(production_manifest: dict | None) -> bool:
+    """Verifica se o manifesto de producao foi criado por um quality gate aprovado."""
+    if production_manifest is None:
+        return False
+
+    if production_manifest.get("status") == "production":
+        quality_gate = production_manifest.get("quality_gate", {})
+        if isinstance(quality_gate, dict):
+            return quality_gate.get("approved") is True
+
+    return False
+
+
+def candidate_is_approved(
+    candidate_manifest: dict | None,
+    production_manifest: dict | None = None,
+) -> bool:
     """
     Verifica se existe candidato aprovado.
 
-    A estrutura exata pode mudar no seu pipeline.
-    Por isso a função aceita alguns formatos comuns.
+    A aprovacao pode vir direto do candidato ou indiretamente do
+    production_manifest criado pelo promote_model.
     """
     if candidate_manifest is None:
         return False
@@ -54,15 +114,22 @@ def candidate_is_approved(candidate_manifest: dict | None) -> bool:
     if candidate_manifest.get("quality_gate_passed") is True:
         return True
 
-    if candidate_manifest.get("status") in {"approved", "promoted", "passed"}:
+    if candidate_manifest.get("status") in {"approved", "promoted", "passed", "production"}:
         return True
 
     quality_gate = candidate_manifest.get("quality_gate", {})
-    if isinstance(quality_gate, dict) and quality_gate.get("passed") is True:
+    if isinstance(quality_gate, dict) and (
+        quality_gate.get("passed") is True or quality_gate.get("approved") is True
+    ):
+        return True
+
+    if (
+        production_gate_is_approved(production_manifest)
+        and same_candidate_as_production(candidate_manifest, production_manifest)
+    ):
         return True
 
     return False
-
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -118,7 +185,7 @@ def main() -> None:
             or candidate_manifest.get("run_id")
         )
 
-    approved_candidate = candidate_is_approved(candidate_manifest)
+    approved_candidate = candidate_is_approved(candidate_manifest, production_manifest)
 
     if not should_retrain:
         ota_action = "do_not_publish_ota"
@@ -153,6 +220,7 @@ def main() -> None:
     if ota_action == "build_and_publish_ota":
         ota_decision["suggested_commands"] = [
             "python -m src.mlops.promote_model",
+            "python -m src.export.export_tflite",
             "python -m src.ota.build_ota_manifest",
             "python -m src.ota.build_ota_package",
             "python -m src.ota.validate_ota_package",
