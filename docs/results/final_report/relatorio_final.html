@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>Relatorio Final TinyML/MLOps</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.45; color: #1f2937; }
+h1, h2 { color: #111827; }
+pre { background: #f3f4f6; padding: 16px; overflow-x: auto; border-radius: 6px; }
+.bullet { margin-left: 16px; }
+</style>
+</head>
+<body>
+<h1>Relatorio Final - Pipeline TinyML/MLOps</h1>
+
+<h2>Resumo Executivo</h2>
+
+<p>Este relatorio consolida treino, quality gate, drift, exportacao edge, OTA e observabilidade.</p>
+
+<h2>Modelo Selecionado</h2>
+
+<p class='bullet'>- Modelo: tiny_cnn</p>
+<p class='bullet'>- AUC-PR teste: 0.8775</p>
+<p class='bullet'>- F1 teste: 0.8109</p>
+<p class='bullet'>- Precision: 0.8431</p>
+<p class='bullet'>- Recall: 0.7810</p>
+<p class='bullet'>- FP/h: 6.7459</p>
+<p class='bullet'>- Threshold: 0.7242</p>
+
+<h2>Drift</h2>
+
+<p class='bullet'>- Nivel: high</p>
+<p class='bullet'>- Max PSI: 0.3463</p>
+<p class='bullet'>- Max z-shift: 0.0176</p>
+<p class='bullet'>- Min KS p-value: 0.0000</p>
+
+<h2>Decisao OTA</h2>
+
+<p class='bullet'>- Acao: build_and_publish_ota</p>
+<p class='bullet'>- Candidato aprovado: True</p>
+<p class='bullet'>- Motivo: Drift recomendou retreino e existe candidato aprovado.</p>
+
+<h2>Exportacao Edge</h2>
+
+<p class='bullet'>- float32: 66.1800 KB - `/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_cnn_float32.tflite`</p>
+<p class='bullet'>- float16: 37.9400 KB - `/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_cnn_float16.tflite`</p>
+<p class='bullet'>- int8: 25.7100 KB - `/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_cnn_int8.tflite`</p>
+
+<h2>Manifests Detalhados</h2>
+
+<h2>Candidate Manifest</h2>
+
+<pre><code>
+{
+  &quot;selected_by&quot;: {
+    &quot;metric&quot;: &quot;auc_pr&quot;,
+    &quot;split&quot;: &quot;test&quot;,
+    &quot;mode&quot;: &quot;maximize&quot;
+  },
+  &quot;model_name&quot;: &quot;tiny_cnn&quot;,
+  &quot;family&quot;: &quot;neural_classifier&quot;,
+  &quot;priority&quot;: &quot;main_candidate&quot;,
+  &quot;edge_candidate&quot;: true,
+  &quot;export_tflite&quot;: true,
+  &quot;profile&quot;: {
+    &quot;profile_name&quot;: &quot;seismic_edge_v1&quot;,
+    &quot;profile_version&quot;: &quot;1.0.0&quot;,
+    &quot;task&quot;: &quot;binary_anomaly_detection&quot;,
+    &quot;domain&quot;: &quot;seismic&quot;,
+    &quot;description&quot;: null,
+    &quot;sampling_rate&quot;: 40.0,
+    &quot;window_size&quot;: 800,
+    &quot;window_seconds&quot;: 20.0,
+    &quot;step_seconds&quot;: 10.0,
+    &quot;overlap&quot;: 0.5,
+    &quot;normal_label&quot;: 0,
+    &quot;anomaly_label&quot;: 1,
+    &quot;normal_name&quot;: &quot;normal&quot;,
+    &quot;anomaly_name&quot;: &quot;anomalia&quot;,
+    &quot;split_name&quot;: &quot;evento&quot;,
+    &quot;primary_metric&quot;: &quot;auc_pr&quot;,
+    &quot;secondary_metrics&quot;: [
+      &quot;f1&quot;,
+      &quot;auc_roc&quot;,
+      &quot;precision&quot;,
+      &quot;recall&quot;
+    ],
+    &quot;preprocessing&quot;: {
+      &quot;offline_pipeline&quot;: [
+        &quot;resample_40hz&quot;,
+        &quot;detrend-linear&quot;,
+        &quot;demean&quot;,
+        &quot;taper_5pct&quot;,
+        &quot;bandpass_0p5_15hz_zerophase&quot;,
+        &quot;zscore_per_window&quot;
+      ],
+      &quot;edge_pipeline&quot;: [
+        &quot;detrend-linear&quot;,
+        &quot;taper-5pct&quot;,
+        &quot;bandpass-0p5_15hz_zerophase&quot;,
+        &quot;zscore-per_window&quot;
+      ],
+      &quot;remove_response_offline&quot;: false,
+      &quot;remove_response_edge&quot;: false,
+      &quot;stationxml_required&quot;: false,
+      &quot;bandpass_hz&quot;: [
+        0.5,
+        15.0
+      ],
+      &quot;normalization&quot;: &quot;zscore_per_window&quot;
+    },
+    &quot;embedded&quot;: {
+      &quot;target&quot;: &quot;esp32&quot;,
+      &quot;runtime&quot;: &quot;tensorflow_lite_micro&quot;,
+      &quot;decision_interval_ms&quot;: 10000,
+      &quot;preprocessing_version&quot;: &quot;seismic_edge_prepoc_v1&quot;,
+      &quot;ota_strategy_initial&quot;: &quot;firmware_full_image&quot;,
+      &quot;ota_strategy_future&quot;: &quot;separate_model_update&quot;
+    }
+  },
+  &quot;dataset&quot;: &quot;/mnt/d/PipelineGenerico/data/processed_seismic_edge_v1-20260604T184353Z-3-001/processed_seismic_edge_v1/dataset_seismic_edge_v1_split_evento.npz&quot;,
+  &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras&quot;,
+  &quot;threshold&quot;: 0.7241942882537842,
+  &quot;summary_metrics&quot;: {
+    &quot;model_name&quot;: &quot;tiny_cnn&quot;,
+    &quot;family&quot;: &quot;neural_classifier&quot;,
+    &quot;priority&quot;: &quot;main_candidate&quot;,
+    &quot;edge_candidate&quot;: true,
+    &quot;export_tflite&quot;: true,
+    &quot;used_optuna&quot;: false,
+    &quot;parameter_count&quot;: 15377,
+    &quot;val_auc_pr&quot;: 0.8597729907721775,
+    &quot;val_auc_roc&quot;: 0.9546285079749647,
+    &quot;val_f1&quot;: 0.7908236418671339,
+    &quot;val_precision&quot;: 0.8342857142857143,
+    &quot;val_recall&quot;: 0.7516656571774682,
+    &quot;val_fp_per_hour&quot;: 6.878536547554454,
+    &quot;test_auc_pr&quot;: 0.8775302765225134,
+    &quot;test_auc_roc&quot;: 0.9575893194486164,
+    &quot;test_f1&quot;: 0.8108529549352878,
+    &quot;test_precision&quot;: 0.8430609597924773,
+    &quot;test_recall&quot;: 0.7810153199158907,
+    &quot;test_fp_per_hour&quot;: 6.745905764837973,
+    &quot;threshold_from_val&quot;: 0.7241942882537842,
+    &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras&quot;
+  },
+  &quot;metrics&quot;: {
+    &quot;threshold_from_val&quot;: 0.7241942882537842,
+    &quot;val&quot;: {
+      &quot;auc_pr&quot;: 0.8597729907721775,
+      &quot;auc_roc&quot;: 0.9546285079749647,
+      &quot;threshold&quot;: 0.7241942882537842,
+      &quot;best_threshold_by_f1&quot;: {
+        &quot;threshold&quot;: 0.7241942882537842,
+        &quot;precision&quot;: 0.8342857142857143,
+        &quot;recall&quot;: 0.7516656571774682,
+        &quot;f1&quot;: 0.7908236368807035
+      },
+      &quot;f1&quot;: 0.7908236418671339,
+      &quot;precision&quot;: 0.8342857142857143,
+      &quot;recall&quot;: 0.7516656571774682,
+      &quot;confusion_matrix&quot;: {
+        &quot;tn&quot;: 22007,
+        &quot;fp&quot;: 493,
+        &quot;fn&quot;: 820,
+        &quot;tp&quot;: 2482
+      }
+    },
+    &quot;test&quot;: {
+      &quot;auc_pr&quot;: 0.8775302765225134,
+      &quot;auc_roc&quot;: 0.9575893194486164,
+      &quot;threshold&quot;: 0.7241942882537842,
+      &quot;best_threshold_by_f1&quot;: {
+        &quot;threshold&quot;: 0.7456919550895691,
+        &quot;precision&quot;: 0.8575717144763175,
+        &quot;recall&quot;: 0.7723039951937519,
+        &quot;f1&quot;: 0.8127074393000762
+      },
+      &quot;f1&quot;: 0.8108529549352878,
+      &quot;precision&quot;: 0.8430609597924773,
+      &quot;recall&quot;: 0.7810153199158907,
+      &quot;confusion_matrix&quot;: {
+        &quot;tn&quot;: 22016,
+        &quot;fp&quot;: 484,
+        &quot;fn&quot;: 729,
+        &quot;tp&quot;: 2600
+      }
+    }
+  },
+  &quot;hpo&quot;: {
+    &quot;used_optuna&quot;: false,
+    &quot;best_params&quot;: {
+      &quot;n_blocks&quot;: 3,
+      &quot;base_filters&quot;: 16,
+      &quot;kernel_first&quot;: 21,
+      &quot;kernel_other&quot;: 5,
+      &quot;dense_units&quot;: 48,
+      &quot;dropout&quot;: 0.240293,
+      &quot;spatial_dropout&quot;: 0.007913,
+      &quot;learning_rate&quot;: 0.0027376,
+      &quot;l2_reg&quot;: 8.261e-06,
+      &quot;use_batch_norm&quot;: false,
+      &quot;conv_type&quot;: &quot;conv&quot;,
+      &quot;head_pooling&quot;: &quot;avgmax&quot;,
+      &quot;label_smoothing&quot;: 0.008688,
+      &quot;pos_multiplier&quot;: 1.0,
+      &quot;epochs&quot;: 20,
+      &quot;batch_size&quot;: 128,
+      &quot;patience&quot;: 5
+    },
+    &quot;best_value&quot;: null,
+    &quot;n_trials&quot;: 0
+  },
+  &quot;params&quot;: {
+    &quot;n_blocks&quot;: 3,
+    &quot;base_filters&quot;: 16,
+    &quot;kernel_first&quot;: 21,
+    &quot;kernel_other&quot;: 5,
+    &quot;dense_units&quot;: 48,
+    &quot;dropout&quot;: 0.240293,
+    &quot;spatial_dropout&quot;: 0.007913,
+    &quot;learning_rate&quot;: 0.0027376,
+    &quot;l2_reg&quot;: 8.261e-06,
+    &quot;use_batch_norm&quot;: false,
+    &quot;conv_type&quot;: &quot;conv&quot;,
+    &quot;head_pooling&quot;: &quot;avgmax&quot;,
+    &quot;label_smoothing&quot;: 0.008688,
+    &quot;pos_multiplier&quot;: 1.0,
+    &quot;epochs&quot;: 20,
+    &quot;batch_size&quot;: 128,
+    &quot;patience&quot;: 5
+  },
+  &quot;parameter_count&quot;: 15377
+}
+</code></pre>
+<h2>Promotion Report</h2>
+
+<pre><code>
+{
+  &quot;approved&quot;: true,
+  &quot;candidate_model&quot;: &quot;tiny_cnn&quot;,
+  &quot;candidate_family&quot;: &quot;neural_classifier&quot;,
+  &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras&quot;,
+  &quot;checks&quot;: [
+    {
+      &quot;name&quot;: &quot;min_auc_pr&quot;,
+      &quot;passed&quot;: true,
+      &quot;value&quot;: 0.8775302765225134,
+      &quot;rule&quot;: &quot;&gt;= 0.8&quot;
+    },
+    {
+      &quot;name&quot;: &quot;min_f1&quot;,
+      &quot;passed&quot;: true,
+      &quot;value&quot;: 0.8108529549352878,
+      &quot;rule&quot;: &quot;&gt;= 0.7&quot;
+    },
+    {
+      &quot;name&quot;: &quot;max_fp_per_hour&quot;,
+      &quot;passed&quot;: true,
+      &quot;value&quot;: 6.745905764837973,
+      &quot;rule&quot;: &quot;&lt;= 10.0&quot;
+    },
+    {
+      &quot;name&quot;: &quot;max_val_test_auc_pr_gap&quot;,
+      &quot;passed&quot;: true,
+      &quot;value&quot;: 0.01775728575033586,
+      &quot;rule&quot;: &quot;&lt;= 0.08&quot;
+    }
+  ],
+  &quot;reasons&quot;: []
+}
+</code></pre>
+<h2>Drift Report</h2>
+
+<pre><code>
+{
+  &quot;dataset&quot;: &quot;/mnt/d/PipelineGenerico/data/processed_seismic_edge_v1-20260604T184353Z-3-001/processed_seismic_edge_v1/dataset_seismic_edge_v1_split_evento.npz&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;reference_path&quot;: &quot;artefacts/monitoring/drift_reference.json&quot;,
+  &quot;n_reference_samples&quot;: 120429,
+  &quot;n_current_samples&quot;: 25829,
+  &quot;n_features&quot;: 28,
+  &quot;summary&quot;: {
+    &quot;drift_level&quot;: &quot;high&quot;,
+    &quot;max_abs_z_shift&quot;: 0.017554350197315216,
+    &quot;max_psi&quot;: 0.3462861952044981,
+    &quot;min_ks_pvalue&quot;: 3.321462997836135e-05
+  },
+  &quot;thresholds&quot;: {
+    &quot;moderate_abs_z_shift&quot;: 0.75,
+    &quot;high_abs_z_shift&quot;: 1.5,
+    &quot;moderate_psi&quot;: 0.1,
+    &quot;high_psi&quot;: 0.25,
+    &quot;moderate_ks_pvalue&quot;: 0.05,
+    &quot;high_ks_pvalue&quot;: 0.001
+  },
+  &quot;features&quot;: [
+    {
+      &quot;feature&quot;: &quot;mean&quot;,
+      &quot;reference_mean&quot;: 3.293403744164536e-11,
+      &quot;current_mean&quot;: -2.8759746320550228e-11,
+      &quot;reference_std&quot;: 9.02212438091965e-09,
+      &quot;current_std&quot;: 9.057165684112078e-09,
+      &quot;z_shift&quot;: -0.0032432645093649626,
+      &quot;abs_z_shift&quot;: 0.0032432645093649626,
+      &quot;psi&quot;: 0.15464193634591694,
+      &quot;ks_statistic&quot;: 0.05176352162298192,
+      &quot;ks_pvalue&quot;: 0.011065581987489545
+    },
+    {
+      &quot;feature&quot;: &quot;std&quot;,
+      &quot;reference_mean&quot;: 1.0,
+      &quot;current_mean&quot;: 1.0,
+      &quot;reference_std&quot;: 3.901507028558626e-08,
+      &quot;current_std&quot;: 4.407162279562726e-08,
+      &quot;z_shift&quot;: 0.0,
+      &quot;abs_z_shift&quot;: 0.0,
+      &quot;psi&quot;: 0.02109698626811138,
+      &quot;ks_statistic&quot;: 0.04476363777149714,
+      &quot;ks_pvalue&quot;: 0.040891463746000056
+    },
+    {
+      &quot;feature&quot;: &quot;min&quot;,
+      &quot;reference_mean&quot;: -3.544682741165161,
+      &quot;current_mean&quot;: -3.5457537174224854,
+      &quot;reference_std&quot;: 1.4212646484375,
+      &quot;current_std&quot;: 1.3858174085617065,
+      &quot;z_shift&quot;: -0.0007535375189036131,
+      &quot;abs_z_shift&quot;: 0.0007535375189036131,
+      &quot;psi&quot;: 0.22230004255125618,
+      &quot;ks_statistic&quot;: 0.04955669983352051,
+      &quot;ks_pvalue&quot;: 0.01705344584496927
+    },
+    {
+      &quot;feature&quot;: &quot;max&quot;,
+      &quot;reference_mean&quot;: 3.476884365081787,
+      &quot;current_mean&quot;: 3.4728665351867676,
+      &quot;reference_std&quot;: 0.9727787375450134,
+      &quot;current_std&quot;: 0.9645397067070007,
+      &quot;z_shift&quot;: -0.004130261018872261,
+      &quot;abs_z_shift&quot;: 0.004130261018872261,
+      &quot;psi&quot;: 0.21398632536075424,
+      &quot;ks_statistic&quot;: 0.051861705834527094,
+      &quot;ks_pvalue&quot;: 0.010849936611562932
+    },
+    {
+      &quot;feature&quot;: &quot;median&quot;,
+      &quot;reference_mean&quot;: 0.0008675580029375851,
+      &quot;current_mean&quot;: 0.0010837108129635453,
+      &quot;reference_std&quot;: 0.029684215784072876,
+      &quot;current_std&quot;: 0.029621722176671028,
+      &quot;z_shift&quot;: 0.007281740196049213,
+      &quot;abs_z_shift&quot;: 0.007281740196049213,
+      &quot;psi&quot;: 0.18763606370242134,
+      &quot;ks_statistic&quot;: 0.051879670138216705,
+      &quot;ks_pvalue&quot;: 0.010810894630158283
+    },
+    {
+      &quot;feature&quot;: &quot;abs_mean&quot;,
+      &quot;reference_mean&quot;: 0.7835810780525208,
+      &quot;current_mean&quot;: 0.7834722399711609,
+      &quot;reference_std&quot;: 0.05206476151943207,
+      &quot;current_std&quot;: 0.05086439102888107,
+      &quot;z_shift&quot;: -0.0020904361736029387,
+      &quot;abs_z_shift&quot;: 0.0020904361736029387,
+      &quot;psi&quot;: 0.30820366705080227,
+      &quot;ks_statistic&quot;: 0.05491768941887032,
+      &quot;ks_pvalue&quot;: 0.005771769098735922
+    },
+    {
+      &quot;feature&quot;: &quot;abs_peak&quot;,
+      &quot;reference_mean&quot;: 3.789064884185791,
+      &quot;current_mean&quot;: 3.7870752811431885,
+      &quot;reference_std&quot;: 1.4648396968841553,
+      &quot;current_std&quot;: 1.4304171800613403,
+      &quot;z_shift&quot;: -0.001358239445835352,
+      &quot;abs_z_shift&quot;: 0.001358239445835352,
+      &quot;psi&quot;: 0.2262330012644303,
+      &quot;ks_statistic&quot;: 0.04963413217701029,
+      &quot;ks_pvalue&quot;: 0.01680195038296989
+    },
+    {
+      &quot;feature&quot;: &quot;rms&quot;,
+      &quot;reference_mean&quot;: 1.0,
+      &quot;current_mean&quot;: 1.0,
+      &quot;reference_std&quot;: 3.902077239104074e-08,
+      &quot;current_std&quot;: 4.4073182436932257e-08,
+      &quot;z_shift&quot;: 0.0,
+      &quot;abs_z_shift&quot;: 0.0,
+      &quot;psi&quot;: 0.021001212712896344,
+      &quot;ks_statistic&quot;: 0.04472492159975219,
+      &quot;ks_pvalue&quot;: 0.041166480410796735
+    },
+    {
+      &quot;feature&quot;: &quot;crest_factor&quot;,
+      &quot;reference_mean&quot;: 3.789064884185791,
+      &quot;current_mean&quot;: 3.7870755195617676,
+      &quot;reference_std&quot;: 1.4648396968841553,
+      &quot;current_std&quot;: 1.4304171800613403,
+      &quot;z_shift&quot;: -0.0013580766972154379,
+      &quot;abs_z_shift&quot;: 0.0013580766972154379,
+      &quot;psi&quot;: 0.2262330012644303,
+      &quot;ks_statistic&quot;: 0.04963413217701029,
+      &quot;ks_pvalue&quot;: 0.01680195038296989
+    },
+    {
+      &quot;feature&quot;: &quot;peak_to_peak&quot;,
+      &quot;reference_mean&quot;: 7.021566867828369,
+      &quot;current_mean&quot;: 7.018635272979736,
+      &quot;reference_std&quot;: 2.136026382446289,
+      &quot;current_std&quot;: 2.099888563156128,
+      &quot;z_shift&quot;: -0.0013724525924772024,
+      &quot;abs_z_shift&quot;: 0.0013724525924772024,
+      &quot;psi&quot;: 0.2356292597647286,
+      &quot;ks_statistic&quot;: 0.050624801579619794,
+      &quot;ks_pvalue&quot;: 0.013864979480788417
+    },
+    {
+      &quot;feature&quot;: &quot;energy&quot;,
+      &quot;reference_mean&quot;: 800.0,
+      &quot;current_mean&quot;: 800.0,
+      &quot;reference_std&quot;: 6.375187513185665e-05,
+      &quot;current_std&quot;: 6.372528150677681e-05,
+      &quot;z_shift&quot;: 0.0,
+      &quot;abs_z_shift&quot;: 0.0,
+      &quot;psi&quot;: 0.048929457026483686,
+      &quot;ks_statistic&quot;: 0.04472492159975219,
+      &quot;ks_pvalue&quot;: 0.041166480410796735
+    },
+    {
+      &quot;feature&quot;: &quot;skewness&quot;,
+      &quot;reference_mean&quot;: -0.05860995873808861,
+      &quot;current_mean&quot;: -0.055810268968343735,
+      &quot;reference_std&quot;: 0.9570907354354858,
+      &quot;current_std&quot;: 0.9189397692680359,
+      &quot;z_shift&quot;: 0.002925208304077387,
+      &quot;abs_z_shift&quot;: 0.002925208304077387,
+      &quot;psi&quot;: 0.3026108783109835,
+      &quot;ks_statistic&quot;: 0.054452088737465654,
+      &quot;ks_pvalue&quot;: 0.006369206276687657
+    },
+    {
+      &quot;feature&quot;: &quot;kurtosis&quot;,
+      &quot;reference_mean&quot;: 1.9117703437805176,
+      &quot;current_mean&quot;: 1.8190226554870605,
+      &quot;reference_std&quot;: 20.78434944152832,
+      &quot;current_std&quot;: 19.996850967407227,
+      &quot;z_shift&quot;: -0.0044623808935284615,
+      &quot;abs_z_shift&quot;: 0.0044623808935284615,
+      &quot;psi&quot;: 0.3462861952044981,
+      &quot;ks_statistic&quot;: 0.06517344844941741,
+      &quot;ks_pvalue&quot;: 0.0005329737534970441
+    },
+    {
+      &quot;feature&quot;: &quot;p05&quot;,
+      &quot;reference_mean&quot;: -1.6125205755233765,
+      &quot;current_mean&quot;: -
+</code></pre>
+<h2>Prediction/Performance Drift</h2>
+
+<pre><code>
+{
+  &quot;n_events&quot;: 138,
+  &quot;n_reference_events&quot;: 38,
+  &quot;n_recent_events&quot;: 100,
+  &quot;prediction_drift&quot;: {
+    &quot;level&quot;: &quot;moderate&quot;,
+    &quot;score_psi&quot;: 0.17722072881308246,
+    &quot;reference_anomaly_rate&quot;: 0.15789473684210525,
+    &quot;recent_anomaly_rate&quot;: 0.27,
+    &quot;anomaly_rate_delta&quot;: 0.11210526315789476
+  },
+  &quot;performance_drift&quot;: {
+    &quot;level&quot;: &quot;unknown&quot;,
+    &quot;n_labeled_events&quot;: 0,
+    &quot;precision&quot;: null,
+    &quot;recall&quot;: null,
+    &quot;f1&quot;: null,
+    &quot;confusion&quot;: {
+      &quot;tp&quot;: 0,
+      &quot;fp&quot;: 0,
+      &quot;fn&quot;: 0,
+      &quot;tn&quot;: 0
+    }
+  }
+}
+</code></pre>
+<h2>OTA Manifest</h2>
+
+<pre><code>
+{
+  &quot;schema_version&quot;: &quot;1.0.0&quot;,
+  &quot;created_at_utc&quot;: &quot;2026-06-14T21:30:02.103269+00:00&quot;,
+  &quot;status&quot;: &quot;ready_for_packaging&quot;,
+  &quot;target&quot;: {
+    &quot;device&quot;: &quot;esp32&quot;,
+    &quot;runtime&quot;: &quot;tensorflow_lite_micro&quot;
+  },
+  &quot;ota&quot;: {
+    &quot;strategy_initial&quot;: &quot;firmware_full_image&quot;,
+    &quot;strategy_future&quot;: &quot;separate_model_update&quot;,
+    &quot;rollback_required&quot;: true,
+    &quot;integrity_check&quot;: &quot;sha256&quot;,
+    &quot;signature_required_future&quot;: true
+  },
+  &quot;artifact&quot;: {
+    &quot;type&quot;: &quot;tflite_int8&quot;,
+    &quot;path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_cnn_int8.tflite&quot;,
+    &quot;sha256&quot;: &quot;f71ac3b1ec6b9207e459176f1bb86623ae23ed9573b51a1c9c4d15d6987c6bc0&quot;,
+    &quot;size_bytes&quot;: 26328,
+    &quot;size_kb&quot;: 25.71,
+    &quot;quantization&quot;: &quot;int8&quot;,
+    &quot;source_model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras&quot;
+  },
+  &quot;model&quot;: {
+    &quot;name&quot;: &quot;tiny_cnn&quot;,
+    &quot;family&quot;: &quot;neural_classifier&quot;,
+    &quot;version&quot;: &quot;seismic_edge_v1_tiny_cnn_20260614&quot;,
+    &quot;threshold&quot;: 0.7241942882537842,
+    &quot;parameter_count&quot;: 15377
+  },
+  &quot;profile&quot;: {
+    &quot;name&quot;: &quot;seismic_edge_v1&quot;,
+    &quot;version&quot;: &quot;1.0.0&quot;,
+    &quot;domain&quot;: &quot;seismic&quot;,
+    &quot;sampling_rate&quot;: 40.0,
+    &quot;window_size&quot;: 800,
+    &quot;window_seconds&quot;: 20.0,
+    &quot;step_seconds&quot;: 10.0,
+    &quot;preprocessing&quot;: {
+      &quot;offline_pipeline&quot;: [
+        &quot;resample_40hz&quot;,
+        &quot;detrend-linear&quot;,
+        &quot;demean&quot;,
+        &quot;taper_5pct&quot;,
+        &quot;bandpass_0p5_15hz_zerophase&quot;,
+        &quot;zscore_per_window&quot;
+      ],
+      &quot;edge_pipeline&quot;: [
+        &quot;detrend-linear&quot;,
+        &quot;taper-5pct&quot;,
+        &quot;bandpass-0p5_15hz_zerophase&quot;,
+        &quot;zscore-per_window&quot;
+      ],
+      &quot;remove_response_offline&quot;: false,
+      &quot;remove_response_edge&quot;: false,
+      &quot;stationxml_required&quot;: false,
+      &quot;bandpass_hz&quot;: [
+        0.5,
+        15.0
+      ],
+      &quot;normalization&quot;: &quot;zscore_per_window&quot;
+    }
+  },
+  &quot;quality&quot;: {
+    &quot;summary_metrics&quot;: {
+      &quot;model_name&quot;: &quot;tiny_cnn&quot;,
+      &quot;family&quot;: &quot;neural_classifier&quot;,
+      &quot;priority&quot;: &quot;main_candidate&quot;,
+      &quot;edge_candidate&quot;: true,
+      &quot;export_tflite&quot;: true,
+      &quot;used_optuna&quot;: false,
+      &quot;parameter_count&quot;: 15377,
+      &quot;val_auc_pr&quot;: 0.8597729907721775,
+      &quot;val_auc_roc&quot;: 0.9546285079749647,
+      &quot;val_f1&quot;: 0.7908236418671339,
+      &quot;val_precision&quot;: 0.8342857142857143,
+      &quot;val_recall&quot;: 0.7516656571774682,
+      &quot;val_fp_per_hour&quot;: 6.878536547554454,
+      &quot;test_auc_pr&quot;: 0.8775302765225134,
+      &quot;test_auc_roc&quot;: 0.9575893194486164,
+      &quot;test_f1&quot;: 0.8108529549352878,
+      &quot;test_precision&quot;: 0.8430609597924773,
+      &quot;test_recall&quot;: 0.7810153199158907,
+      &quot;test_fp_per_hour&quot;: 6.745905764837973,
+      &quot;threshold_from_val&quot;: 0.7241942882537842,
+      &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras&quot;
+    },
+    &quot;quality_gate&quot;: {
+      &quot;approved&quot;: true,
+      &quot;candidate_model&quot;: &quot;tiny_cnn&quot;,
+      &quot;candidate_family&quot;: &quot;neural_classifier&quot;,
+      &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras&quot;,
+      &quot;checks&quot;: [
+        {
+          &quot;name&quot;: &quot;min_auc_pr&quot;,
+          &quot;passed&quot;: true,
+          &quot;value&quot;: 0.8775302765225134,
+          &quot;rule&quot;: &quot;&gt;= 0.8&quot;
+        },
+        {
+          &quot;name&quot;: &quot;min_f1&quot;,
+          &quot;passed&quot;: true,
+          &quot;value&quot;: 0.8108529549352878,
+          &quot;rule&quot;: &quot;&gt;= 0.7&quot;
+        },
+        {
+          &quot;name&quot;: &quot;max_fp_per_hour&quot;,
+          &quot;passed&quot;: true,
+          &quot;value&quot;: 6.745905764837973,
+          &quot;rule&quot;: &quot;&lt;= 10.0&quot;
+        },
+        {
+          &quot;name&quot;: &quot;max_val_test_auc_pr_gap&quot;,
+          &quot;passed&quot;: true,
+          &quot;value&quot;: 0.01775728575033586,
+          &quot;rule&quot;: &quot;&lt;= 0.08&quot;
+        }
+      ],
+      &quot;reasons&quot;: []
+    }
+  }
+}
+</code></pre>
+</body>
+</html>

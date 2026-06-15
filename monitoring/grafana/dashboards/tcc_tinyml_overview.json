@@ -1,0 +1,14 @@
+{
+  "title": "TCC TinyML/MLOps Overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "panels": [
+    {"type": "stat", "title": "Devices", "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4}, "targets": [{"expr": "tcc_devices_total"}]},
+    {"type": "stat", "title": "Events", "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4}, "targets": [{"expr": "tcc_events_total"}]},
+    {"type": "stat", "title": "Feedback", "gridPos": {"x": 12, "y": 0, "w": 6, "h": 4}, "targets": [{"expr": "tcc_feedback_total"}]},
+    {"type": "stat", "title": "Average Score", "gridPos": {"x": 18, "y": 0, "w": 6, "h": 4}, "targets": [{"expr": "tcc_score_average"}]},
+    {"type": "timeseries", "title": "Predictions", "gridPos": {"x": 0, "y": 4, "w": 12, "h": 8}, "targets": [{"expr": "tcc_predictions_total"}]},
+    {"type": "timeseries", "title": "OTA Reports", "gridPos": {"x": 12, "y": 4, "w": 12, "h": 8}, "targets": [{"expr": "tcc_ota_reports_total"}]}
+  ]
+}

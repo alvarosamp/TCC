@@ -1,4 +1,4 @@
-﻿# TCC - Pipeline Generico de TinyML/MLOps para Series Temporais Complexas
+# TCC - Pipeline Generico de TinyML/MLOps para Series Temporais Complexas
 
 Este repositorio organiza um projeto de TCC voltado ao desenvolvimento de um pipeline generico de TinyML/MLOps para deteccao de anomalias em series temporais complexas. O primeiro estudo de caso utiliza dados sismicos, mas a arquitetura foi pensada para ser reaplicada em outros sinais, como vibracao industrial, corrente eletrica, audio, telemetria e sensores distribuidos.
 
@@ -33,8 +33,9 @@ O objetivo tecnico e aproximar pesquisa, engenharia de software, MLOps e sistema
 - Avaliacao com AUC-PR, AUC-ROC, F1, precision, recall e falsos positivos por hora.
 - Manifestos JSON para rastreabilidade de candidato, producao e OTA.
 - Quality gate para impedir promocao automatica de modelos ruins.
+- Monitoramento de drift com referencia estatistica, relatorio de drift, politica de retreino e decisao drift -> OTA.
 - Fluxo OTA simulado com manifesto, pacote, validacao SHA-256, publicacao local, check de dispositivo, instalacao simulada e rollback.
-- Base para exportacao TFLite/TFLite Micro e validacao futura em ESP32.
+- Exportacao TFLite/TFLite Micro com header C/C++ e build embarcada validada para ESP32.
 
 ## Arquitetura
 
@@ -46,6 +47,7 @@ src/
   training/      # treino, HPO, avaliacao e selecao de modelos
   export/        # exportacao TFLite e header C/C++
   mlops/         # quality gate e promocao de modelo
+  monitoring/    # drift, politica de retreino e decisao drift -> OTA
   ota/           # fluxo OTA simulado
   tests/         # testes de comunicacao e smoke tests
 
@@ -330,7 +332,7 @@ python -m src.ota.simulate_apply_update
 python -m src.ota.simulate_rollback
 ```
 
-Limite atual: o pacote OTA ainda pode estar usando `.keras`. Para ESP32/TensorFlow Lite Micro, o artefato final deve ser `.tflite`, `.h` ou firmware `.bin`.
+Estado atual: o pacote OTA usa o artefato `.tflite` int8 gerado pela etapa de exportacao edge. O header `.h` tambem e gerado para compilacao direta com TensorFlow Lite Micro.
 
 ## Exportacao Edge
 
@@ -357,6 +359,81 @@ artefacts/edge/<modelo>_export_manifest.json
 ```
 
 A exportacao int8 usa representative dataset a partir do split de treino.
+
+## Monitoramento De Drift
+
+O projeto possui um ciclo de drift integrado ao fluxo MLOps:
+
+```bash
+python -m src.monitoring.build_drift_reference
+python -m src.monitoring.check_data_drift --dataset <dataset.npz> --split test
+python -m src.monitoring.retrain_policy
+python -m src.monitoring.drift_to_ota_decision
+```
+
+Saidas principais:
+
+```text
+artefacts/monitoring/drift_reference.json
+artefacts/monitoring/drift_report.json
+artefacts/monitoring/retrain_policy.json
+artefacts/monitoring/ota_decision.json
+```
+
+Resultado validado no dataset real:
+
+```text
+Drift level: high
+Max z-shift: 0.0176
+Max PSI: 0.3463
+Min KS p-value: 0.000033
+Politica: retrain_recommended
+Decisao OTA apos quality gate: build_and_publish_ota
+```
+
+A interpretacao tecnica e que as medias globais das features mudaram pouco, mas a distribuicao interna mudou de forma relevante, detectada por PSI e KS. Por isso o sistema recomenda retreino e so libera OTA quando existe candidato aprovado no quality gate.
+
+## Validacao Embarcada
+
+O modelo aprovado foi exportado para TFLite int8 e convertido para header C/C++:
+
+```text
+artefacts/edge/tiny_cnn_int8.tflite
+artefacts/edge/tiny_cnn_int8.h
+artefacts/edge/tiny_cnn_export_manifest.json
+```
+
+O firmware PlatformIO foi configurado para usar:
+
+```cpp
+#define ACTIVE_MODEL MODEL_PIPELINE_TINY_CNN_INT8
+#define MODEL_DATA tiny_cnn_int8_model_data
+#define MODEL_THRESHOLD 0.7241942882537842f
+```
+
+Status de validacao:
+
+```text
+Build alvo ESP32: sucesso
+RAM estatica: 33888 bytes, 10.3%
+Flash: 597165 bytes, 19.0%
+Upload real: pendente, pois a placa conectada foi identificada como ESP8266EX
+```
+
+Comando usado para confirmar a placa conectada:
+
+```bash
+python3 ~/.platformio/packages/tool-esptoolpy/esptool.py --port /dev/ttyUSB0 chip_id
+```
+
+Resultado obtido:
+
+```text
+Detecting chip type... ESP8266
+Chip is ESP8266EX
+```
+
+Portanto, a validacao real de inferencia no hardware deve ser feita quando uma placa ESP32 estiver conectada. A adaptacao para ESP8266 nao e recomendada como caminho principal do TCC, porque o projeto usa TensorFlow Lite Micro e APIs/recursos planejados para ESP32.
 
 ## Como Rodar O Projeto
 
@@ -427,31 +504,62 @@ Resultados de rodadas externas em `D:\PipelineGenerico\data`:
 
 Prioridade alta:
 
-- Rodar treino final do Tiny TCN com os parametros Optuna no dataset real.
-- Comparar Tiny TCN final contra Tiny CNN final, RF, Extra Trees e STA/LTA.
-- Exportar o melhor modelo real para TFLite float32, float16 e int8.
-- Atualizar OTA para empacotar `.tflite` ou `.h`, nao `.keras`.
-- Validar o modelo exportado no ESP32 com `preprocessing.h` equivalente.
-- Medir latencia, memoria, tamanho, consumo estimado e acuracia embarcada.
+- Rodar a validacao real em uma placa ESP32 fisica: upload, monitor serial, latencia, memoria livre, score e acuracia nas janelas reais.
+- Gerar um relatorio final consolidado juntando dataset, treino, drift, quality gate, exportacao edge, OTA e build embarcada.
+- Atualizar os capitulos do TCC com metodologia, resultados, limitacoes e trabalhos futuros.
 
 Prioridade media:
 
-- Implementar monitoramento de drift:
-  - data drift;
-  - prediction drift;
-  - performance drift quando houver rotulos.
-- Criar politica de retreinamento baseada em drift e queda de metrica.
-- Criar um stage DVC para treino real, separado do smoke test.
-- Corrigir versionamento de artefatos pesados no Git.
+- Criar um stage DVC para treino real, separado do smoke test sintetico.
+- Adicionar testes automatizados para os contratos de manifests: candidato, producao, drift, export e OTA.
 - Padronizar encoding de documentos Markdown com acentos.
+- Criar uma tabela comparativa final entre Tiny CNN, Tiny TCN, Random Forest e baselines tradicionais.
 
 Prioridade futura:
 
-- OTA real ou semi-real via servidor HTTP/local endpoint.
+- OTA real via servidor HTTP/local endpoint.
 - Assinatura criptografica de manifestos ou pacotes.
 - Device registry para multiplos dispositivos.
+- Prediction drift e performance drift quando houver rotulos em producao.
 - Artigo de sistema TinyML/MLOps.
 - Artigo de comparacao de modelos edge.
+
+
+## Melhorias Finais Implementadas
+
+Alem do pipeline principal, o projeto agora inclui modulos finais de produto/MLOps:
+
+```text
+Assinatura OTA
+  -> src/ota/sign_ota_package.py
+  -> src/ota/crypto.py
+  -> validation_report.json valida assinatura HMAC-SHA256
+
+Device registry
+  -> server/app/routes/devices.py
+  -> registro, status, historico e checagem de compatibilidade do dispositivo
+
+Prometheus/Grafana
+  -> endpoint /metrics no FastAPI
+  -> docker-compose.monitoring.yml
+  -> monitoring/prometheus/prometheus.yml
+  -> dashboard Grafana em monitoring/grafana/dashboards/
+
+Prediction/performance drift
+  -> src/monitoring/check_prediction_performance_drift.py
+  -> usa eventos, scores, predicoes e feedback humano quando existir
+
+DVC real
+  -> dvc_real.yaml
+  -> pipeline separado do smoke test para evitar rodadas longas acidentais
+
+Relatorio final automatico
+  -> src/reports/generate_final_report.py
+  -> docs/results/final_report/relatorio_final.md
+  -> docs/results/final_report/relatorio_final.html
+```
+
+O ESP32 real permanece como unica validacao fisica pendente, pois a placa conectada durante os testes foi identificada como ESP8266EX.
 
 ## Observacoes Sobre Versionamento
 

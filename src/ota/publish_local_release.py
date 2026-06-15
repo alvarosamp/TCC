@@ -130,6 +130,7 @@ def build_latest_payload(
     model = validation.get("model", {})
     target = validation.get("target", {})
     artifact = validation.get("artifact", {})
+    signature = validation.get("signature", {})
 
     return {
         "schema_version": "1.0.0",
@@ -141,6 +142,11 @@ def build_latest_payload(
         "artifact": {
             "path": str(release_dir / Path(artifact["path"]).name),
             "sha256": artifact.get("expected_sha256"),
+        },
+        "signature": {
+            "path": str(release_dir / "signature.json") if signature.get("valid") else None,
+            "required": signature.get("required"),
+            "valid": signature.get("valid"),
         },
         "validation": {
             "approved": validation.get("approved"),

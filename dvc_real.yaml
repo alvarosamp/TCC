@@ -1,0 +1,107 @@
+# Pipeline DVC para experimento real.
+# Mantido separado do dvc.yaml smoke para evitar rodadas longas acidentais.
+
+stages:
+  validate_real_dataset:
+    cmd: python -m src.data.validate_dataset
+    deps:
+      - src/data/validate_dataset.py
+      - src/core/schemas.py
+      - src/core/profile.py
+      - src/core/settings.py
+      - config/configs/config.yaml
+      - config/configs/profiles/seismic_edge_v1.yaml
+    metrics:
+      - artefacts/reports/dataset_validation_report.json:
+          cache: false
+
+  train_real_models:
+    cmd: python -m src.training.train_all --models-cfg config/model/models.yaml
+    deps:
+      - src/training/train_all.py
+      - src/training/neural_models.py
+      - src/training/model_registry.py
+      - src/training/hpo.py
+      - src/training/evaluate.py
+      - src/features/statistical_features.py
+      - src/core/profile.py
+      - src/core/schemas.py
+      - config/model/models.yaml
+      - config/configs/config.yaml
+      - config/configs/profiles/seismic_edge_v1.yaml
+    outs:
+      - artefacts/models:
+          cache: false
+    metrics:
+      - artefacts/reports/model_comparison.json:
+          cache: false
+
+  promote_real_model:
+    cmd: python -m src.mlops.promote_model
+    deps:
+      - src/mlops/promote_model.py
+      - artefacts/reports/candidate_manifest.json
+      - config/configs/config.yaml
+    outs:
+      - artefacts/registry/production_manifest.json:
+          cache: false
+    metrics:
+      - artefacts/reports/promotion_report.json:
+          cache: false
+
+  export_real_edge:
+    cmd: python -m src.export.export_tflite
+    deps:
+      - src/export/export_tflite.py
+      - src/export/export_header.py
+      - artefacts/reports/candidate_manifest.json
+    outs:
+      - artefacts/edge:
+          cache: false
+
+  drift_real:
+    cmd: python -m src.monitoring.build_drift_reference && python -m src.monitoring.check_data_drift --dataset ${TCC_DATASET_FILE} --split test && python -m src.monitoring.retrain_policy && python -m src.monitoring.drift_to_ota_decision
+    deps:
+      - src/monitoring/build_drift_reference.py
+      - src/monitoring/check_data_drift.py
+      - src/monitoring/retrain_policy.py
+      - src/monitoring/drift_to_ota_decision.py
+      - artefacts/reports/candidate_manifest.json
+      - artefacts/registry/production_manifest.json
+    metrics:
+      - artefacts/monitoring/drift_report.json:
+          cache: false
+      - artefacts/monitoring/retrain_policy.json:
+          cache: false
+      - artefacts/monitoring/ota_decision.json:
+          cache: false
+
+  ota_real_package:
+    cmd: python -m src.ota.build_ota_manifest && python -m src.ota.build_ota_package && python -m src.ota.sign_ota_package && python -m src.ota.validate_ota_package && python -m src.ota.publish_local_release
+    deps:
+      - src/ota/build_ota_manifest.py
+      - src/ota/build_ota_package.py
+      - src/ota/sign_ota_package.py
+      - src/ota/validate_ota_package.py
+      - src/ota/publish_local_release.py
+      - artefacts/registry/production_manifest.json
+      - artefacts/edge
+    outs:
+      - artefacts/ota/packages:
+          cache: false
+      - artefacts/ota/releases:
+          cache: false
+
+  final_report:
+    cmd: python -m src.monitoring.check_prediction_performance_drift && python -m src.reports.generate_final_report
+    deps:
+      - src/monitoring/check_prediction_performance_drift.py
+      - src/reports/generate_final_report.py
+      - artefacts/reports/candidate_manifest.json
+      - artefacts/monitoring/drift_report.json
+      - artefacts/ota/releases
+      - server/data/events
+      - server/data/feedback
+    outs:
+      - docs/results/final_report:
+          cache: false

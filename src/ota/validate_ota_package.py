@@ -28,6 +28,7 @@ from pathlib import Path
 from typing import Any
 
 from src.core.settings import ARTEFACTS_DIR, OTA_CONFIG
+from src.ota.crypto import verify_payload
 
 
 OTA_DIR = ARTEFACTS_DIR / "ota"
@@ -207,6 +208,34 @@ def validate_package(package_dir: Path) -> dict[str, Any]:
         expected=str(package_dir),
     )
 
+    signature_path = package_dir / "signature.json"
+    signature_required = bool(OTA_CONFIG.get("signature_required", True))
+    signature_payload = None
+    signature_valid = False
+
+    add_check(
+        checks,
+        name="signature_exists",
+        passed=signature_path.exists() or not signature_required,
+        value=str(signature_path) if signature_path.exists() else None,
+        expected="existing signature.json" if signature_required else "optional",
+    )
+
+    if signature_path.exists():
+        signature_report = load_json(signature_path)
+        signature_payload = signature_report.get("payload")
+        signature_valid = verify_payload(
+            signature_payload,
+            signature_report.get("signature", ""),
+        ) if isinstance(signature_payload, dict) else False
+        add_check(
+            checks,
+            name="signature_valid",
+            passed=signature_valid,
+            value=signature_report.get("algorithm"),
+            expected="valid HMAC-SHA256 signature",
+        )
+
     max_tflite_kb = OTA_CONFIG.get("max_tflite_int8_size_kb")
     if max_tflite_kb is not None:
         artifact_size_kb = manifest["artifact"].get("size_kb")
@@ -237,6 +266,11 @@ def validate_package(package_dir: Path) -> dict[str, Any]:
             "path": str(artifact_path),
             "expected_sha256": expected_sha256,
             "actual_sha256": actual_sha256,
+        },
+        "signature": {
+            "path": str(package_dir / "signature.json"),
+            "required": bool(OTA_CONFIG.get("signature_required", True)),
+            "valid": signature_valid,
         },
         "checks": checks,
         "reasons": reasons,

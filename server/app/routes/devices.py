@@ -121,3 +121,35 @@ def list_status_history(device_id: str | None = None):
         "count": len(statuses),
         "statuses": statuses,
     }
+
+@router.get("/{device_id}")
+def get_device(device_id: str):
+    device_path = DEVICES_DIR / f"{device_id}.json"
+    if not device_path.exists():
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail=f"Dispositivo nao encontrado: {device_id}")
+    return load_json(device_path)
+
+
+@router.get("/{device_id}/compatibility")
+def check_device_compatibility(device_id: str):
+    device_path = DEVICES_DIR / f"{device_id}.json"
+    if not device_path.exists():
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail=f"Dispositivo nao encontrado: {device_id}")
+
+    device = load_json(device_path)
+    device_type = (device.get("device_type") or "").lower()
+    compatible = device_type in {"esp32", "esp32dev", "esp32-devkit"}
+
+    return {
+        "device_id": device_id,
+        "device_type": device.get("device_type"),
+        "compatible_with_current_firmware": compatible,
+        "expected_target": "esp32",
+        "reason": (
+            "Dispositivo compativel com o firmware TFLite Micro atual."
+            if compatible else
+            "Firmware atual foi projetado para ESP32; use ESP32 para validacao embarcada."
+        ),
+    }
