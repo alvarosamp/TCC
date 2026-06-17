@@ -1,0 +1,16 @@
+// Copie este arquivo para wifi_config.h e preencha com suas credenciais.
+// wifi_config.h esta no .gitignore — nao sera commitado.
+
+#pragma once
+
+// Rede WiFi
+#define WIFI_SSID     "nome_da_sua_rede"
+#define WIFI_PASSWORD "senha_da_sua_rede"
+
+// Servidor OTA (IP da maquina onde roda uvicorn)
+// No WSL: rode `ip addr show eth0` ou `hostname -I` para descobrir o IP.
+#define OTA_SERVER_HOST "192.168.1.100"
+#define OTA_SERVER_PORT  8000
+
+// Identificador unico do dispositivo (aparece nos logs do servidor)
+#define DEVICE_ID "esp32_001"

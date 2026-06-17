@@ -10,6 +10,23 @@
 // ============================================================
 #include "model_config.h"
 #include "preprocessing.h"
+#include "ota_http.h"
+
+// wifi_config.h define WIFI_SSID, WIFI_PASSWORD, OTA_SERVER_HOST,
+// OTA_SERVER_PORT e DEVICE_ID.
+// Copie include/wifi_config.h.template para include/wifi_config.h
+// e preencha com suas credenciais antes de compilar.
+#if __has_include("wifi_config.h")
+  #include "wifi_config.h"
+  #define HAS_WIFI_CONFIG 1
+#else
+  #define HAS_WIFI_CONFIG 0
+  #define WIFI_SSID       ""
+  #define WIFI_PASSWORD   ""
+  #define OTA_SERVER_HOST ""
+  #define OTA_SERVER_PORT  8000
+  #define DEVICE_ID       "esp32_sem_config"
+#endif
 
 #if __has_include("real_dataset.h")
   #include "real_dataset.h"
@@ -66,6 +83,10 @@ constexpr int kNumRuns = 100;
 // =============================
 // Variaveis globais TFLM
 // =============================
+
+// Versao do modelo compilado no firmware (fallback quando nao ha OTA).
+// Deve ser atualizada manualmente quando o .h mudar.
+static const char kBuiltinModelVersion[] = "builtin_float32_v1";
 
 const tflite::Model* model      = nullptr;
 tflite::MicroInterpreter* interpreter = nullptr;
@@ -337,6 +358,63 @@ void setup() {
 
   liberarMemoriaNaoUsada();
 
+  // ============================================================
+  //  OTA via HTTP
+  //  Tenta conectar ao WiFi e verificar atualizacao de modelo.
+  //  Se nao houver wifi_config.h ou conexao falhar, continua
+  //  normalmente com o modelo compilado no firmware.
+  // ============================================================
+  if (!SPIFFS.begin(true)) {
+    Serial.println("[OTA] Falha ao montar SPIFFS — OTA desabilitado.");
+  }
+
+#if HAS_WIFI_CONFIG
+  Serial.println("[OTA] Iniciando verificacao de atualizacao...");
+
+  // Descobre versao local (SPIFFS ou builtin)
+  char local_version[64];
+  if (!ota_get_installed_version(local_version, sizeof(local_version))) {
+    strncpy(local_version, kBuiltinModelVersion, sizeof(local_version) - 1);
+  }
+  Serial.printf("[OTA] Versao local: %s\n", local_version);
+
+  bool wifi_ok = wifi_connect(WIFI_SSID, WIFI_PASSWORD, 15000);
+  if (wifi_ok) {
+    OtaResult ota = ota_check_and_download(OTA_SERVER_HOST, OTA_SERVER_PORT,
+                                            local_version);
+    if (ota.already_current) {
+      Serial.println("[OTA] Modelo ja e o mais recente.");
+      ota_post_report(OTA_SERVER_HOST, OTA_SERVER_PORT,
+                      DEVICE_ID, local_version, local_version,
+                      "skipped", "Versao ja atual");
+    } else if (ota.sha256_ok) {
+      Serial.println("[OTA] Atualizacao aplicada com sucesso.");
+      ota_post_report(OTA_SERVER_HOST, OTA_SERVER_PORT,
+                      DEVICE_ID, local_version, ota.version,
+                      "success", "Modelo atualizado via HTTP OTA");
+    } else if (ota.update_available) {
+      Serial.printf("[OTA] Falha na atualizacao: %s\n", ota.error);
+      ota_post_report(OTA_SERVER_HOST, OTA_SERVER_PORT,
+                      DEVICE_ID, local_version, ota.version,
+                      "failed", ota.error);
+    }
+  } else {
+    Serial.println("[OTA] Sem WiFi — usando modelo local.");
+  }
+#else
+  Serial.println("[OTA] wifi_config.h nao encontrado — OTA pulado.");
+  Serial.println("      Copie include/wifi_config.h.template para include/wifi_config.h");
+#endif
+
+  // Escolhe fonte do modelo: SPIFFS (OTA) ou header compilado (fallback)
+  const uint8_t* model_data = MODEL_DATA;
+  if (ota_load_model_into_ram()) {
+    model_data = ota_get_model_data();
+    Serial.println("[OTA] Usando modelo do SPIFFS (OTA).");
+  } else {
+    Serial.println("[OTA] Usando modelo compilado no firmware (builtin).");
+  }
+
   tensor_arena = static_cast<uint8_t*>(
     heap_caps_aligned_alloc(16, tensor_arena_size, MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL)
   );
@@ -348,7 +426,7 @@ void setup() {
     while (true) delay(1000);
   }
 
-  model = tflite::GetModel(MODEL_DATA);   // <-- usa o modelo selecionado
+  model = tflite::GetModel(model_data);   // model_data = SPIFFS (OTA) ou MODEL_DATA (builtin)
 
   if (model->version() != TFLITE_SCHEMA_VERSION) {
     Serial.println("ERRO: versao do modelo incompativel com TFLite Micro");
