@@ -1,8 +1,6 @@
 #include <Arduino.h>
-#if defined(ARDUINO_ARCH_ESP32)
-  #include <esp_bt.h>
-  #include <esp_heap_caps.h>
-#endif
+#include <esp_bt.h>
+#include <esp_heap_caps.h>
 #include <float.h>
 #include <math.h>
 
@@ -57,13 +55,8 @@ constexpr float kDecisionIntervalMs = 10000.0f;
 constexpr float kVoltage  = 3.3f;
 constexpr float kCurrentA = 0.08f;
 
-// Tensor arena. Precisa caber no maior bloco continuo livre do microcontrolador.
-// ESP8266 tem bem menos RAM que ESP32; esta arena e apenas para teste de viabilidade.
-#if defined(ARDUINO_ARCH_ESP8266)
-constexpr int kTensorArenaSize = 48 * 1024;
-#else
+// Tensor arena. Precisa caber no maior bloco continuo livre do ESP32.
 constexpr int kTensorArenaSize = 100 * 1024;
-#endif
 uint8_t* tensor_arena = nullptr;
 size_t tensor_arena_size = kTensorArenaSize;
 
@@ -138,19 +131,14 @@ void imprimirResumoRodada(
 }
 
 size_t maiorBlocoLivreInterno() {
-#if defined(ARDUINO_ARCH_ESP32)
   return heap_caps_get_largest_free_block(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL);
-#else
-  return ESP.getFreeHeap();
-#endif
 }
 
 void liberarMemoriaNaoUsada() {
-  Serial.print("Maior bloco livre inicial: ");
+  Serial.print("Maior bloco livre antes BT release: ");
   Serial.print(maiorBlocoLivreInterno());
   Serial.println(" bytes");
 
-#if defined(ARDUINO_ARCH_ESP32)
   esp_err_t bt_status = esp_bt_mem_release(ESP_BT_MODE_BTDM);
   Serial.print("BT memory release: ");
   Serial.println(bt_status == ESP_OK ? "OK" : "nao liberada");
@@ -158,19 +146,6 @@ void liberarMemoriaNaoUsada() {
   Serial.print("Maior bloco livre apos BT release : ");
   Serial.print(maiorBlocoLivreInterno());
   Serial.println(" bytes");
-#else
-  Serial.println("BT memory release: nao aplicavel no ESP8266");
-#endif
-}
-
-uint8_t* alocarTensorArena(size_t bytes) {
-#if defined(ARDUINO_ARCH_ESP32)
-  return static_cast<uint8_t*>(
-    heap_caps_aligned_alloc(16, bytes, MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL)
-  );
-#else
-  return static_cast<uint8_t*>(malloc(bytes));
-#endif
 }
 
 // =============================
@@ -362,11 +337,13 @@ void setup() {
 
   liberarMemoriaNaoUsada();
 
-  tensor_arena = alocarTensorArena(tensor_arena_size);
+  tensor_arena = static_cast<uint8_t*>(
+    heap_caps_aligned_alloc(16, tensor_arena_size, MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL)
+  );
   if (tensor_arena == nullptr) {
     Serial.println("ERRO: falha ao alocar tensor_arena");
     Serial.print("Maior bloco livre interno: ");
-    Serial.print(maiorBlocoLivreInterno());
+    Serial.print(heap_caps_get_largest_free_block(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL));
     Serial.println(" bytes");
     while (true) delay(1000);
   }
