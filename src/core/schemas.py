@@ -18,30 +18,95 @@ def validate_npz_keys(npz_path: str | Path) -> list[str]:
         raise ValueError(f"Chaves faltando no arquivo npz: {missing}")
     return list(data.files)
 
+
+def normalize_window_shape(X: np.ndarray, expected_size: int) -> np.ndarray:
+    '''
+    Normaliza e valida o formato de X sem destruir informação multicanal
+    
+    Formatos aceitos:
+    - (N, T): Serie temporal univariada na janela
+    - (N, T, C) : Serie temporal multivariada na janela
+    
+    Onde:
+    - N = numero de janelas
+    - T = tamanho da janela
+    - C = numero de canais/variaveis/sensores
+    
+    Dataset mutlcianal = X.shape(12000, 2048, 4)
+    
+    Observação:
+    Esta funcao nao faz flatten de canais
+    Para modelo neurais conv1d/tcn, o formato(N, T, C) é desejado
+    Para modelos classicos, a etapa deve converter o sinal para tabular
+    '''
+    X = np.ndarray(X)
+    if X.ndim == 2:
+        #Univariado (T, N)
+        if X.shape[1] != expected_size:
+            raise ValueError(
+                f"Tamanho de janela invalido. "
+                f"Recebido={x.shape[1]}, esperado={expected_size}. "
+                f"Shape completo={x.shape}"
+            )
+        return X.astype(np.float32, copy = False)
+    
+    if x.ndim == 3:
+        # Multivariado: (N, T, C)
+        if x.shape[1] != expected_size:
+            raise ValueError(
+                f"Tamanho de janela invalido. "
+                f"Recebido={x.shape[1]}, esperado={expected_size}. "
+                f"Shape completo={x.shape}. "
+                "O formato esperado para multivariado e (N, T, C)."
+            )
+
+        if x.shape[2] < 1:
+            raise ValueError(
+                f"Numero de canais invalido em X: {x.shape[2]}. "
+                f"Shape completo={x.shape}"
+            )
+
+        return x.astype(np.float32, copy=False)
+
+    raise ValueError(
+        f"Formato de X nao suportado: {x.shape}. "
+        "Use (N, T) para serie temporal univariada ou "
+        "(N, T, C) para serie temporal multivariada. "
+        "Se seu dado tiver 4D ou mais, compacte sensores/eixos extras "
+        "na dimensao de canais antes de salvar o .npz."
+    )
+    
+    
+            
+            
+    
+# Alias temporario para compatibilidade com codigos antigos.
+# Depois que todos os imports forem ajustados, pode remover.
 def flatten_window(X: np.ndarray, expected_size: int) -> np.ndarray:
-    """Normaliza X para o formato padrao
-    Se X tem shape (n_samples, window_size, n_features) e window_size == expected_size, retorna X
-    (n_janelas, window_size * n_features) se window_size == expected_size
-    Isso permite que datasets diferentes usem shapes levemente diferentes
     """
-    x = np.asarray(X)
+    Compatibilidade temporaria.
 
-    if x.ndim == 3 and x.shape[-1] == 1:
-        x = x[:, :, 0]
+    Antes essa funcao achatava/removia dimensoes.
+    Agora ela apenas chama normalize_window_shape para preservar canais.
+    """
+    return normalize_window_shape(X, expected_size)
 
-    elif x.ndim == 3 and x.shape[1] == 1:
-        x = x[:, 0, :]
+def infer_n_channels(X:np.ndarray) -> int:
+    """
+    Infere o numero de canais do dataset
+    (N, T) -> 1 canal
+    (N, T, C) -> C canais
+    
+    """
+    X = np.asarray(X)
+    if X.ndim ==2:
+        return 1
+    
+    if X.ndim ==3:
+        return int(X.shape[2])
+    
+    raise ValueError(f'Nao foi possivel inferir canais para X com shape {X.shape}')
 
-    if x.ndim != 2:
-        raise ValueError(f"Formato de X nao suportado: {x.shape}")
-
-    if x.shape[1] != expected_size:
-        raise ValueError(
-            f"Tamanho de janela invalido. "
-            f"Recebido={x.shape[1]}, esperado={expected_size}"
-        )
-
-    return x.astype(np.float32, copy=False)
 
 def validate_labels(
     y: np.ndarray,
@@ -87,7 +152,6 @@ def load_validated_split(
       split_name='train'
       carrega X_train e y_train
     """
-
     data = np.load(npz_path)
 
     x_key = f"X_{split_name}"
@@ -96,10 +160,8 @@ def load_validated_split(
     if x_key not in data.files or y_key not in data.files:
         raise KeyError(f"Chaves ausentes: {x_key}/{y_key}")
 
-    x = flatten_window(data[x_key], profile.window_size)
+    x = normalize_window_shape(data[x_key], profile.window_size)
     y = validate_labels(data[y_key], profile, split_name)
-
-    profile.validate_window_size(x.shape)
 
     if len(x) != len(y):
         raise ValueError(
@@ -122,12 +184,23 @@ def summarize_split(
       - relatorio
       - MLflow
       - detectar dataset errado
-      - comparar v3 vs edge_v1
+      - comparar diferentes versoes do dataset
+      - identificar se o dado e univariado ou multivariado
     """
-
     total = int(len(y))
     normal = int((y == profile.normal_label).sum())
     anomaly = int((y == profile.anomaly_label).sum())
+
+    x_ndim = int(x.ndim)
+    window_size = infer_window_size_from_x(x)
+    n_channels = infer_n_channels(x)
+
+    if x_ndim == 2:
+        input_type = "univariate_timeseries"
+    elif x_ndim == 3:
+        input_type = "multivariate_timeseries"
+    else:
+        input_type = "unsupported"
 
     return {
         "total": total,
@@ -135,6 +208,10 @@ def summarize_split(
         "anomaly": anomaly,
         "baseline_auc_pr": anomaly / total if total else 0.0,
         "x_shape": list(x.shape),
+        "x_ndim": x_ndim,
+        "input_type": input_type,
+        "window_size": window_size,
+        "n_channels": n_channels,
         "x_dtype": str(x.dtype),
         "y_dtype": str(y.dtype),
         "x_mean": float(x.mean()) if total else 0.0,
@@ -142,6 +219,7 @@ def summarize_split(
         "x_min": float(x.min()) if total else 0.0,
         "x_max": float(x.max()) if total else 0.0,
     }
+
 
 
 def validate_full_dataset(

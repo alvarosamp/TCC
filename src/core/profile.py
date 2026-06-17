@@ -72,6 +72,8 @@ class PipelineProfile:
             raise ValueError(f"Missing required fields in profile: {missing}")
 
         data.setdefault('description', None)
+        known = {f.name for f in cls.__dataclass_fields__.values()}
+        data = {k: v for k, v in data.items() if k in known}
         return cls(**data)
         
     @property
