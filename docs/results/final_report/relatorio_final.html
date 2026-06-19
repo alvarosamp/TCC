@@ -19,13 +19,13 @@ pre { background: #f3f4f6; padding: 16px; overflow-x: auto; border-radius: 6px; 
 
 <h2>Modelo Selecionado</h2>
 
-<p class='bullet'>- Modelo: tiny_cnn</p>
-<p class='bullet'>- AUC-PR teste: 0.8775</p>
-<p class='bullet'>- F1 teste: 0.8109</p>
-<p class='bullet'>- Precision: 0.8431</p>
-<p class='bullet'>- Recall: 0.7810</p>
-<p class='bullet'>- FP/h: 6.7459</p>
-<p class='bullet'>- Threshold: 0.7242</p>
+<p class='bullet'>- Modelo: tiny_tcn</p>
+<p class='bullet'>- AUC-PR teste: 0.9144</p>
+<p class='bullet'>- F1 teste: 0.8537</p>
+<p class='bullet'>- Precision: 0.8761</p>
+<p class='bullet'>- Recall: 0.8324</p>
+<p class='bullet'>- FP/h: 5.4636</p>
+<p class='bullet'>- Threshold: 0.6696</p>
 
 <h2>Drift</h2>
 
@@ -42,9 +42,6 @@ pre { background: #f3f4f6; padding: 16px; overflow-x: auto; border-radius: 6px; 
 
 <h2>Exportacao Edge</h2>
 
-<p class='bullet'>- float32: 66.1800 KB - `/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_cnn_float32.tflite`</p>
-<p class='bullet'>- float16: 37.9400 KB - `/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_cnn_float16.tflite`</p>
-<p class='bullet'>- int8: 25.7100 KB - `/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_cnn_int8.tflite`</p>
 
 <h2>Manifests Detalhados</h2>
 
@@ -55,18 +52,49 @@ pre { background: #f3f4f6; padding: 16px; overflow-x: auto; border-radius: 6px; 
   &quot;selected_by&quot;: {
     &quot;metric&quot;: &quot;auc_pr&quot;,
     &quot;split&quot;: &quot;test&quot;,
-    &quot;mode&quot;: &quot;maximize&quot;
+    &quot;mode&quot;: &quot;maximize&quot;,
+    &quot;groups&quot;: {
+      &quot;best_overall&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;metric&quot;: &quot;auc_pr&quot;,
+        &quot;split&quot;: &quot;test&quot;,
+        &quot;mode&quot;: &quot;maximize&quot;,
+        &quot;constraints&quot;: {}
+      },
+      &quot;best_edge&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;metric&quot;: &quot;auc_pr&quot;,
+        &quot;split&quot;: &quot;test&quot;,
+        &quot;mode&quot;: &quot;maximize&quot;,
+        &quot;constraints&quot;: {
+          &quot;edge_candidate&quot;: true,
+          &quot;export_tflite&quot;: true,
+          &quot;max_params&quot;: 20000
+        }
+      },
+      &quot;best_interpretable&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;metric&quot;: &quot;auc_pr&quot;,
+        &quot;split&quot;: &quot;test&quot;,
+        &quot;mode&quot;: &quot;maximize&quot;,
+        &quot;constraints&quot;: {
+          &quot;families&quot;: [
+            &quot;classical_supervised&quot;
+          ]
+        }
+      }
+    }
   },
-  &quot;model_name&quot;: &quot;tiny_cnn&quot;,
+  &quot;model_name&quot;: &quot;tiny_tcn&quot;,
   &quot;family&quot;: &quot;neural_classifier&quot;,
-  &quot;priority&quot;: &quot;main_candidate&quot;,
+  &quot;priority&quot;: &quot;main_edge_candidate&quot;,
   &quot;edge_candidate&quot;: true,
   &quot;export_tflite&quot;: true,
   &quot;profile&quot;: {
     &quot;profile_name&quot;: &quot;seismic_edge_v1&quot;,
     &quot;profile_version&quot;: &quot;1.0.0&quot;,
     &quot;task&quot;: &quot;binary_anomaly_detection&quot;,
-    &quot;domain&quot;: &quot;seismic&quot;,
+    &quot;domain&quot;: &quot;seismic_edge&quot;,
     &quot;description&quot;: null,
     &quot;sampling_rate&quot;: 40.0,
     &quot;window_size&quot;: 800,
@@ -76,8 +104,8 @@ pre { background: #f3f4f6; padding: 16px; overflow-x: auto; border-radius: 6px; 
     &quot;normal_label&quot;: 0,
     &quot;anomaly_label&quot;: 1,
     &quot;normal_name&quot;: &quot;normal&quot;,
-    &quot;anomaly_name&quot;: &quot;anomalia&quot;,
-    &quot;split_name&quot;: &quot;evento&quot;,
+    &quot;anomaly_name&quot;: &quot;fault&quot;,
+    &quot;split_name&quot;: &quot;temporal&quot;,
     &quot;primary_metric&quot;: &quot;auc_pr&quot;,
     &quot;secondary_metrics&quot;: [
       &quot;f1&quot;,
@@ -87,150 +115,149 @@ pre { background: #f3f4f6; padding: 16px; overflow-x: auto; border-radius: 6px; 
     ],
     &quot;preprocessing&quot;: {
       &quot;offline_pipeline&quot;: [
-        &quot;resample_40hz&quot;,
-        &quot;detrend-linear&quot;,
+        &quot;load_vibration_signal&quot;,
+        &quot;select_channel&quot;,
+        &quot;replace_nan_inf&quot;,
+        &quot;detrend_linear&quot;,
         &quot;demean&quot;,
-        &quot;taper_5pct&quot;,
-        &quot;bandpass_0p5_15hz_zerophase&quot;,
         &quot;zscore_per_window&quot;
       ],
       &quot;edge_pipeline&quot;: [
-        &quot;detrend-linear&quot;,
-        &quot;taper-5pct&quot;,
-        &quot;bandpass-0p5_15hz_zerophase&quot;,
-        &quot;zscore-per_window&quot;
+        &quot;select_channel&quot;,
+        &quot;detrend_linear&quot;,
+        &quot;demean&quot;,
+        &quot;zscore_per_window&quot;
       ],
-      &quot;remove_response_offline&quot;: false,
-      &quot;remove_response_edge&quot;: false,
-      &quot;stationxml_required&quot;: false,
-      &quot;bandpass_hz&quot;: [
-        0.5,
-        15.0
-      ],
+      &quot;filtering&quot;: {
+        &quot;enabled&quot;: false,
+        &quot;type&quot;: &quot;none&quot;,
+        &quot;bandpass_hz&quot;: null
+      },
       &quot;normalization&quot;: &quot;zscore_per_window&quot;
     },
     &quot;embedded&quot;: {
       &quot;target&quot;: &quot;esp32&quot;,
       &quot;runtime&quot;: &quot;tensorflow_lite_micro&quot;,
-      &quot;decision_interval_ms&quot;: 10000,
-      &quot;preprocessing_version&quot;: &quot;seismic_edge_prepoc_v1&quot;,
+      &quot;preprocessing_version&quot;: &quot;seismic_edge_preproc_v1&quot;,
       &quot;ota_strategy_initial&quot;: &quot;firmware_full_image&quot;,
       &quot;ota_strategy_future&quot;: &quot;separate_model_update&quot;
     }
   },
   &quot;dataset&quot;: &quot;/mnt/d/PipelineGenerico/data/processed_seismic_edge_v1-20260604T184353Z-3-001/processed_seismic_edge_v1/dataset_seismic_edge_v1_split_evento.npz&quot;,
-  &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras&quot;,
-  &quot;threshold&quot;: 0.7241942882537842,
+  &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras&quot;,
+  &quot;threshold&quot;: 0.6695716381072998,
   &quot;summary_metrics&quot;: {
-    &quot;model_name&quot;: &quot;tiny_cnn&quot;,
+    &quot;model_name&quot;: &quot;tiny_tcn&quot;,
     &quot;family&quot;: &quot;neural_classifier&quot;,
-    &quot;priority&quot;: &quot;main_candidate&quot;,
+    &quot;priority&quot;: &quot;main_edge_candidate&quot;,
     &quot;edge_candidate&quot;: true,
     &quot;export_tflite&quot;: true,
     &quot;used_optuna&quot;: false,
-    &quot;parameter_count&quot;: 15377,
-    &quot;val_auc_pr&quot;: 0.8597729907721775,
-    &quot;val_auc_roc&quot;: 0.9546285079749647,
-    &quot;val_f1&quot;: 0.7908236418671339,
-    &quot;val_precision&quot;: 0.8342857142857143,
-    &quot;val_recall&quot;: 0.7516656571774682,
-    &quot;val_fp_per_hour&quot;: 6.878536547554454,
-    &quot;test_auc_pr&quot;: 0.8775302765225134,
-    &quot;test_auc_roc&quot;: 0.9575893194486164,
-    &quot;test_f1&quot;: 0.8108529549352878,
-    &quot;test_precision&quot;: 0.8430609597924773,
-    &quot;test_recall&quot;: 0.7810153199158907,
-    &quot;test_fp_per_hour&quot;: 6.745905764837973,
-    &quot;threshold_from_val&quot;: 0.7241942882537842,
-    &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras&quot;
+    &quot;parameter_count&quot;: 5273,
+    &quot;val_auc_pr&quot;: 0.9022069688443869,
+    &quot;val_auc_roc&quot;: 0.9668699508715256,
+    &quot;val_f1&quot;: 0.8425838820947006,
+    &quot;val_precision&quot;: 0.8735370611183355,
+    &quot;val_recall&quot;: 0.8137492428831011,
+    &quot;val_fp_per_hour&quot;: 5.427486241376638,
+    &quot;test_auc_pr&quot;: 0.9144131646435841,
+    &quot;test_auc_roc&quot;: 0.9694001668836154,
+    &quot;test_f1&quot;: 0.8536660505237215,
+    &quot;test_precision&quot;: 0.8760670249762883,
+    &quot;test_recall&quot;: 0.8323820967257435,
+    &quot;test_fp_per_hour&quot;: 5.463626156645631,
+    &quot;threshold_from_val&quot;: 0.6695716381072998,
+    &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras&quot;
   },
   &quot;metrics&quot;: {
-    &quot;threshold_from_val&quot;: 0.7241942882537842,
+    &quot;threshold_from_val&quot;: 0.6695716381072998,
     &quot;val&quot;: {
-      &quot;auc_pr&quot;: 0.8597729907721775,
-      &quot;auc_roc&quot;: 0.9546285079749647,
-      &quot;threshold&quot;: 0.7241942882537842,
+      &quot;auc_pr&quot;: 0.9022069688443869,
+      &quot;auc_roc&quot;: 0.9668699508715256,
+      &quot;threshold&quot;: 0.6695716381072998,
       &quot;best_threshold_by_f1&quot;: {
-        &quot;threshold&quot;: 0.7241942882537842,
-        &quot;precision&quot;: 0.8342857142857143,
-        &quot;recall&quot;: 0.7516656571774682,
-        &quot;f1&quot;: 0.7908236368807035
+        &quot;threshold&quot;: 0.6695716381072998,
+        &quot;precision&quot;: 0.8735370611183355,
+        &quot;recall&quot;: 0.8137492428831011,
+        &quot;f1&quot;: 0.8425838771009785
       },
-      &quot;f1&quot;: 0.7908236418671339,
-      &quot;precision&quot;: 0.8342857142857143,
-      &quot;recall&quot;: 0.7516656571774682,
+      &quot;f1&quot;: 0.8425838820947006,
+      &quot;precision&quot;: 0.8735370611183355,
+      &quot;recall&quot;: 0.8137492428831011,
       &quot;confusion_matrix&quot;: {
-        &quot;tn&quot;: 22007,
-        &quot;fp&quot;: 493,
-        &quot;fn&quot;: 820,
-        &quot;tp&quot;: 2482
+        &quot;tn&quot;: 22111,
+        &quot;fp&quot;: 389,
+        &quot;fn&quot;: 615,
+        &quot;tp&quot;: 2687
       }
     },
     &quot;test&quot;: {
-      &quot;auc_pr&quot;: 0.8775302765225134,
-      &quot;auc_roc&quot;: 0.9575893194486164,
-      &quot;threshold&quot;: 0.7241942882537842,
+      &quot;auc_pr&quot;: 0.9144131646435841,
+      &quot;auc_roc&quot;: 0.9694001668836154,
+      &quot;threshold&quot;: 0.6695716381072998,
       &quot;best_threshold_by_f1&quot;: {
-        &quot;threshold&quot;: 0.7456919550895691,
-        &quot;precision&quot;: 0.8575717144763175,
-        &quot;recall&quot;: 0.7723039951937519,
-        &quot;f1&quot;: 0.8127074393000762
+        &quot;threshold&quot;: 0.6695478558540344,
+        &quot;precision&quot;: 0.8761061946902655,
+        &quot;recall&quot;: 0.8326824872334034,
+        &quot;f1&quot;: 0.8538425947260074
       },
-      &quot;f1&quot;: 0.8108529549352878,
-      &quot;precision&quot;: 0.8430609597924773,
-      &quot;recall&quot;: 0.7810153199158907,
+      &quot;f1&quot;: 0.8536660505237215,
+      &quot;precision&quot;: 0.8760670249762883,
+      &quot;recall&quot;: 0.8323820967257435,
       &quot;confusion_matrix&quot;: {
-        &quot;tn&quot;: 22016,
-        &quot;fp&quot;: 484,
-        &quot;fn&quot;: 729,
-        &quot;tp&quot;: 2600
+        &quot;tn&quot;: 22108,
+        &quot;fp&quot;: 392,
+        &quot;fn&quot;: 558,
+        &quot;tp&quot;: 2771
       }
     }
   },
   &quot;hpo&quot;: {
     &quot;used_optuna&quot;: false,
     &quot;best_params&quot;: {
+      &quot;batch_size&quot;: 64,
+      &quot;pos_multiplier&quot;: 1.274375423547668,
+      &quot;filters&quot;: 24,
+      &quot;kernel_size&quot;: 11,
       &quot;n_blocks&quot;: 3,
-      &quot;base_filters&quot;: 16,
-      &quot;kernel_first&quot;: 21,
-      &quot;kernel_other&quot;: 5,
-      &quot;dense_units&quot;: 48,
-      &quot;dropout&quot;: 0.240293,
-      &quot;spatial_dropout&quot;: 0.007913,
-      &quot;learning_rate&quot;: 0.0027376,
-      &quot;l2_reg&quot;: 8.261e-06,
+      &quot;dilation_base&quot;: 2,
+      &quot;dropout&quot;: 0.03544702294960163,
+      &quot;spatial_dropout&quot;: 0.1142415531888814,
+      &quot;dense_units&quot;: 32,
+      &quot;learning_rate&quot;: 0.0019901844880576103,
+      &quot;l2_reg&quot;: 8.596266772391992e-07,
+      &quot;head_pooling&quot;: &quot;avg&quot;,
+      &quot;label_smoothing&quot;: 0.012938050702971032,
+      &quot;padding&quot;: &quot;same&quot;,
+      &quot;conv_type&quot;: &quot;separable&quot;,
       &quot;use_batch_norm&quot;: false,
-      &quot;conv_type&quot;: &quot;conv&quot;,
-      &quot;head_pooling&quot;: &quot;avgmax&quot;,
-      &quot;label_smoothing&quot;: 0.008688,
-      &quot;pos_multiplier&quot;: 1.0,
-      &quot;epochs&quot;: 20,
-      &quot;batch_size&quot;: 128,
-      &quot;patience&quot;: 5
+      &quot;epochs&quot;: 40,
+      &quot;patience&quot;: 8
     },
     &quot;best_value&quot;: null,
     &quot;n_trials&quot;: 0
   },
   &quot;params&quot;: {
+    &quot;batch_size&quot;: 64,
+    &quot;pos_multiplier&quot;: 1.274375423547668,
+    &quot;filters&quot;: 24,
+    &quot;kernel_size&quot;: 11,
     &quot;n_blocks&quot;: 3,
-    &quot;base_filters&quot;: 16,
-    &quot;kernel_first&quot;: 21,
-    &quot;kernel_other&quot;: 5,
-    &quot;dense_units&quot;: 48,
-    &quot;dropout&quot;: 0.240293,
-    &quot;spatial_dropout&quot;: 0.007913,
-    &quot;learning_rate&quot;: 0.0027376,
-    &quot;l2_reg&quot;: 8.261e-06,
+    &quot;dilation_base&quot;: 2,
+    &quot;dropout&quot;: 0.03544702294960163,
+    &quot;spatial_dropout&quot;: 0.1142415531888814,
+    &quot;dense_units&quot;: 32,
+    &quot;learning_rate&quot;: 0.0019901844880576103,
+    &quot;l2_reg&quot;: 8.596266772391992e-07,
+    &quot;head_pooling&quot;: &quot;avg&quot;,
+    &quot;label_smoothing&quot;: 0.012938050702971032,
+    &quot;padding&quot;: &quot;same&quot;,
+    &quot;conv_type&quot;: &quot;separable&quot;,
     &quot;use_batch_norm&quot;: false,
-    &quot;conv_type&quot;: &quot;conv&quot;,
-    &quot;head_pooling&quot;: &quot;avgmax&quot;,
-    &quot;label_smoothing&quot;: 0.008688,
-    &quot;pos_multiplier&quot;: 1.0,
-    &quot;epochs&quot;: 20,
-    &quot;batch_size&quot;: 128,
-    &quot;patience&quot;: 5
+    &quot;epochs&quot;: 40,
+    &quot;patience&quot;: 8
   },
-  &quot;parameter_count&quot;: 15377
+  &quot;parameter_count&quot;: 5273
 }
 </code></pre>
 <h2>Promotion Report</h2>
@@ -238,32 +265,32 @@ pre { background: #f3f4f6; padding: 16px; overflow-x: auto; border-radius: 6px; 
 <pre><code>
 {
   &quot;approved&quot;: true,
-  &quot;candidate_model&quot;: &quot;tiny_cnn&quot;,
+  &quot;candidate_model&quot;: &quot;tiny_tcn&quot;,
   &quot;candidate_family&quot;: &quot;neural_classifier&quot;,
-  &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras&quot;,
+  &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras&quot;,
   &quot;checks&quot;: [
     {
       &quot;name&quot;: &quot;min_auc_pr&quot;,
       &quot;passed&quot;: true,
-      &quot;value&quot;: 0.8775302765225134,
+      &quot;value&quot;: 0.9144131646435841,
       &quot;rule&quot;: &quot;&gt;= 0.8&quot;
     },
     {
       &quot;name&quot;: &quot;min_f1&quot;,
       &quot;passed&quot;: true,
-      &quot;value&quot;: 0.8108529549352878,
+      &quot;value&quot;: 0.8536660505237215,
       &quot;rule&quot;: &quot;&gt;= 0.7&quot;
     },
     {
       &quot;name&quot;: &quot;max_fp_per_hour&quot;,
       &quot;passed&quot;: true,
-      &quot;value&quot;: 6.745905764837973,
+      &quot;value&quot;: 5.463626156645631,
       &quot;rule&quot;: &quot;&lt;= 10.0&quot;
     },
     {
       &quot;name&quot;: &quot;max_val_test_auc_pr_gap&quot;,
       &quot;passed&quot;: true,
-      &quot;value&quot;: 0.01775728575033586,
+      &quot;value&quot;: 0.01220619579919724,
       &quot;rule&quot;: &quot;&lt;= 0.08&quot;
     }
   ],
@@ -490,7 +517,7 @@ pre { background: #f3f4f6; padding: 16px; overflow-x: auto; border-radius: 6px; 
 <pre><code>
 {
   &quot;schema_version&quot;: &quot;1.0.0&quot;,
-  &quot;created_at_utc&quot;: &quot;2026-06-14T21:30:02.103269+00:00&quot;,
+  &quot;created_at_utc&quot;: &quot;2026-06-18T18:37:15.086042+00:00&quot;,
   &quot;status&quot;: &quot;ready_for_packaging&quot;,
   &quot;target&quot;: {
     &quot;device&quot;: &quot;esp32&quot;,
@@ -505,105 +532,103 @@ pre { background: #f3f4f6; padding: 16px; overflow-x: auto; border-radius: 6px; 
   },
   &quot;artifact&quot;: {
     &quot;type&quot;: &quot;tflite_int8&quot;,
-    &quot;path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_cnn_int8.tflite&quot;,
-    &quot;sha256&quot;: &quot;f71ac3b1ec6b9207e459176f1bb86623ae23ed9573b51a1c9c4d15d6987c6bc0&quot;,
-    &quot;size_bytes&quot;: 26328,
-    &quot;size_kb&quot;: 25.71,
+    &quot;path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_tcn_int8.tflite&quot;,
+    &quot;sha256&quot;: &quot;53e8316f7fe0d12b95d426484a750ebb18b04304da1931cc6712214fc0ba89e3&quot;,
+    &quot;size_bytes&quot;: 27776,
+    &quot;size_kb&quot;: 27.12,
     &quot;quantization&quot;: &quot;int8&quot;,
-    &quot;source_model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras&quot;
+    &quot;source_model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras&quot;
   },
   &quot;model&quot;: {
-    &quot;name&quot;: &quot;tiny_cnn&quot;,
+    &quot;name&quot;: &quot;tiny_tcn&quot;,
     &quot;family&quot;: &quot;neural_classifier&quot;,
-    &quot;version&quot;: &quot;seismic_edge_v1_tiny_cnn_20260614&quot;,
-    &quot;threshold&quot;: 0.7241942882537842,
-    &quot;parameter_count&quot;: 15377
+    &quot;version&quot;: &quot;seismic_edge_v1_tiny_tcn_20260618&quot;,
+    &quot;threshold&quot;: 0.6695716381072998,
+    &quot;parameter_count&quot;: 5273
   },
   &quot;profile&quot;: {
     &quot;name&quot;: &quot;seismic_edge_v1&quot;,
     &quot;version&quot;: &quot;1.0.0&quot;,
-    &quot;domain&quot;: &quot;seismic&quot;,
+    &quot;domain&quot;: &quot;seismic_edge&quot;,
     &quot;sampling_rate&quot;: 40.0,
     &quot;window_size&quot;: 800,
     &quot;window_seconds&quot;: 20.0,
     &quot;step_seconds&quot;: 10.0,
     &quot;preprocessing&quot;: {
       &quot;offline_pipeline&quot;: [
-        &quot;resample_40hz&quot;,
-        &quot;detrend-linear&quot;,
+        &quot;load_vibration_signal&quot;,
+        &quot;select_channel&quot;,
+        &quot;replace_nan_inf&quot;,
+        &quot;detrend_linear&quot;,
         &quot;demean&quot;,
-        &quot;taper_5pct&quot;,
-        &quot;bandpass_0p5_15hz_zerophase&quot;,
         &quot;zscore_per_window&quot;
       ],
       &quot;edge_pipeline&quot;: [
-        &quot;detrend-linear&quot;,
-        &quot;taper-5pct&quot;,
-        &quot;bandpass-0p5_15hz_zerophase&quot;,
-        &quot;zscore-per_window&quot;
+        &quot;select_channel&quot;,
+        &quot;detrend_linear&quot;,
+        &quot;demean&quot;,
+        &quot;zscore_per_window&quot;
       ],
-      &quot;remove_response_offline&quot;: false,
-      &quot;remove_response_edge&quot;: false,
-      &quot;stationxml_required&quot;: false,
-      &quot;bandpass_hz&quot;: [
-        0.5,
-        15.0
-      ],
+      &quot;filtering&quot;: {
+        &quot;enabled&quot;: false,
+        &quot;type&quot;: &quot;none&quot;,
+        &quot;bandpass_hz&quot;: null
+      },
       &quot;normalization&quot;: &quot;zscore_per_window&quot;
     }
   },
   &quot;quality&quot;: {
     &quot;summary_metrics&quot;: {
-      &quot;model_name&quot;: &quot;tiny_cnn&quot;,
+      &quot;model_name&quot;: &quot;tiny_tcn&quot;,
       &quot;family&quot;: &quot;neural_classifier&quot;,
-      &quot;priority&quot;: &quot;main_candidate&quot;,
+      &quot;priority&quot;: &quot;main_edge_candidate&quot;,
       &quot;edge_candidate&quot;: true,
       &quot;export_tflite&quot;: true,
       &quot;used_optuna&quot;: false,
-      &quot;parameter_count&quot;: 15377,
-      &quot;val_auc_pr&quot;: 0.8597729907721775,
-      &quot;val_auc_roc&quot;: 0.9546285079749647,
-      &quot;val_f1&quot;: 0.7908236418671339,
-      &quot;val_precision&quot;: 0.8342857142857143,
-      &quot;val_recall&quot;: 0.7516656571774682,
-      &quot;val_fp_per_hour&quot;: 6.878536547554454,
-      &quot;test_auc_pr&quot;: 0.8775302765225134,
-      &quot;test_auc_roc&quot;: 0.9575893194486164,
-      &quot;test_f1&quot;: 0.8108529549352878,
-      &quot;test_precision&quot;: 0.8430609597924773,
-      &quot;test_recall&quot;: 0.7810153199158907,
-      &quot;test_fp_per_hour&quot;: 6.745905764837973,
-      &quot;threshold_from_val&quot;: 0.7241942882537842,
-      &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras&quot;
+      &quot;parameter_count&quot;: 5273,
+      &quot;val_auc_pr&quot;: 0.9022069688443869,
+      &quot;val_auc_roc&quot;: 0.9668699508715256,
+      &quot;val_f1&quot;: 0.8425838820947006,
+      &quot;val_precision&quot;: 0.8735370611183355,
+      &quot;val_recall&quot;: 0.8137492428831011,
+      &quot;val_fp_per_hour&quot;: 5.427486241376638,
+      &quot;test_auc_pr&quot;: 0.9144131646435841,
+      &quot;test_auc_roc&quot;: 0.9694001668836154,
+      &quot;test_f1&quot;: 0.8536660505237215,
+      &quot;test_precision&quot;: 0.8760670249762883,
+      &quot;test_recall&quot;: 0.8323820967257435,
+      &quot;test_fp_per_hour&quot;: 5.463626156645631,
+      &quot;threshold_from_val&quot;: 0.6695716381072998,
+      &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras&quot;
     },
     &quot;quality_gate&quot;: {
       &quot;approved&quot;: true,
-      &quot;candidate_model&quot;: &quot;tiny_cnn&quot;,
+      &quot;candidate_model&quot;: &quot;tiny_tcn&quot;,
       &quot;candidate_family&quot;: &quot;neural_classifier&quot;,
-      &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras&quot;,
+      &quot;model_path&quot;: &quot;/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras&quot;,
       &quot;checks&quot;: [
         {
           &quot;name&quot;: &quot;min_auc_pr&quot;,
           &quot;passed&quot;: true,
-          &quot;value&quot;: 0.8775302765225134,
+          &quot;value&quot;: 0.9144131646435841,
           &quot;rule&quot;: &quot;&gt;= 0.8&quot;
         },
         {
           &quot;name&quot;: &quot;min_f1&quot;,
           &quot;passed&quot;: true,
-          &quot;value&quot;: 0.8108529549352878,
+          &quot;value&quot;: 0.8536660505237215,
           &quot;rule&quot;: &quot;&gt;= 0.7&quot;
         },
         {
           &quot;name&quot;: &quot;max_fp_per_hour&quot;,
           &quot;passed&quot;: true,
-          &quot;value&quot;: 6.745905764837973,
+          &quot;value&quot;: 5.463626156645631,
           &quot;rule&quot;: &quot;&lt;= 10.0&quot;
         },
         {
           &quot;name&quot;: &quot;max_val_test_auc_pr_gap&quot;,
           &quot;passed&quot;: true,
-          &quot;value&quot;: 0.01775728575033586,
+          &quot;value&quot;: 0.01220619579919724,
           &quot;rule&quot;: &quot;&lt;= 0.08&quot;
         }
       ],

@@ -1,16 +1,16 @@
 #Contrato do dataset sismico edge
-profile_name: ims_bearing_v1
+profile_name: seismic_edge_v1
 profile_version: 1.0.0
 
 task : binary_anomaly_detection
-domain: bearing_vibration
+domain: seismic_edge
 
 #Amostragem e janelamento
-sampling_rate : null #Null pois preciso confirmar no dataset
-window_size: 2048 #Valor definido no dataset
-window_seconds: null
-step_seconds: 1024 #Deifinido no dataset
-overlap: 0.5 #Definido no dataset 
+sampling_rate : 40.0
+window_size: 800
+window_seconds: 20.0
+step_seconds: 10.0
+overlap: 0.5
 
 #labels
 normal_label: 0
@@ -26,7 +26,7 @@ split_name: temporal
 primary_metric: auc_pr
 secondary_metrics: [f1, auc_roc, precision, recall]
 
-#Pipeline pra gerar o dataset 
+#Pipeline pra gerar o dataset
 preprocessing:
   offline_pipeline:
     - load_vibration_signal
@@ -34,20 +34,19 @@ preprocessing:
     - replace_nan_inf
     - detrend_linear
     - demean
-    - windowing_2048
     - zscore_per_window
 
   edge_pipeline:
     - select_channel
     - detrend_linear
     - demean
-    - zscore-per_window
-  
+    - zscore_per_window
+
   filtering:
      enabled: false
      type: none
      bandpass_hz: null
-  
+
   normalization: zscore_per_window
 
 labeling:
@@ -58,10 +57,10 @@ labeling:
   anomaly_fraction_start: 0.80
   discard_transition: true
 
-#Confiuracao embarcada
+#Configuracao embarcada
 embedded:
   target: esp32
   runtime: tensorflow_lite_micro
-  preprocessing_version: ims_bearing_preproc_v1
+  preprocessing_version: seismic_edge_preproc_v1
   ota_strategy_initial: firmware_full_image
   ota_strategy_future: separate_model_update

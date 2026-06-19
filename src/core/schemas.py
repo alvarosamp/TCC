@@ -39,37 +39,37 @@ def normalize_window_shape(X: np.ndarray, expected_size: int) -> np.ndarray:
     Para modelo neurais conv1d/tcn, o formato(N, T, C) é desejado
     Para modelos classicos, a etapa deve converter o sinal para tabular
     '''
-    X = np.ndarray(X)
+    X = np.asarray(X)
     if X.ndim == 2:
         #Univariado (T, N)
         if X.shape[1] != expected_size:
             raise ValueError(
                 f"Tamanho de janela invalido. "
-                f"Recebido={x.shape[1]}, esperado={expected_size}. "
-                f"Shape completo={x.shape}"
+                f"Recebido={X.shape[1]}, esperado={expected_size}. "
+                f"Shape completo={X.shape}"
             )
-        return X.astype(np.float32, copy = False)
-    
-    if x.ndim == 3:
+        return X.astype(np.float32, copy=False)
+
+    if X.ndim == 3:
         # Multivariado: (N, T, C)
-        if x.shape[1] != expected_size:
+        if X.shape[1] != expected_size:
             raise ValueError(
                 f"Tamanho de janela invalido. "
-                f"Recebido={x.shape[1]}, esperado={expected_size}. "
-                f"Shape completo={x.shape}. "
+                f"Recebido={X.shape[1]}, esperado={expected_size}. "
+                f"Shape completo={X.shape}. "
                 "O formato esperado para multivariado e (N, T, C)."
             )
 
-        if x.shape[2] < 1:
+        if X.shape[2] < 1:
             raise ValueError(
-                f"Numero de canais invalido em X: {x.shape[2]}. "
-                f"Shape completo={x.shape}"
+                f"Numero de canais invalido em X: {X.shape[2]}. "
+                f"Shape completo={X.shape}"
             )
 
-        return x.astype(np.float32, copy=False)
+        return X.astype(np.float32, copy=False)
 
     raise ValueError(
-        f"Formato de X nao suportado: {x.shape}. "
+        f"Formato de X nao suportado: {X.shape}. "
         "Use (N, T) para serie temporal univariada ou "
         "(N, T, C) para serie temporal multivariada. "
         "Se seu dado tiver 4D ou mais, compacte sensores/eixos extras "
@@ -90,6 +90,18 @@ def flatten_window(X: np.ndarray, expected_size: int) -> np.ndarray:
     Agora ela apenas chama normalize_window_shape para preservar canais.
     """
     return normalize_window_shape(X, expected_size)
+
+def infer_window_size_from_x(X: np.ndarray) -> int:
+    """
+    Infere o tamanho da janela temporal de X.
+    (N, T) -> T
+    (N, T, C) -> T
+    """
+    X = np.asarray(X)
+    if X.ndim in (2, 3):
+        return int(X.shape[1])
+    raise ValueError(f"Nao foi possivel inferir window_size para X com shape {X.shape}")
+
 
 def infer_n_channels(X:np.ndarray) -> int:
     """

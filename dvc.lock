@@ -229,3 +229,266 @@ stages:
       md5: 088d26eb87837ae0eec4bc94e06b0c80.dir
       size: 67421
       nfiles: 5
+  validate_real_dataset:
+    cmd: python -m src.data.validate_dataset
+    deps:
+    - path: config/configs/config.yaml
+      hash: md5
+      md5: 7f783840c9b2b2e6aa4c75283b4ab545
+      size: 1177
+    - path: config/configs/profiles/seismic_edge_v1.yaml
+      hash: md5
+      md5: bf2fc65de8c90a46deefcfdb36929af2
+      size: 1378
+    - path: src/core/profile.py
+      hash: md5
+      md5: 8f2a96f0a5f1924dfaa21b3aafd77e89
+      size: 4478
+    - path: src/core/schemas.py
+      hash: md5
+      md5: c20c7615336c7fbf350e1b6de0026c9b
+      size: 7364
+    - path: src/core/settings.py
+      hash: md5
+      md5: bffb0e9bbfdaed2e6bb1f53c4e03369b
+      size: 2421
+    - path: src/data/validate_dataset.py
+      hash: md5
+      md5: 2fc625fd8c007a79d4637dbb91d0f56e
+      size: 2481
+    outs:
+    - path: artefacts/reports/dataset_validation_report.json
+      hash: md5
+      md5: ada781d1c9a462935236dddf3f08acf0
+      size: 2983
+  train_real_models:
+    cmd: python -m src.training.train_all --models-cfg config/model/models.yaml
+    deps:
+    - path: config/configs/config.yaml
+      hash: md5
+      md5: 7f783840c9b2b2e6aa4c75283b4ab545
+      size: 1177
+    - path: config/configs/profiles/seismic_edge_v1.yaml
+      hash: md5
+      md5: bf2fc65de8c90a46deefcfdb36929af2
+      size: 1378
+    - path: config/model/models.yaml
+      hash: md5
+      md5: 1d3689d2bcc105317a0bbc3d5ca2fd6f
+      size: 10795
+    - path: src/core/profile.py
+      hash: md5
+      md5: 8f2a96f0a5f1924dfaa21b3aafd77e89
+      size: 4478
+    - path: src/core/schemas.py
+      hash: md5
+      md5: c20c7615336c7fbf350e1b6de0026c9b
+      size: 7364
+    - path: src/features/statistical_features.py
+      hash: md5
+      md5: 38f636ed43688b1d234288eca2958ac6
+      size: 5369
+    - path: src/training/evaluate.py
+      hash: md5
+      md5: f8ec7dc3ddb0251f3e7d5e166814bc62
+      size: 4017
+    - path: src/training/hpo.py
+      hash: md5
+      md5: 2f5887a4dd5fc040ff198ba08d1187ab
+      size: 1052
+    - path: src/training/model_registry.py
+      hash: md5
+      md5: 2e97fac9cf07cb628dccb25e6eb8b3a9
+      size: 1761
+    - path: src/training/neural_models.py
+      hash: md5
+      md5: b4713532d365c972a194e08c9ecf36b2
+      size: 9416
+    - path: src/training/train_all.py
+      hash: md5
+      md5: 0d36b6b5bf9135cf723a7d0c09db038e
+      size: 40994
+    outs:
+    - path: artefacts/models
+      hash: md5
+      md5: f889e58ba0b6dd1e1683c9bfa1010624.dir
+      size: 1296750781
+      nfiles: 5
+    - path: artefacts/reports/model_comparison.json
+      hash: md5
+      md5: a0aa07ce06b9ea33a75776e25f709412
+      size: 37302
+  promote_real_model:
+    cmd: python -m src.mlops.promote_model
+    deps:
+    - path: artefacts/reports/candidate_manifest.json
+      hash: md5
+      md5: b7ff6ff75dad1e857bc3e4443c4753f7
+      size: 5792
+    - path: config/configs/config.yaml
+      hash: md5
+      md5: 7f783840c9b2b2e6aa4c75283b4ab545
+      size: 1177
+    - path: src/mlops/promote_model.py
+      hash: md5
+      md5: 64f3b9de60aaafec35a429bda7858413
+      size: 6326
+    outs:
+    - path: artefacts/registry/production_manifest.json
+      hash: md5
+      md5: f652d299800243d021e4028160370b31
+      size: 3897
+    - path: artefacts/reports/promotion_report.json
+      hash: md5
+      md5: 329ef5b41d4c6815766aac613b050182
+      size: 710
+  export_real_edge:
+    cmd: python -m src.export.export_tflite
+    deps:
+    - path: artefacts/reports/candidate_manifest.json
+      hash: md5
+      md5: b7ff6ff75dad1e857bc3e4443c4753f7
+      size: 5792
+    - path: src/export/export_header.py
+      hash: md5
+      md5: a003fb2b478a4ea665a2f28e0c850cd9
+      size: 1950
+    - path: src/export/export_tflite.py
+      hash: md5
+      md5: 029987c0da37f8b4518bedf6ca2787d6
+      size: 6574
+    outs:
+    - path: artefacts/edge
+      hash: md5
+      md5: 828f806c4141e8e8a3cd900d689c0cc8.dir
+      size: 210795
+      nfiles: 5
+  drift_real:
+    cmd: python -m src.monitoring.build_drift_reference && python -m 
+      src.monitoring.check_data_drift --split test && python -m 
+      src.monitoring.retrain_policy && python -m 
+      src.monitoring.drift_to_ota_decision
+    deps:
+    - path: artefacts/registry/production_manifest.json
+      hash: md5
+      md5: f652d299800243d021e4028160370b31
+      size: 3897
+    - path: artefacts/reports/candidate_manifest.json
+      hash: md5
+      md5: b7ff6ff75dad1e857bc3e4443c4753f7
+      size: 5792
+    - path: src/monitoring/build_drift_reference.py
+      hash: md5
+      md5: 63b7bd196a07ea5cdd710f0acc285d5f
+      size: 3875
+    - path: src/monitoring/check_data_drift.py
+      hash: md5
+      md5: a9bc64792a02683e591f958fa8f7aad8
+      size: 8372
+    - path: src/monitoring/drift_to_ota_decision.py
+      hash: md5
+      md5: b94207bbf0b783c8e57aa13c2cb56fdf
+      size: 8560
+    - path: src/monitoring/retrain_policy.py
+      hash: md5
+      md5: 4e4236fb0f9b8feb0904e1d82e9154f0
+      size: 4524
+    outs:
+    - path: artefacts/monitoring/drift_report.json
+      hash: md5
+      md5: 9c1e2234be8e298c729e4aa951a9da15
+      size: 12143
+    - path: artefacts/monitoring/ota_decision.json
+      hash: md5
+      md5: 307f5e439e41f5c0792b6c11b59c4657
+      size: 764
+    - path: artefacts/monitoring/retrain_policy.json
+      hash: md5
+      md5: c1e05372900a5707aad8577d4bc5ef86
+      size: 669
+  ota_real_package:
+    cmd: python -m src.ota.build_ota_manifest && python -m 
+      src.ota.build_ota_package && python -m src.ota.sign_ota_package && python 
+      -m src.ota.validate_ota_package && python -m src.ota.publish_local_release
+    deps:
+    - path: artefacts/edge
+      hash: md5
+      md5: 828f806c4141e8e8a3cd900d689c0cc8.dir
+      size: 210795
+      nfiles: 5
+    - path: artefacts/registry/production_manifest.json
+      hash: md5
+      md5: f652d299800243d021e4028160370b31
+      size: 3897
+    - path: src/ota/build_ota_manifest.py
+      hash: md5
+      md5: 58908701d3e9c2c5b43eaea8a6b6ddb2
+      size: 5765
+    - path: src/ota/build_ota_package.py
+      hash: md5
+      md5: 147f53751c40a4394b9384160f75796c
+      size: 4406
+    - path: src/ota/publish_local_release.py
+      hash: md5
+      md5: 341ac74a003434741637bd4e19e015d1
+      size: 5769
+    - path: src/ota/sign_ota_package.py
+      hash: md5
+      md5: 861197b1b4112fc0350ccfce07857058
+      size: 3936
+    - path: src/ota/validate_ota_package.py
+      hash: md5
+      md5: f4972ce4d8032e1b4af177586d288bc1
+      size: 9029
+    outs:
+    - path: artefacts/ota/packages
+      hash: md5
+      md5: 6720f3ad88bd3e164c0cd4f8fd527d1a.dir
+      size: 36914
+      nfiles: 5
+    - path: artefacts/ota/releases
+      hash: md5
+      md5: 65ea340c4e6c6b3f0d8447448e2d4101.dir
+      size: 38111
+      nfiles: 6
+  final_report:
+    cmd: python -m src.monitoring.check_prediction_performance_drift && python 
+      -m src.reports.generate_final_report
+    deps:
+    - path: artefacts/monitoring/drift_report.json
+      hash: md5
+      md5: 9c1e2234be8e298c729e4aa951a9da15
+      size: 12143
+    - path: artefacts/ota/releases
+      hash: md5
+      md5: 65ea340c4e6c6b3f0d8447448e2d4101.dir
+      size: 38111
+      nfiles: 6
+    - path: artefacts/reports/candidate_manifest.json
+      hash: md5
+      md5: b7ff6ff75dad1e857bc3e4443c4753f7
+      size: 5792
+    - path: server/data/events
+      hash: md5
+      md5: ecd8be853660f04d5bc9944c6872755b.dir
+      size: 104910
+      nfiles: 139
+    - path: server/data/feedback
+      hash: md5
+      md5: 6ffbaaad7b4ac6e1afabed19a80b2560.dir
+      size: 0
+      nfiles: 1
+    - path: src/monitoring/check_prediction_performance_drift.py
+      hash: md5
+      md5: 6375cda67942ebf3ad1c28b4ddc6796a
+      size: 7207
+    - path: src/reports/generate_final_report.py
+      hash: md5
+      md5: 18b20f33c0fcbd445512e478499edae9
+      size: 5744
+    outs:
+    - path: docs/results/final_report
+      hash: md5
+      md5: d1dfb6fb13eff38fb7daa947c1334438.dir
+      size: 41199
+      nfiles: 2

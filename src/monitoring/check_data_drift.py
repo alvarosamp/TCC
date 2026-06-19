@@ -29,6 +29,8 @@ from pathlib import Path
 import numpy as np
 from scipy.stats import ks_2samp
 
+from src.core.settings import DATASET_FILE
+
 from src.features.statistical_features import (
     extract_statistical_features,
     feature_names,
@@ -125,8 +127,8 @@ def main() -> None:
     parser.add_argument(
         "--dataset",
         type=Path,
-        required=True,
-        help="Caminho para o dataset NPZ processado.",
+        default=DATASET_FILE,
+        help="Caminho para o dataset NPZ processado. Usa o dataset configurado no projeto por padr?o.",
     )
     parser.add_argument(
         "--split",

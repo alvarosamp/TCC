@@ -1,51 +1,7 @@
-﻿# Catalogo de modelos do pipeline generico.
-#
-# Ideia desta versao:
-# - manter compatibilidade com a selecao antiga: selection.metric/split/mode;
-# - preparar a selecao por objetivo: best_overall, best_edge, best_interpretable;
-# - separar modelos de baseline, modelos interpretaveis, modelos edge e modelos experimentais;
-# - permitir que datasets como IMS Bearing usem estrategias diferentes de TinyML.
-#
-# Campos principais:
-#
-# enabled:
-#   true  -> entra no pipeline de treino
-#   false -> fica documentado, mas nao roda por padrao
-#
-# family:
-#   classical_supervised   -> modelos supervisionados com features tabulares
-#   classical_unsupervised -> modelos nao supervisionados/anomalia
-#   neural_classifier      -> redes neurais classificadoras
-#   autoencoder            -> modelos por reconstrucao
-#
-# deployment_target:
-#   server      -> modelo voltado a melhor desempenho geral, sem restricao TinyML
-#   edge        -> modelo candidato a ESP32/TFLite Micro
-#   baseline    -> modelo de comparacao simples
-#   experimental -> modelo mantido para estudo, nao necessariamente candidato final
-#
-# selection_group:
-#   overall       -> concorre a melhor modelo geral
-#   edge          -> concorre a melhor modelo embarcado
-#   interpretable -> concorre a melhor modelo interpretavel
-#   experimental  -> fica como experimento
-#
-# edge_candidate:
-#   true  -> pode ser considerado para TinyML/ESP32
-#   false -> nao entra como candidato embarcado
-#
-# export_tflite:
-#   true  -> pode ser exportado para TFLite/TFLite Micro, se for Keras
-#   false -> nao exporta para TFLite
-
 selection:
-  # Campos antigos, mantidos para compatibilidade com o train_all.py atual.
   metric: auc_pr
   split: test
   mode: maximize
-
-  # Nova ideia para a branch.
-  # O codigo atual ainda precisa ser ajustado para usar este bloco.
   groups:
     best_overall:
       enabled: true
@@ -53,7 +9,6 @@ selection:
       split: test
       mode: maximize
       constraints: {}
-
     best_edge:
       enabled: true
       metric: auc_pr
@@ -63,7 +18,6 @@ selection:
         edge_candidate: true
         export_tflite: true
         max_params: 20000
-
     best_interpretable:
       enabled: true
       metric: auc_pr
@@ -71,8 +25,7 @@ selection:
       mode: maximize
       constraints:
         families:
-          - classical_supervised
-
+        - classical_supervised
 models:
   logistic_regression:
     enabled: true
@@ -95,7 +48,6 @@ models:
           low: 0.001
           high: 10.0
           log: true
-
   random_forest:
     enabled: true
     family: classical_supervised
@@ -121,12 +73,17 @@ models:
           high: 600
         max_depth:
           type: categorical
-          choices: [null, 8, 12, 16, 24, 32]
+          choices:
+          - null
+          - 8
+          - 12
+          - 16
+          - 24
+          - 32
         min_samples_leaf:
           type: int
           low: 1
           high: 5
-
   extra_trees:
     enabled: true
     family: classical_supervised
@@ -152,12 +109,17 @@ models:
           high: 600
         max_depth:
           type: categorical
-          choices: [null, 8, 12, 16, 24, 32]
+          choices:
+          - null
+          - 8
+          - 12
+          - 16
+          - 24
+          - 32
         min_samples_leaf:
           type: int
           low: 1
           high: 5
-
   isolation_forest:
     enabled: false
     family: classical_unsupervised
@@ -181,9 +143,8 @@ models:
         contamination:
           type: float
           low: 0.01
-          high: 0.20
+          high: 0.2
           log: false
-
   dense_autoencoder:
     enabled: false
     family: autoencoder
@@ -193,9 +154,11 @@ models:
     export_tflite: true
     priority: experimental
     params:
-      hidden_units: [256, 128]
+      hidden_units:
+      - 256
+      - 128
       latent_dim: 32
-      dropout: 0.10
+      dropout: 0.1
       epochs: 40
       batch_size: 256
       learning_rate: 0.001
@@ -203,7 +166,6 @@ models:
     tune:
       enabled: false
       n_trials: 20
-
   cnn_autoencoder:
     enabled: false
     family: autoencoder
@@ -213,10 +175,16 @@ models:
     export_tflite: true
     priority: experimental
     params:
-      filters: [32, 64, 128]
-      kernels: [7, 5, 3]
+      filters:
+      - 32
+      - 64
+      - 128
+      kernels:
+      - 7
+      - 5
+      - 3
       bottleneck_filters: 32
-      dropout: 0.10
+      dropout: 0.1
       epochs: 40
       batch_size: 256
       learning_rate: 0.001
@@ -224,7 +192,6 @@ models:
     tune:
       enabled: false
       n_trials: 20
-
   tiny_cnn:
     enabled: true
     family: neural_classifier
@@ -242,7 +209,7 @@ models:
       dropout: 0.240293
       spatial_dropout: 0.007913
       learning_rate: 0.0027376
-      l2_reg: 0.000008261
+      l2_reg: 8.261e-06
       use_batch_norm: false
       conv_type: conv
       head_pooling: avg
@@ -260,20 +227,37 @@ models:
       search_space:
         base_filters:
           type: categorical
-          choices: [8, 12, 16, 24, 32]
+          choices:
+          - 8
+          - 12
+          - 16
+          - 24
+          - 32
         n_blocks:
           type: int
           low: 2
           high: 5
         kernel_first:
           type: categorical
-          choices: [7, 11, 15, 21]
+          choices:
+          - 7
+          - 11
+          - 15
+          - 21
         kernel_other:
           type: categorical
-          choices: [3, 5, 7]
+          choices:
+          - 3
+          - 5
+          - 7
         dense_units:
           type: categorical
-          choices: [0, 16, 32, 48, 64]
+          choices:
+          - 0
+          - 16
+          - 32
+          - 48
+          - 64
         dropout:
           type: float
           low: 0.0
@@ -281,7 +265,7 @@ models:
         spatial_dropout:
           type: float
           low: 0.0
-          high: 0.30
+          high: 0.3
         learning_rate:
           type: float
           low: 0.0001
@@ -289,30 +273,37 @@ models:
           log: true
         l2_reg:
           type: float
-          low: 0.0000001
+          low: 1.0e-07
           high: 0.001
           log: true
         pos_multiplier:
           type: float
-          low: 0.70
-          high: 2.00
+          low: 0.7
+          high: 2.0
         label_smoothing:
           type: float
           low: 0.0
           high: 0.05
         batch_size:
           type: categorical
-          choices: [128, 256, 512]
+          choices:
+          - 128
+          - 256
+          - 512
         head_pooling:
           type: categorical
-          choices: [avg]
+          choices:
+          - avg
         conv_type:
           type: categorical
-          choices: [conv, separable]
+          choices:
+          - conv
+          - separable
         use_batch_norm:
           type: categorical
-          choices: [true, false]
-
+          choices:
+          - true
+          - false
   tiny_tcn:
     enabled: true
     family: neural_classifier
@@ -322,24 +313,24 @@ models:
     export_tflite: true
     priority: main_edge_candidate
     params:
-      batch_size: 128
-      pos_multiplier: 0.8275208695255354
-      filters: 32
-      kernel_size: 7
-      n_blocks: 6
-      dilation_base: 3
-      dropout: 0.028423185415906306
-      spatial_dropout: 0.06635884588558189
-      dense_units: 24
-      learning_rate: 0.0005809816939134014
-      l2_reg: 0.000015141953225930909
+      batch_size: 64
+      pos_multiplier: 1.274375423547668
+      filters: 24
+      kernel_size: 11
+      n_blocks: 3
+      dilation_base: 2
+      dropout: 0.03544702294960163
+      spatial_dropout: 0.1142415531888814
+      dense_units: 32
+      learning_rate: 0.0019901844880576103
+      l2_reg: 8.596266772391992e-07
       head_pooling: avg
-      label_smoothing: 0.030519884747161094
+      label_smoothing: 0.012938050702971032
       padding: same
       conv_type: separable
       use_batch_norm: false
-      epochs: 100
-      patience: 12
+      epochs: 40
+      patience: 8
     tune:
       enabled: false
       n_trials: 60
@@ -349,17 +340,29 @@ models:
       search_space:
         filters:
           type: categorical
-          choices: [8, 12, 16, 24, 32]
+          choices:
+          - 8
+          - 12
+          - 16
+          - 24
+          - 32
         kernel_size:
           type: categorical
-          choices: [3, 5, 7, 9, 11]
+          choices:
+          - 3
+          - 5
+          - 7
+          - 9
+          - 11
         n_blocks:
           type: int
           low: 3
           high: 6
         dilation_base:
           type: categorical
-          choices: [2, 3]
+          choices:
+          - 2
+          - 3
         dropout:
           type: float
           low: 0.0
@@ -367,10 +370,16 @@ models:
         spatial_dropout:
           type: float
           low: 0.0
-          high: 0.30
+          high: 0.3
         dense_units:
           type: categorical
-          choices: [0, 8, 16, 24, 32, 48]
+          choices:
+          - 0
+          - 8
+          - 16
+          - 24
+          - 32
+          - 48
         learning_rate:
           type: float
           low: 0.0001
@@ -378,33 +387,42 @@ models:
           log: true
         l2_reg:
           type: float
-          low: 0.0000001
+          low: 1.0e-07
           high: 0.001
           log: true
         pos_multiplier:
           type: float
-          low: 0.70
-          high: 2.00
+          low: 0.7
+          high: 2.0
         label_smoothing:
           type: float
           low: 0.0
           high: 0.05
         batch_size:
           type: categorical
-          choices: [128, 256, 512, 1024]
+          choices:
+          - 128
+          - 256
+          - 512
+          - 1024
         head_pooling:
           type: categorical
-          choices: [avg]
+          choices:
+          - avg
         conv_type:
           type: categorical
-          choices: [conv, separable]
+          choices:
+          - conv
+          - separable
         padding:
           type: categorical
-          choices: [same]
+          choices:
+          - same
         use_batch_norm:
           type: categorical
-          choices: [true, false]
-
+          choices:
+          - true
+          - false
   lstm_classifier:
     enabled: false
     family: neural_classifier
@@ -416,7 +434,7 @@ models:
     params:
       units: 48
       dense_units: 24
-      dropout: 0.20
+      dropout: 0.2
       epochs: 40
       batch_size: 256
       learning_rate: 0.001
@@ -424,9 +442,6 @@ models:
     tune:
       enabled: false
       n_trials: 20
-
-  # Modelo futuro para comparar melhor desempenho geral.
-  # Nao habilite enquanto build_neural_model/model_registry nao tiver suporte a "tcn_large".
   tcn_large:
     enabled: false
     family: neural_classifier
@@ -442,11 +457,11 @@ models:
       kernel_size: 7
       n_blocks: 8
       dilation_base: 2
-      dropout: 0.10
-      spatial_dropout: 0.10
+      dropout: 0.1
+      spatial_dropout: 0.1
       dense_units: 64
       learning_rate: 0.001
-      l2_reg: 0.000001
+      l2_reg: 1.0e-06
       head_pooling: avg
       label_smoothing: 0.01
       padding: same
@@ -463,10 +478,19 @@ models:
       search_space:
         filters:
           type: categorical
-          choices: [32, 48, 64, 96]
+          choices:
+          - 32
+          - 48
+          - 64
+          - 96
         kernel_size:
           type: categorical
-          choices: [3, 5, 7, 9, 11]
+          choices:
+          - 3
+          - 5
+          - 7
+          - 9
+          - 11
         n_blocks:
           type: int
           low: 4
@@ -474,14 +498,17 @@ models:
         dropout:
           type: float
           low: 0.0
-          high: 0.40
+          high: 0.4
         spatial_dropout:
           type: float
           low: 0.0
-          high: 0.30
+          high: 0.3
         dense_units:
           type: categorical
-          choices: [32, 64, 128]
+          choices:
+          - 32
+          - 64
+          - 128
         learning_rate:
           type: float
           low: 0.0001

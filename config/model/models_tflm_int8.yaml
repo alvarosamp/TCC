@@ -305,7 +305,7 @@ models:
           - true
           - false
   tiny_tcn:
-    enabled: false
+    enabled: true
     family: neural_classifier
     deployment_target: edge
     selection_group: edge
@@ -313,24 +313,24 @@ models:
     export_tflite: true
     priority: main_edge_candidate
     params:
-      batch_size: 128
-      pos_multiplier: 0.8275208695255354
-      filters: 32
-      kernel_size: 7
-      n_blocks: 6
-      dilation_base: 3
-      dropout: 0.028423185415906306
-      spatial_dropout: 0.06635884588558189
-      dense_units: 24
-      learning_rate: 0.0005809816939134014
-      l2_reg: 1.5141953225930909e-05
+      batch_size: 64
+      pos_multiplier: 1.274375423547668
+      filters: 24
+      kernel_size: 11
+      n_blocks: 3
+      dilation_base: 2
+      dropout: 0.03544702294960163
+      spatial_dropout: 0.1142415531888814
+      dense_units: 32
+      learning_rate: 0.0019901844880576103
+      l2_reg: 8.596266772391992e-07
       head_pooling: avg
-      label_smoothing: 0.030519884747161094
+      label_smoothing: 0.012938050702971032
       padding: same
       conv_type: separable
       use_batch_norm: false
-      epochs: 100
-      patience: 12
+      epochs: 40
+      patience: 8
     tune:
       enabled: false
       n_trials: 60

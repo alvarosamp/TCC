@@ -6,13 +6,13 @@ Este relatorio consolida treino, quality gate, drift, exportacao edge, OTA e obs
 
 ## Modelo Selecionado
 
-- Modelo: tiny_cnn
-- AUC-PR teste: 0.8775
-- F1 teste: 0.8109
-- Precision: 0.8431
-- Recall: 0.7810
-- FP/h: 6.7459
-- Threshold: 0.7242
+- Modelo: tiny_tcn
+- AUC-PR teste: 0.9144
+- F1 teste: 0.8537
+- Precision: 0.8761
+- Recall: 0.8324
+- FP/h: 5.4636
+- Threshold: 0.6696
 
 ## Drift
 
@@ -29,9 +29,6 @@ Este relatorio consolida treino, quality gate, drift, exportacao edge, OTA e obs
 
 ## Exportacao Edge
 
-- float32: 66.1800 KB - `/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_cnn_float32.tflite`
-- float16: 37.9400 KB - `/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_cnn_float16.tflite`
-- int8: 25.7100 KB - `/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_cnn_int8.tflite`
 
 ## Manifests Detalhados
 
@@ -42,18 +39,49 @@ Este relatorio consolida treino, quality gate, drift, exportacao edge, OTA e obs
   "selected_by": {
     "metric": "auc_pr",
     "split": "test",
-    "mode": "maximize"
+    "mode": "maximize",
+    "groups": {
+      "best_overall": {
+        "enabled": true,
+        "metric": "auc_pr",
+        "split": "test",
+        "mode": "maximize",
+        "constraints": {}
+      },
+      "best_edge": {
+        "enabled": true,
+        "metric": "auc_pr",
+        "split": "test",
+        "mode": "maximize",
+        "constraints": {
+          "edge_candidate": true,
+          "export_tflite": true,
+          "max_params": 20000
+        }
+      },
+      "best_interpretable": {
+        "enabled": true,
+        "metric": "auc_pr",
+        "split": "test",
+        "mode": "maximize",
+        "constraints": {
+          "families": [
+            "classical_supervised"
+          ]
+        }
+      }
+    }
   },
-  "model_name": "tiny_cnn",
+  "model_name": "tiny_tcn",
   "family": "neural_classifier",
-  "priority": "main_candidate",
+  "priority": "main_edge_candidate",
   "edge_candidate": true,
   "export_tflite": true,
   "profile": {
     "profile_name": "seismic_edge_v1",
     "profile_version": "1.0.0",
     "task": "binary_anomaly_detection",
-    "domain": "seismic",
+    "domain": "seismic_edge",
     "description": null,
     "sampling_rate": 40.0,
     "window_size": 800,
@@ -63,8 +91,8 @@ Este relatorio consolida treino, quality gate, drift, exportacao edge, OTA e obs
     "normal_label": 0,
     "anomaly_label": 1,
     "normal_name": "normal",
-    "anomaly_name": "anomalia",
-    "split_name": "evento",
+    "anomaly_name": "fault",
+    "split_name": "temporal",
     "primary_metric": "auc_pr",
     "secondary_metrics": [
       "f1",
@@ -74,150 +102,149 @@ Este relatorio consolida treino, quality gate, drift, exportacao edge, OTA e obs
     ],
     "preprocessing": {
       "offline_pipeline": [
-        "resample_40hz",
-        "detrend-linear",
+        "load_vibration_signal",
+        "select_channel",
+        "replace_nan_inf",
+        "detrend_linear",
         "demean",
-        "taper_5pct",
-        "bandpass_0p5_15hz_zerophase",
         "zscore_per_window"
       ],
       "edge_pipeline": [
-        "detrend-linear",
-        "taper-5pct",
-        "bandpass-0p5_15hz_zerophase",
-        "zscore-per_window"
+        "select_channel",
+        "detrend_linear",
+        "demean",
+        "zscore_per_window"
       ],
-      "remove_response_offline": false,
-      "remove_response_edge": false,
-      "stationxml_required": false,
-      "bandpass_hz": [
-        0.5,
-        15.0
-      ],
+      "filtering": {
+        "enabled": false,
+        "type": "none",
+        "bandpass_hz": null
+      },
       "normalization": "zscore_per_window"
     },
     "embedded": {
       "target": "esp32",
       "runtime": "tensorflow_lite_micro",
-      "decision_interval_ms": 10000,
-      "preprocessing_version": "seismic_edge_prepoc_v1",
+      "preprocessing_version": "seismic_edge_preproc_v1",
       "ota_strategy_initial": "firmware_full_image",
       "ota_strategy_future": "separate_model_update"
     }
   },
   "dataset": "/mnt/d/PipelineGenerico/data/processed_seismic_edge_v1-20260604T184353Z-3-001/processed_seismic_edge_v1/dataset_seismic_edge_v1_split_evento.npz",
-  "model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras",
-  "threshold": 0.7241942882537842,
+  "model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras",
+  "threshold": 0.6695716381072998,
   "summary_metrics": {
-    "model_name": "tiny_cnn",
+    "model_name": "tiny_tcn",
     "family": "neural_classifier",
-    "priority": "main_candidate",
+    "priority": "main_edge_candidate",
     "edge_candidate": true,
     "export_tflite": true,
     "used_optuna": false,
-    "parameter_count": 15377,
-    "val_auc_pr": 0.8597729907721775,
-    "val_auc_roc": 0.9546285079749647,
-    "val_f1": 0.7908236418671339,
-    "val_precision": 0.8342857142857143,
-    "val_recall": 0.7516656571774682,
-    "val_fp_per_hour": 6.878536547554454,
-    "test_auc_pr": 0.8775302765225134,
-    "test_auc_roc": 0.9575893194486164,
-    "test_f1": 0.8108529549352878,
-    "test_precision": 0.8430609597924773,
-    "test_recall": 0.7810153199158907,
-    "test_fp_per_hour": 6.745905764837973,
-    "threshold_from_val": 0.7241942882537842,
-    "model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras"
+    "parameter_count": 5273,
+    "val_auc_pr": 0.9022069688443869,
+    "val_auc_roc": 0.9668699508715256,
+    "val_f1": 0.8425838820947006,
+    "val_precision": 0.8735370611183355,
+    "val_recall": 0.8137492428831011,
+    "val_fp_per_hour": 5.427486241376638,
+    "test_auc_pr": 0.9144131646435841,
+    "test_auc_roc": 0.9694001668836154,
+    "test_f1": 0.8536660505237215,
+    "test_precision": 0.8760670249762883,
+    "test_recall": 0.8323820967257435,
+    "test_fp_per_hour": 5.463626156645631,
+    "threshold_from_val": 0.6695716381072998,
+    "model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras"
   },
   "metrics": {
-    "threshold_from_val": 0.7241942882537842,
+    "threshold_from_val": 0.6695716381072998,
     "val": {
-      "auc_pr": 0.8597729907721775,
-      "auc_roc": 0.9546285079749647,
-      "threshold": 0.7241942882537842,
+      "auc_pr": 0.9022069688443869,
+      "auc_roc": 0.9668699508715256,
+      "threshold": 0.6695716381072998,
       "best_threshold_by_f1": {
-        "threshold": 0.7241942882537842,
-        "precision": 0.8342857142857143,
-        "recall": 0.7516656571774682,
-        "f1": 0.7908236368807035
+        "threshold": 0.6695716381072998,
+        "precision": 0.8735370611183355,
+        "recall": 0.8137492428831011,
+        "f1": 0.8425838771009785
       },
-      "f1": 0.7908236418671339,
-      "precision": 0.8342857142857143,
-      "recall": 0.7516656571774682,
+      "f1": 0.8425838820947006,
+      "precision": 0.8735370611183355,
+      "recall": 0.8137492428831011,
       "confusion_matrix": {
-        "tn": 22007,
-        "fp": 493,
-        "fn": 820,
-        "tp": 2482
+        "tn": 22111,
+        "fp": 389,
+        "fn": 615,
+        "tp": 2687
       }
     },
     "test": {
-      "auc_pr": 0.8775302765225134,
-      "auc_roc": 0.9575893194486164,
-      "threshold": 0.7241942882537842,
+      "auc_pr": 0.9144131646435841,
+      "auc_roc": 0.9694001668836154,
+      "threshold": 0.6695716381072998,
       "best_threshold_by_f1": {
-        "threshold": 0.7456919550895691,
-        "precision": 0.8575717144763175,
-        "recall": 0.7723039951937519,
-        "f1": 0.8127074393000762
+        "threshold": 0.6695478558540344,
+        "precision": 0.8761061946902655,
+        "recall": 0.8326824872334034,
+        "f1": 0.8538425947260074
       },
-      "f1": 0.8108529549352878,
-      "precision": 0.8430609597924773,
-      "recall": 0.7810153199158907,
+      "f1": 0.8536660505237215,
+      "precision": 0.8760670249762883,
+      "recall": 0.8323820967257435,
       "confusion_matrix": {
-        "tn": 22016,
-        "fp": 484,
-        "fn": 729,
-        "tp": 2600
+        "tn": 22108,
+        "fp": 392,
+        "fn": 558,
+        "tp": 2771
       }
     }
   },
   "hpo": {
     "used_optuna": false,
     "best_params": {
+      "batch_size": 64,
+      "pos_multiplier": 1.274375423547668,
+      "filters": 24,
+      "kernel_size": 11,
       "n_blocks": 3,
-      "base_filters": 16,
-      "kernel_first": 21,
-      "kernel_other": 5,
-      "dense_units": 48,
-      "dropout": 0.240293,
-      "spatial_dropout": 0.007913,
-      "learning_rate": 0.0027376,
-      "l2_reg": 8.261e-06,
+      "dilation_base": 2,
+      "dropout": 0.03544702294960163,
+      "spatial_dropout": 0.1142415531888814,
+      "dense_units": 32,
+      "learning_rate": 0.0019901844880576103,
+      "l2_reg": 8.596266772391992e-07,
+      "head_pooling": "avg",
+      "label_smoothing": 0.012938050702971032,
+      "padding": "same",
+      "conv_type": "separable",
       "use_batch_norm": false,
-      "conv_type": "conv",
-      "head_pooling": "avgmax",
-      "label_smoothing": 0.008688,
-      "pos_multiplier": 1.0,
-      "epochs": 20,
-      "batch_size": 128,
-      "patience": 5
+      "epochs": 40,
+      "patience": 8
     },
     "best_value": null,
     "n_trials": 0
   },
   "params": {
+    "batch_size": 64,
+    "pos_multiplier": 1.274375423547668,
+    "filters": 24,
+    "kernel_size": 11,
     "n_blocks": 3,
-    "base_filters": 16,
-    "kernel_first": 21,
-    "kernel_other": 5,
-    "dense_units": 48,
-    "dropout": 0.240293,
-    "spatial_dropout": 0.007913,
-    "learning_rate": 0.0027376,
-    "l2_reg": 8.261e-06,
+    "dilation_base": 2,
+    "dropout": 0.03544702294960163,
+    "spatial_dropout": 0.1142415531888814,
+    "dense_units": 32,
+    "learning_rate": 0.0019901844880576103,
+    "l2_reg": 8.596266772391992e-07,
+    "head_pooling": "avg",
+    "label_smoothing": 0.012938050702971032,
+    "padding": "same",
+    "conv_type": "separable",
     "use_batch_norm": false,
-    "conv_type": "conv",
-    "head_pooling": "avgmax",
-    "label_smoothing": 0.008688,
-    "pos_multiplier": 1.0,
-    "epochs": 20,
-    "batch_size": 128,
-    "patience": 5
+    "epochs": 40,
+    "patience": 8
   },
-  "parameter_count": 15377
+  "parameter_count": 5273
 }
 ```
 ## Promotion Report
@@ -225,32 +252,32 @@ Este relatorio consolida treino, quality gate, drift, exportacao edge, OTA e obs
 ```json
 {
   "approved": true,
-  "candidate_model": "tiny_cnn",
+  "candidate_model": "tiny_tcn",
   "candidate_family": "neural_classifier",
-  "model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras",
+  "model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras",
   "checks": [
     {
       "name": "min_auc_pr",
       "passed": true,
-      "value": 0.8775302765225134,
+      "value": 0.9144131646435841,
       "rule": ">= 0.8"
     },
     {
       "name": "min_f1",
       "passed": true,
-      "value": 0.8108529549352878,
+      "value": 0.8536660505237215,
       "rule": ">= 0.7"
     },
     {
       "name": "max_fp_per_hour",
       "passed": true,
-      "value": 6.745905764837973,
+      "value": 5.463626156645631,
       "rule": "<= 10.0"
     },
     {
       "name": "max_val_test_auc_pr_gap",
       "passed": true,
-      "value": 0.01775728575033586,
+      "value": 0.01220619579919724,
       "rule": "<= 0.08"
     }
   ],
@@ -477,7 +504,7 @@ Este relatorio consolida treino, quality gate, drift, exportacao edge, OTA e obs
 ```json
 {
   "schema_version": "1.0.0",
-  "created_at_utc": "2026-06-14T21:30:02.103269+00:00",
+  "created_at_utc": "2026-06-18T18:37:15.086042+00:00",
   "status": "ready_for_packaging",
   "target": {
     "device": "esp32",
@@ -492,105 +519,103 @@ Este relatorio consolida treino, quality gate, drift, exportacao edge, OTA e obs
   },
   "artifact": {
     "type": "tflite_int8",
-    "path": "/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_cnn_int8.tflite",
-    "sha256": "f71ac3b1ec6b9207e459176f1bb86623ae23ed9573b51a1c9c4d15d6987c6bc0",
-    "size_bytes": 26328,
-    "size_kb": 25.71,
+    "path": "/home/vish8/tcc_atual/TCC/artefacts/edge/tiny_tcn_int8.tflite",
+    "sha256": "53e8316f7fe0d12b95d426484a750ebb18b04304da1931cc6712214fc0ba89e3",
+    "size_bytes": 27776,
+    "size_kb": 27.12,
     "quantization": "int8",
-    "source_model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras"
+    "source_model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras"
   },
   "model": {
-    "name": "tiny_cnn",
+    "name": "tiny_tcn",
     "family": "neural_classifier",
-    "version": "seismic_edge_v1_tiny_cnn_20260614",
-    "threshold": 0.7241942882537842,
-    "parameter_count": 15377
+    "version": "seismic_edge_v1_tiny_tcn_20260618",
+    "threshold": 0.6695716381072998,
+    "parameter_count": 5273
   },
   "profile": {
     "name": "seismic_edge_v1",
     "version": "1.0.0",
-    "domain": "seismic",
+    "domain": "seismic_edge",
     "sampling_rate": 40.0,
     "window_size": 800,
     "window_seconds": 20.0,
     "step_seconds": 10.0,
     "preprocessing": {
       "offline_pipeline": [
-        "resample_40hz",
-        "detrend-linear",
+        "load_vibration_signal",
+        "select_channel",
+        "replace_nan_inf",
+        "detrend_linear",
         "demean",
-        "taper_5pct",
-        "bandpass_0p5_15hz_zerophase",
         "zscore_per_window"
       ],
       "edge_pipeline": [
-        "detrend-linear",
-        "taper-5pct",
-        "bandpass-0p5_15hz_zerophase",
-        "zscore-per_window"
+        "select_channel",
+        "detrend_linear",
+        "demean",
+        "zscore_per_window"
       ],
-      "remove_response_offline": false,
-      "remove_response_edge": false,
-      "stationxml_required": false,
-      "bandpass_hz": [
-        0.5,
-        15.0
-      ],
+      "filtering": {
+        "enabled": false,
+        "type": "none",
+        "bandpass_hz": null
+      },
       "normalization": "zscore_per_window"
     }
   },
   "quality": {
     "summary_metrics": {
-      "model_name": "tiny_cnn",
+      "model_name": "tiny_tcn",
       "family": "neural_classifier",
-      "priority": "main_candidate",
+      "priority": "main_edge_candidate",
       "edge_candidate": true,
       "export_tflite": true,
       "used_optuna": false,
-      "parameter_count": 15377,
-      "val_auc_pr": 0.8597729907721775,
-      "val_auc_roc": 0.9546285079749647,
-      "val_f1": 0.7908236418671339,
-      "val_precision": 0.8342857142857143,
-      "val_recall": 0.7516656571774682,
-      "val_fp_per_hour": 6.878536547554454,
-      "test_auc_pr": 0.8775302765225134,
-      "test_auc_roc": 0.9575893194486164,
-      "test_f1": 0.8108529549352878,
-      "test_precision": 0.8430609597924773,
-      "test_recall": 0.7810153199158907,
-      "test_fp_per_hour": 6.745905764837973,
-      "threshold_from_val": 0.7241942882537842,
-      "model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras"
+      "parameter_count": 5273,
+      "val_auc_pr": 0.9022069688443869,
+      "val_auc_roc": 0.9668699508715256,
+      "val_f1": 0.8425838820947006,
+      "val_precision": 0.8735370611183355,
+      "val_recall": 0.8137492428831011,
+      "val_fp_per_hour": 5.427486241376638,
+      "test_auc_pr": 0.9144131646435841,
+      "test_auc_roc": 0.9694001668836154,
+      "test_f1": 0.8536660505237215,
+      "test_precision": 0.8760670249762883,
+      "test_recall": 0.8323820967257435,
+      "test_fp_per_hour": 5.463626156645631,
+      "threshold_from_val": 0.6695716381072998,
+      "model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras"
     },
     "quality_gate": {
       "approved": true,
-      "candidate_model": "tiny_cnn",
+      "candidate_model": "tiny_tcn",
       "candidate_family": "neural_classifier",
-      "model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_cnn.keras",
+      "model_path": "/home/vish8/tcc_atual/TCC/artefacts/models/tiny_tcn.keras",
       "checks": [
         {
           "name": "min_auc_pr",
           "passed": true,
-          "value": 0.8775302765225134,
+          "value": 0.9144131646435841,
           "rule": ">= 0.8"
         },
         {
           "name": "min_f1",
           "passed": true,
-          "value": 0.8108529549352878,
+          "value": 0.8536660505237215,
           "rule": ">= 0.7"
         },
         {
           "name": "max_fp_per_hour",
           "passed": true,
-          "value": 6.745905764837973,
+          "value": 5.463626156645631,
           "rule": "<= 10.0"
         },
         {
           "name": "max_val_test_auc_pr_gap",
           "passed": true,
-          "value": 0.01775728575033586,
+          "value": 0.01220619579919724,
           "rule": "<= 0.08"
         }
       ],

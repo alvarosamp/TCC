@@ -1,0 +1,117 @@
+stages:
+  generate_data:
+    cmd: python scripts/generate_synthetic_data.py
+    deps:
+      - scripts/generate_synthetic_data.py
+    outs:
+      - data/processed/dataset_seismic_edge_v1_split_evento.npz
+
+  validate_dataset:
+    cmd: python -m src.data.validate_dataset
+    deps:
+      - src/data/validate_dataset.py
+      - src/core/schemas.py
+      - src/core/profile.py
+      - src/core/settings.py
+      - config/configs/config.yaml
+      - config/configs/profiles/seismic_edge_v1.yaml
+      - data/processed/dataset_seismic_edge_v1_split_evento.npz
+    metrics:
+      - artefacts/reports/dataset_validation_report.json:
+          cache: false
+
+  train_all:
+    cmd: python -m src.training.train_all --models-cfg config/model/models_smoke.yaml
+    deps:
+      - src/training/train_all.py
+      - src/training/neural_models.py
+      - src/training/model_registry.py
+      - src/training/hpo.py
+      - src/training/evaluate.py
+      - src/features/statistical_features.py
+      - src/core/profile.py
+      - src/core/schemas.py
+      - config/model/models_smoke.yaml
+      - config/configs/config.yaml
+      - config/configs/profiles/seismic_edge_v1.yaml
+      - data/processed/dataset_seismic_edge_v1_split_evento.npz
+    outs:
+      - artefacts/models:
+          cache: false
+    metrics:
+      - artefacts/reports/model_comparison.json:
+          cache: false
+
+  export_tflite:
+    cmd: python -m src.export.export_tflite
+    deps:
+      - src/export/export_tflite.py
+      - src/export/export_header.py
+      - artefacts/reports/candidate_manifest.json
+    outs:
+      - artefacts/edge:
+          cache: false
+
+  evaluate_tflite:
+    cmd: python -m src.export.evaluate_tflite
+    deps:
+      - src/export/evaluate_tflite.py
+      - artefacts/edge
+      - artefacts/reports/candidate_manifest.json
+    metrics:
+      - artefacts/reports/tflite_evaluation.json:
+          cache: false
+
+  promote_model:
+    cmd: python -m src.mlops.promote_model
+    deps:
+      - src/mlops/promote_model.py
+      - artefacts/reports/candidate_manifest.json
+      - config/configs/config.yaml
+    outs:
+      - artefacts/registry/production_manifest.json:
+          cache: false
+    metrics:
+      - artefacts/reports/promotion_report.json:
+          cache: false
+
+  build_ota_manifest:
+    cmd: python -m src.ota.build_ota_manifest
+    deps:
+      - src/ota/build_ota_manifest.py
+      - artefacts/registry/production_manifest.json
+      - artefacts/edge
+    outs:
+      - artefacts/ota/ota_manifest.json:
+          cache: false
+
+  package_and_validate_ota:
+    cmd: python -m src.ota.build_ota_package && python -m src.ota.validate_ota_package
+    deps:
+      - src/ota/build_ota_package.py
+      - src/ota/validate_ota_package.py
+      - artefacts/ota/ota_manifest.json
+    outs:
+      - artefacts/ota/packages:
+          cache: false
+
+  publish_ota:
+    cmd: python -m src.ota.publish_local_release
+    deps:
+      - src/ota/publish_local_release.py
+      - artefacts/ota/packages
+    outs:
+      - artefacts/ota/releases:
+          cache: false
+
+  prepare_feedback_dataset:
+    cmd: python -m src.feedback.prepare_feedback_dataset
+    deps:
+      - src/feedback/build_feedback_dataset.py
+      - server/data/events
+      - server/data/feedback
+    outs:
+      - data/processed/feedback_dataset.npz
+    metrics:
+      - artefacts/reports/feedback_dataset_report.json:
+          cache: false
