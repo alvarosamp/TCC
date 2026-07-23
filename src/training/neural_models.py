@@ -49,7 +49,7 @@ def _compile_classifier(model: tf.keras.Model, params: dict[str, Any]) -> tf.ker
     return model
 
 
-def build_tiny_cnn(window_size: int, params: dict[str, Any]) -> tf.keras.Model:
+def build_tiny_cnn(window_size: int, params: dict[str, Any], n_channels: int = 1) -> tf.keras.Model:
     filters = list(params.get("filters", []))
     if not filters:
         n_blocks = int(params.get("n_blocks", 3))
@@ -71,7 +71,7 @@ def build_tiny_cnn(window_size: int, params: dict[str, Any]) -> tf.keras.Model:
     l2_reg = float(params.get("l2_reg", 0.0))
     regularizer = tf.keras.regularizers.l2(l2_reg) if l2_reg > 0 else None
 
-    inp = tf.keras.Input(shape=(window_size, 1))
+    inp = tf.keras.Input(shape=(window_size, n_channels))
     x = inp
     for f, k in zip(filters, kernels):
         x = _conv1d_layer(
@@ -94,7 +94,7 @@ def build_tiny_cnn(window_size: int, params: dict[str, Any]) -> tf.keras.Model:
     return _compile_classifier(tf.keras.Model(inp, out), params)
 
 
-def build_tiny_tcn(window_size: int, params: dict[str, Any]) -> tf.keras.Model:
+def build_tiny_tcn(window_size: int, params: dict[str, Any], n_channels: int = 1) -> tf.keras.Model:
     filters = int(params.get("filters", 24))
     kernel_size = int(params.get("kernel_size", 5))
     n_blocks = int(params.get("n_blocks", 0))
@@ -115,7 +115,7 @@ def build_tiny_tcn(window_size: int, params: dict[str, Any]) -> tf.keras.Model:
     l2_reg = float(params.get("l2_reg", 0.0))
     regularizer = tf.keras.regularizers.l2(l2_reg) if l2_reg > 0 else None
 
-    inp = tf.keras.Input(shape=(window_size, 1))
+    inp = tf.keras.Input(shape=(window_size, n_channels))
     x = tf.keras.layers.Conv1D(filters, kernel_size=1, padding="same")(inp)
 
     for d in dilations:
@@ -156,12 +156,12 @@ def build_tiny_tcn(window_size: int, params: dict[str, Any]) -> tf.keras.Model:
     return _compile_classifier(tf.keras.Model(inp, out), params)
 
 
-def build_lstm_classifier(window_size: int, params: dict[str, Any]) -> tf.keras.Model:
+def build_lstm_classifier(window_size: int, params: dict[str, Any], n_channels: int = 1) -> tf.keras.Model:
     units = int(params.get("units", 48))
     dense_units = int(params.get("dense_units", 24))
     dropout = float(params.get("dropout", 0.20))
 
-    inp = tf.keras.Input(shape=(window_size, 1))
+    inp = tf.keras.Input(shape=(window_size, n_channels))
     x = tf.keras.layers.LSTM(units, return_sequences=False)(inp)
     x = tf.keras.layers.Dropout(dropout)(x)
     x = tf.keras.layers.Dense(dense_units, activation="relu")(x)
@@ -225,8 +225,18 @@ _BUILDERS = {
 }
 
 
-def build_neural_model(model_name: str, window_size: int, params: dict[str, Any]) -> tf.keras.Model:
+def build_neural_model(
+    model_name: str,
+    window_size: int,
+    params: dict[str, Any],
+    n_channels: int = 1,
+) -> tf.keras.Model:
     if model_name not in _BUILDERS:
         raise ValueError(f"Modelo neural '{model_name}' nao suportado. Disponiveis: {list(_BUILDERS)}")
-    return _BUILDERS[model_name](window_size, params)
+    builder = _BUILDERS[model_name]
+    import inspect
+    sig = inspect.signature(builder)
+    if "n_channels" in sig.parameters:
+        return builder(window_size, params, n_channels=n_channels)
+    return builder(window_size, params)
 
