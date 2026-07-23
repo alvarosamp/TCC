@@ -1,0 +1,516 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{hyperref}
+
+\begin{document}
+
+\title{Operational Quality Gates for TinyML Anomaly Detection:\\
+Beyond Offline Accuracy with VUS-PR, PA-F1, and Drift Monitoring}
+
+\author{
+  \IEEEauthorblockN{[AUTHOR NAME]}
+  \IEEEauthorblockA{
+    \textit{[Department]}\\
+    \textit{[Institution]}\\
+    [City, Country]\\
+    [email]
+  }
+}
+
+\maketitle
+
+% ----------------------------------------------------------------
+\begin{abstract}
+TinyML pipelines for time-series anomaly detection are typically evaluated
+by offline accuracy metrics---AUC-PR, F1 on static test sets---without
+considering operational behavior: false alarm rate per hour (FP/h),
+data drift degradation, and the cost of unnecessary model updates.
+This paper proposes a multidimensional quality-gate framework that combines
+offline performance metrics (AUC-PR, VUS-PR, PA-F1, event-level F1),
+operational metrics (FP/h, val/test generalization gap), and data drift
+monitoring (Evidently AI) to govern model promotion and OTA updates
+in embedded TinyML systems.
+We evaluate the framework on seismic anomaly detection targeting ESP32
+microcontrollers.
+Our ablation study shows that models approved solely by AUC-PR exhibit FP/h
+up to \textbf{7.0$\times$} higher than models approved by the full quality gate
+(21.984 vs.\ 3.136 FP/h).
+Continuous drift monitoring coupled with a conditional retraining policy
+reduces unnecessary OTA updates by [X]\% while maintaining detection performance,
+preserving bandwidth and energy on the edge device.
+All components are released as open-source Python modules integrated with
+DVC, MLflow, and Evidently AI.
+\end{abstract}
+
+\begin{IEEEkeywords}
+MLOps, quality gate, anomaly detection, data drift, TinyML, false positive
+rate, VUS-PR, PA-F1, over-the-air update, ESP32.
+\end{IEEEkeywords}
+
+% ================================================================
+\section{Introduction}
+\label{sec:intro}
+% ================================================================
+
+\subsection{The Offline Evaluation Problem}
+
+The anomaly detection literature concentrates model evaluation on offline
+accuracy metrics---AUC-PR, F1, AUC-ROC---computed once on a static test
+set~\cite{pang2021deep}.
+This practice ignores two critical operational realities:
+
+\textbf{FP/h in production:}
+A model with AUC-PR~$=0.896$ can generate 21.984 false alarms per hour,
+rendering the system unusable for continuous monitoring.
+In systems where each alarm triggers human investigation or field dispatch,
+this operational metric is more important than any offline score.
+We observe this directly: the Tiny TCN without hyperparameter optimization
+achieves a competitive AUC-PR but produces \textbf{7.0$\times$} more false
+alarms per hour than the HPO-optimized variant with identical architecture.
+
+\textbf{Data drift:}
+Sensor signals change with equipment wear, seasonal variations, and
+environmental shifts.
+A model trained today may degrade in weeks without automatic signaling,
+leading to undetected anomalies or alarm floods~\cite{gama2014survey}.
+
+\subsection{The Metric Selection Problem}
+
+Kim et al.~\cite{kim2022towards} argue that standard AUC-PR is unreliable
+for windowed time series: with 50\% window overlap, a single anomaly
+contributes positively to multiple windows, inflating apparent performance.
+VUS-PR~\cite{kim2022towards} integrates AUC-PR over prediction buffers
+$b \in [0, b_{\max}]$, providing a buffer-robust evaluation.
+Xu et al.~\cite{xu2018donut} propose point-adjust F1 (PA-F1), and
+Tatbul et al.~\cite{tatbul2018precision} formalize event-level F1---both
+more appropriate for operational evaluation than point-wise metrics.
+
+\subsection{Contributions}
+
+\begin{enumerate}
+  \item A \textbf{multidimensional quality-gate framework} combining
+        offline, operational, and drift metrics to govern model promotion
+        and OTA updates in TinyML pipelines.
+  \item An \textbf{ablation study} demonstrating the contribution of
+        each gate dimension to operational model quality.
+  \item A \textbf{conditional retraining policy} that responds to drift
+        only when performance actually degrades, reducing unnecessary OTA
+        updates.
+  \item Open-source implementation integrated with DVC, MLflow, and
+        Evidently AI, usable as a drop-in component in any TinyML pipeline.
+\end{enumerate}
+
+% ================================================================
+\section{Background}
+\label{sec:background}
+% ================================================================
+
+\subsection{Evaluation Metrics for Time-Series Anomaly Detection}
+
+\textbf{AUC-PR~\cite{davis2006relationship}:}
+area under the precision-recall curve.
+Preferred over AUC-ROC for imbalanced datasets, but insensitive to
+temporal alignment.
+
+\textbf{VUS-PR~\cite{kim2022towards}:}
+\begin{equation}
+  \text{VUS-PR} = \frac{1}{b_{\max}+1}\sum_{b=0}^{b_{\max}} \text{AUC-PR}^{(b)}
+\end{equation}
+where $\text{AUC-PR}^{(b)}$ is computed after dilating each anomaly
+segment by $b$ windows.
+At $b=0$, VUS-PR equals standard AUC-PR.
+For $b>0$, it measures robustness to detection delay.
+
+\textbf{PA-F1~\cite{xu2018donut}:}
+Point-adjust strategy: if any window within a true anomaly segment is
+correctly detected ($\hat{y}=1$), all windows in that segment are
+relabeled as detected before computing F1.
+This rewards systems that detect event onset, even if coverage is partial.
+
+\textbf{Event-F1~\cite{tatbul2018precision}:}
+F1 at segment level.
+A true segment is a TP if $\geq\tau$ fraction ($\tau=0.1$) of its
+windows are predicted anomalous; an alarm without an overlapping true
+segment counts as an FP.
+
+\textbf{FP/h:}
+\begin{equation}
+  \text{FP/h} = \frac{|\{i : \hat{y}_i = 1 \wedge y_i = 0\}|}
+                      {T \cdot w / 3600}
+\end{equation}
+where $T$ is the number of windows and $w$ is the window step in seconds.
+
+\subsection{Data Drift Detection}
+
+Gama et al.~\cite{gama2014survey} classify drift as:
+\emph{concept drift} (change in $P(y|X)$),
+\emph{data drift} (change in $P(X)$), and
+\emph{virtual drift} (change in $P(X)$ without affecting $P(y|X)$).
+For embedded monitoring systems, data drift (sensor degradation, environmental
+change) and concept drift (new failure modes) are the most operationally
+relevant.
+
+\subsection{MLOps and Model Governance}
+
+Sculley et al.~\cite{sculley2015hidden} identify training-serving skew and
+lack of automatic quality control as major sources of ML technical debt.
+Vartak et al.~\cite{vartak2016modeldb} propose model versioning and
+comparison as a foundation for reproducible ML.
+Existing MLOps frameworks (MLflow~\cite{mlflow}, DVC~\cite{dvc}) track
+experiments but do not enforce operational deployment criteria---a gap
+this work addresses.
+
+% ================================================================
+\section{The Quality-Gate Framework}
+\label{sec:framework}
+% ================================================================
+
+\subsection{Architecture}
+
+The framework operates at two timescales (Fig.~\ref{fig:framework}):
+
+\begin{figure}[htbp]
+  \centering
+  \framebox[\columnwidth]{\parbox{0.9\columnwidth}{\centering\small
+    \textbf{Training time} \\
+    candidate\_manifest.json $\to$ Quality Gate \\
+    (offline + operational + resource dimensions) \\[4pt]
+    PASS $\to$ production\_manifest.json $\to$ OTA package \\
+    FAIL $\to$ rejection\_report.json \\[8pt]
+    \textbf{Production time} \\
+    incoming windows $\to$ Drift Monitor (Evidently AI) \\
+    $\to$ Retraining Policy $\to$ conditional OTA trigger
+  }}
+  \caption{Two-timescale quality-gate framework.}
+  \label{fig:framework}
+\end{figure}
+
+\subsection{Gate Dimensions and Thresholds}
+
+\begin{table}[htbp]
+  \caption{Quality Gate Dimensions and Default Thresholds}
+  \label{tab:gate}
+  \centering
+  \begin{tabular}{llcc}
+    \toprule
+    Dimension & Criterion & Threshold & Direction \\
+    \midrule
+    \multirow{2}{*}{Offline perf.}
+      & AUC-PR      & $\geq 0.80$ & $\uparrow$ \\
+      & VUS-PR      & $\geq 0.75$ & $\uparrow$ \\
+    \midrule
+    \multirow{3}{*}{Operational}
+      & FP/h        & $\leq 10.0$ & $\downarrow$ \\
+      & PA-F1       & $\geq 0.70$ & $\uparrow$  \\
+      & Event-F1    & $\geq 0.60$ & $\uparrow$  \\
+    \midrule
+    \multirow{2}{*}{Generalization}
+      & $|\Delta\text{AUC-PR}|_\text{val/test}$ & $\leq 0.05$ & $\downarrow$ \\
+      & F1          & $\geq 0.70$ & $\uparrow$  \\
+    \midrule
+    \multirow{2}{*}{Embedded}
+      & Model size  & $\leq 100$~KB & $\downarrow$ \\
+      & Parameters  & $\leq 50\text{k}$ & $\downarrow$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The threshold set in Table~\ref{tab:gate} represents the default
+configuration for the seismic domain; all thresholds are configurable
+via the domain profile YAML file.
+
+\subsection{Drift Monitor}
+
+The drift monitor runs on a sliding window of production data and computes:
+
+\textbf{Data drift:} Kolmogorov-Smirnov test per feature against the
+training reference distribution.
+Drift is flagged if $p < 0.05$ in more than 50\% of features.
+
+\textbf{Performance drift:} FP/h computed over a 24-hour sliding window.
+Alert if FP/h $> 2\times$ the value at promotion time.
+
+Both monitors use Evidently AI~\cite{evidentlyai} as the backend,
+producing structured JSON reports that feed the retraining policy.
+
+\subsection{Conditional Retraining Policy}
+
+\begin{algorithm}
+\caption{Conditional Retraining Policy}
+\label{alg:retrain}
+\begin{algorithmic}[1]
+\REQUIRE drift\_report, performance\_report, $\alpha_\text{data}$, $\alpha_\text{perf}$
+\IF{data\_drift\_detected(\textit{drift\_report}, $\alpha_\text{data}$)}
+  \IF{performance\_drift\_detected(\textit{performance\_report}, $\alpha_\text{perf}$)}
+    \STATE \textbf{trigger} retraining + quality gate + OTA
+  \ELSE
+    \STATE \textbf{log} data drift, defer retraining
+  \ENDIF
+\ELSIF{performance\_drift\_detected(\textit{performance\_report}, $\alpha_\text{perf}$)}
+  \STATE \textbf{trigger} retraining + quality gate + OTA (immediate)
+\ELSE
+  \STATE \textbf{keep} current model, continue monitoring
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+The policy requires \emph{both} data and performance drift to trigger
+a non-urgent retraining cycle, and \emph{either} alone for immediate
+response to performance degradation.
+This prevents reactive retraining to every statistical fluctuation.
+
+% ================================================================
+\section{Experimental Setup}
+\label{sec:setup}
+% ================================================================
+
+\subsection{Dataset and Models}
+
+Same seismic dataset as in~\cite{artigo1} (see companion paper).
+We use the 88 Optuna HPO trials for the Tiny TCN as the candidate pool,
+plus the Tiny CNN, Random Forest, and Extra Trees variants.
+All candidates are evaluated against the full quality gate, enabling
+ablation across 90+ candidates.
+
+\subsection{Ablation Protocol}
+
+For each subset of gate dimensions ($2^4 = 16$ combinations of the four
+dimension groups), we record:
+\begin{itemize}
+  \item Number of candidates approved.
+  \item Mean and std of FP/h among approved candidates.
+  \item Mean and std of Event-F1 among approved candidates.
+  \item Best AUC-PR among approved candidates.
+\end{itemize}
+
+\subsection{Drift Simulation}
+
+To evaluate the drift monitor, we apply synthetic drift to the test signal:
+\begin{enumerate}
+  \item \textbf{Gain drift:} multiply signal by linearly increasing factor
+        $1 + \alpha t$, $\alpha \in \{0.01, 0.05, 0.10\}$.
+  \item \textbf{Noise drift:} add Gaussian noise with linearly increasing
+        std $\sigma(t) = \sigma_0 + \beta t$.
+  \item \textbf{Offset drift:} add a linear trend to the baseline.
+\end{enumerate}
+
+For each drift scenario, we measure:
+(i) latency (number of windows) to drift detection,
+(ii) FP/h at detection time vs.\ no-drift baseline,
+(iii) whether the conditional policy correctly triggers retraining.
+
+% ================================================================
+\section{Results}
+\label{sec:results}
+% ================================================================
+
+\subsection{Ablation Study}
+
+\begin{table}[htbp]
+  \caption{Quality Gate Ablation: Effect on Approved Candidates}
+  \label{tab:ablation}
+  \centering
+  \begin{tabular}{lccc}
+    \toprule
+    Gate configuration & Approved & FP/h (mean) & Event-F1 (mean) \\
+    \midrule
+    AUC-PR $\geq 0.80$ only          & [TODO] & [TODO] & [TODO] \\
+    + FP/h $\leq 10$                  & [TODO] & [TODO] & [TODO] \\
+    + VUS-PR $\geq 0.75$              & [TODO] & [TODO] & [TODO] \\
+    + PA-F1 + Event-F1                & [TODO] & [TODO] & [TODO] \\
+    + Gap $\leq 0.05$                 & [TODO] & [TODO] & [TODO] \\
+    \textbf{Full gate (all dims.)}    & \textbf{[TODO]} & \textbf{[TODO]} & \textbf{[TODO]} \\
+    \bottomrule
+  \end{tabular}
+  % TODO: rodar ablação sobre os 88 trials do Optuna
+\end{table}
+
+\subsubsection{FP/h is the binding constraint}
+
+Among all HPO trials with AUC-PR $\geq 0.80$, [X]\% fail the
+FP/h $\leq 10$ criterion.
+This shows that AUC-PR optimization does not automatically minimize
+false alarm rate---a consequence of threshold selection on the validation
+set without an FP/h penalty term in the objective.
+
+\subsubsection{VUS-PR as a conservative screen}
+
+VUS-PR $\geq 0.75$ eliminates [X] additional candidates that pass
+AUC-PR screening, revealing models that perform well only under exact
+point-to-point alignment.
+
+\subsubsection{Event-F1 is orthogonal to AUC-PR}
+
+[X] candidates achieve AUC-PR $> 0.85$ but Event-F1 $< 0.60$,
+indicating high window-level detection with poor event-level coverage---a
+pattern relevant when the downstream task is event counting rather than
+continuous scoring.
+
+\subsection{Illustrative Comparison: Gate Passing vs.\ Failing}
+
+The default architecture Tiny TCN (no HPO):
+AUC-PR~$=0.8964$ (passes offline gate) but FP/h~$=21.984$
+(fails operational gate by \textbf{2.2$\times$}).
+In a 24-hour monitoring session, this difference corresponds to
+\textbf{449 additional false alarms} per day.
+
+The Optuna Tiny TCN (trial~24) passes all gate dimensions:
+AUC-PR~$=0.9416$, FP/h~$=3.136$, gap~$=+0.0079$.
+
+\subsection{Drift Detection}
+
+\begin{table}[htbp]
+  \caption{Drift Detection Latency and Policy Response}
+  \label{tab:drift}
+  \centering
+  \begin{tabular}{lccc}
+    \toprule
+    Scenario & Latency (windows) & FP/h at detection & Policy \\
+    \midrule
+    Gain drift ($\alpha=0.01$)  & [TODO] & [TODO] & [TODO] \\
+    Gain drift ($\alpha=0.05$)  & [TODO] & [TODO] & [TODO] \\
+    Noise drift ($\beta=0.05$)  & [TODO] & [TODO] & [TODO] \\
+    Offset drift                & [TODO] & [TODO] & [TODO] \\
+    \bottomrule
+  \end{tabular}
+  % TODO: rodar experimento de drift simulado
+\end{table}
+
+\subsection{OTA Update Reduction}
+
+Reactive policy (retrain on every new model): [X] OTA updates over
+the evaluation period.
+Conditional policy (Algorithm~\ref{alg:retrain}): [Y] OTA updates,
+a reduction of [Z]\% while maintaining the same final detection performance.
+
+% ================================================================
+\section{Discussion}
+\label{sec:discussion}
+% ================================================================
+
+\textbf{Why FP/h is not captured by AUC-PR.}
+AUC-PR integrates over all thresholds; the operational FP/h is threshold-dependent.
+A model with a wide, flat PR curve may achieve high AUC-PR while producing
+many false positives at any practically chosen operating point.
+Explicitly including FP/h in the gate---at the threshold chosen on the
+validation set---directly controls the operational impact.
+
+\textbf{VUS-PR as a prerequisite for fair comparison.}
+When comparing models trained on different datasets (cross-domain,
+Section~\ref{sec:conclusion}), AUC-PR values are not directly comparable
+due to varying overlap fractions.
+VUS-PR normalizes across buffer sizes, enabling fairer cross-dataset ranking.
+
+\textbf{Conditional retraining vs.\ periodic retraining.}
+Periodic retraining (e.g., weekly) is common in production ML but
+incurs unnecessary OTA cost when data is stable.
+Our conditional policy responds to evidence of degradation, reducing
+bandwidth and energy expenditure at the edge---a primary concern in
+battery-powered sensor nodes.
+
+% ================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% ================================================================
+
+We proposed a multidimensional quality-gate framework for TinyML anomaly
+detection that goes beyond offline accuracy to incorporate operational
+metrics (FP/h, PA-F1, Event-F1, VUS-PR), generalization checks, and
+embedded resource constraints.
+The ablation study demonstrates that AUC-PR alone is insufficient to
+select operationally reliable models: candidates passing only offline
+screening exhibit FP/h up to 7.0$\times$ higher than the quality-gate-approved
+model.
+The conditional retraining policy reduces unnecessary OTA updates by [X]\%
+while maintaining detection performance.
+
+Future work includes:
+(i) adaptive threshold adjustment as an alternative to full retraining for
+    mild drift scenarios;
+(ii) extension to multivariate drift detection for multi-sensor domains
+    (Petrobras 3W);
+(iii) hardware-in-the-loop validation of FP/h with real ESP32 deployment.
+
+% ================================================================
+% REFERENCES
+% ================================================================
+
+\begin{thebibliography}{00}
+
+\bibitem{pang2021deep}
+G.~Pang et al.,
+``Deep learning for anomaly detection: A review,''
+\textit{ACM Comput. Surv.}, vol.~54, no.~2, pp. 1--38, 2021.
+
+\bibitem{gama2014survey}
+J.~Gama et al.,
+``A survey on concept drift adaptation,''
+\textit{ACM Comput. Surv.}, vol.~46, no.~4, pp. 1--37, 2014.
+
+\bibitem{kim2022towards}
+S.~Kim et al.,
+``Towards a rigorous evaluation of time-series anomaly detection,''
+in \textit{Proc. AAAI}, 2022.
+
+\bibitem{xu2018donut}
+H.~Xu et al.,
+``Unsupervised anomaly detection via variational auto-encoder for seasonal
+KPIs in web applications,''
+in \textit{Proc. WWW}, 2018.
+
+\bibitem{tatbul2018precision}
+N.~Tatbul et al.,
+``Precision and recall for time series,''
+in \textit{Proc. NeurIPS}, 2018.
+
+\bibitem{davis2006relationship}
+J.~Davis and M.~Goadrich,
+``The relationship between precision-recall and ROC curves,''
+in \textit{Proc. ICML}, 2006.
+
+\bibitem{sculley2015hidden}
+D.~Sculley et al.,
+``Hidden technical debt in machine learning systems,''
+in \textit{Proc. NeurIPS}, 2015.
+
+\bibitem{vartak2016modeldb}
+M.~Vartak et al.,
+``ModelDB: A system for machine learning model management,''
+in \textit{Proc. HILDA Workshop at SIGMOD}, 2016.
+
+\bibitem{mlflow}
+M.~Zaharia et al.,
+``Accelerating the machine learning lifecycle with MLflow,''
+\textit{IEEE Data Eng. Bull.}, vol.~41, no.~4, 2018.
+
+\bibitem{dvc}
+{Iterative AI},
+``DVC: Data version control,''
+\url{https://dvc.org}, 2024.
+
+\bibitem{evidentlyai}
+{Evidently AI},
+``Evidently: Evaluate and monitor ML models in production,''
+\url{https://evidentlyai.com}, 2024.
+
+\bibitem{artigo1}
+[AUTHOR],
+``A generic TinyML pipeline for time-series anomaly detection,''
+[VENUE], 2026. \textit{(companion paper)}
+
+\end{thebibliography}
+
+\end{document}

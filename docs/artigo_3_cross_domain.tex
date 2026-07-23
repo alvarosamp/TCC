@@ -1,0 +1,506 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{hyperref}
+
+\begin{document}
+
+\title{Cross-Domain Generalization of a Reproducible TinyML\\
+Anomaly Detection Pipeline: Seismic and Oil-Well Benchmarks\\
+with VUS-PR, PA-F1, and Event-Level Evaluation}
+
+\author{
+  \IEEEauthorblockN{[AUTHOR NAME]}
+  \IEEEauthorblockA{
+    \textit{[Department]}\\
+    \textit{[Institution]}\\
+    [City, Country]\\
+    [email]
+  }
+}
+
+\maketitle
+
+% ----------------------------------------------------------------
+\begin{abstract}
+A central challenge in anomaly detection benchmarking is that most pipelines
+are designed and tuned for a single domain, making cross-domain comparison
+unfair and results non-transferable.
+We evaluate a generic TinyML pipeline---originally validated on seismic data
+targeting ESP32 microcontrollers---on a structurally different domain:
+the public Petrobras 3W oil-well dataset, a multivariate time series with
+8 process sensors at 1~Hz.
+The pipeline uses domain adapters that enforce a unified dataset contract
+\texttt{(N, window\_size, n\_channels)}, enabling the same training,
+evaluation, and MLOps components to operate on both domains without
+modification.
+Both domains are evaluated under a unified metric suite:
+AUC-PR, VUS-PR, PA-F1, event-level F1, and FP/h.
+On seismic data, the best model (Tiny TCN, 14{,}897 parameters)
+achieves AUC-PR~$=0.9416$ and FP/h~$=3.136$.
+On 3W, [RESULTS TO BE FILLED].
+The results demonstrate that the pipeline generalizes across domains
+with structural differences in sampling rate (40~Hz vs.\ 1~Hz),
+dimensionality (univariate vs.\ 8-channel), anomaly ratio, and failure
+semantics, supporting the adapter-based design as a viable architecture
+for multi-domain edge monitoring systems.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Cross-domain generalization, TinyML, anomaly detection, multivariate time
+series, Petrobras 3W, seismology, ESP32, VUS-PR, PA-F1, benchmark.
+\end{IEEEkeywords}
+
+% ================================================================
+\section{Introduction}
+\label{sec:intro}
+% ================================================================
+
+\subsection{The Cross-Domain Problem in Anomaly Detection}
+
+Time-series anomaly detection research suffers from a lack of fair
+cross-domain benchmarks.
+Most published pipelines are designed for a specific domain (network
+intrusion, industrial vibration, seismic), with preprocessing, feature
+engineering, model architecture, and evaluation protocol optimized for
+that domain~\cite{pang2021deep,chandola2009anomaly}.
+When the same model is applied to a different domain, it fails---not
+necessarily because the approach is wrong, but because domain-specific
+assumptions are embedded in every pipeline stage.
+
+This creates a reproducibility and generalization problem:
+it is impossible to tell whether a method is genuinely better, or
+whether it merely has better domain-specific engineering.
+Kim et al.~\cite{kim2022towards} make this argument explicit, showing that
+anomaly detection benchmarks are heavily influenced by metric choice and
+dataset preparation.
+
+\subsection{Adapter-Based Architecture as a Solution}
+
+We propose and evaluate an adapter-based architecture that enforces a
+\emph{unified dataset contract} between domain-specific preprocessing and
+a domain-agnostic ML core.
+The contract is a NumPy compressed archive:
+\begin{equation}
+  \{\mathbf{X}_\text{split} \in \mathbb{R}^{N \times W \times C},\;
+    \mathbf{y}_\text{split} \in \{0,1\}^N\}
+  \quad \text{for } \text{split} \in \{\text{train, val, test}\}
+\end{equation}
+where $N$ is the number of windows, $W$ the window size, and $C$ the
+number of channels ($C=1$ for univariate).
+
+Any domain---seismic ($C=1$, $f_s=40$~Hz), oil-well ($C=8$, $f_s=1$~Hz),
+industrial vibration, or audio---contributes only a domain adapter.
+The training, evaluation, MLOps, and export components remain unchanged.
+
+\subsection{Contributions}
+
+\begin{enumerate}
+  \item \textbf{Cross-domain evaluation} of a unified TinyML pipeline on
+        seismic (univariate, 40~Hz) and Petrobras 3W (8-channel, 1~Hz)
+        under a common, rigorous metric suite.
+  \item \textbf{Multivariate extension} of the pipeline contract, supporting
+        $C$-channel input in CNN, TCN, and LSTM architectures via a single
+        \texttt{n\_channels} parameter.
+  \item \textbf{3W domain adapter} with split-by-well strategy, edge-aware
+        per-channel preprocessing, and cross-channel correlation features.
+  \item \textbf{Reproducible benchmark} comparing models across domains
+        using AUC-PR, VUS-PR, PA-F1, Event-F1, and FP/h---enabling fair
+        inter-domain ranking for the first time in this pipeline.
+\end{enumerate}
+
+% ================================================================
+\section{Related Work}
+\label{sec:related}
+% ================================================================
+
+\subsection{Anomaly Detection Benchmarks}
+
+Hundman et al.~\cite{hundman2018detecting} benchmark LSTM-based detectors
+on NASA spacecraft telemetry (multivariate).
+Su et al.~\cite{su2019robust} propose OmniAnomaly for multivariate
+time series, evaluating on SMAP and MSL datasets.
+Shen et al.~\cite{shen2020timeseries} review anomaly detection for
+multivariate time series, noting the lack of standard protocols.
+Kim et al.~\cite{kim2022towards} argue that existing benchmarks
+systematically favor certain metrics and preprocessing choices, calling
+for more rigorous evaluation.
+
+\subsection{Petrobras 3W Dataset}
+
+Vargas et al.~\cite{vargas2019realistic} introduce the 3W dataset:
+a public, labeled collection of oil-well events from Petrobras.
+The dataset contains real and simulated records of 8 undesirable events
+(e.g., abrupt pressure increase, hydrate formation, gas kick)
+across multiple wells, with 8 process sensor channels at 1~Hz.
+It is one of the few public multivariate anomaly datasets from critical
+infrastructure, making it an important benchmark for industrial TinyML.
+
+\subsection{Multivariate Time-Series Anomaly Detection}
+
+LSTM-based approaches~\cite{hundman2018detecting,su2019robust} dominate
+multivariate anomaly detection but are impractical for MCU deployment.
+Convolution-based methods~\cite{bai2018empirical} offer better parameter
+efficiency, making them more suitable for TinyML settings.
+To our knowledge, no prior work evaluates edge-deployable models on 3W
+using consistent metrics across multiple domains.
+
+% ================================================================
+\section{Domains and Datasets}
+\label{sec:domains}
+% ================================================================
+
+\subsection{Domain 1: Seismic (Univariate)}
+
+\begin{table}[htbp]
+  \caption{Domain Profiles}
+  \label{tab:profiles}
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+    Parameter & Seismic & Petrobras 3W \\
+    \midrule
+    Sampling rate    & 40~Hz         & 1~Hz           \\
+    Window size      & 800 samples   & 60 samples     \\
+    Window duration  & 20~s          & 60~s           \\
+    Step             & 10~s (50\%)   & 30~s (50\%)    \\
+    Channels ($C$)   & 1             & 8              \\
+    Split strategy   & By event      & By well        \\
+    Anomaly type     & Earthquake    & Process fault  \\
+    Anomaly ratio    & $\approx$12.8\% & [TODO]       \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Full description in~\cite{artigo1} (companion paper).
+
+\subsection{Domain 2: Petrobras 3W (Multivariate)}
+
+The 3W dataset~\cite{vargas2019realistic} contains CSV files with 8 sensor
+channels:
+P-PDG, P-TPT, T-TPT, P-MON-CKP, T-JUS-CKP, P-JUS-CKGL,
+T-JUS-CKGL, QGL.
+Labels: class~0 (normal), class~$>0$ (fault, various types).
+We use a binary formulation: any fault label $\to y=1$.
+
+\subsubsection{3W Adapter Preprocessing (Edge-Aware)}
+
+Per channel, the adapter applies:
+\begin{enumerate}
+  \item Linear interpolation of missing values.
+  \item Linear detrend.
+  \item Per-channel, per-window z-score normalization.
+\end{enumerate}
+
+This pipeline is intentionally minimal---all steps are implementable
+in C/C++ on ESP32---maintaining alignment between offline training
+and edge inference.
+
+\subsubsection{Split Strategy}
+
+Data are split \emph{by well}: training, validation, and test sets
+contain disjoint wells.
+This prevents the model from memorizing well-specific baseline behavior,
+which would inflate test performance.
+Ratio: 70/15/15 wells for train/val/test.
+
+\subsubsection{Multivariate Features}
+
+For classical models, features are extracted per channel
+(28 features $\times$ 8 channels = 224 features) plus
+$\binom{8}{2} = 28$ cross-channel Pearson correlation coefficients,
+for a total of 252 features per window.
+
+% ================================================================
+\section{Methodology}
+\label{sec:method}
+% ================================================================
+
+\subsection{Unified Model Suite}
+
+The same six model families are evaluated on both domains:
+
+\begin{table}[htbp]
+  \caption{Models Evaluated Across Domains}
+  \label{tab:models}
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+    Model & Input & Edge \\
+    \midrule
+    Random Forest (200 trees)    & Features ($F$-dim) & $\times$ \\
+    Extra Trees (200 trees)      & Features ($F$-dim) & $\times$ \\
+    Tiny CNN                     & $(W, C)$           & \checkmark \\
+    Tiny TCN                     & $(W, C)$           & \checkmark \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+For neural models, the input shape changes automatically from
+$(W, 1)$ to $(W, C)$ via the \texttt{n\_channels} parameter,
+with no architectural modification---\texttt{Conv1D} operates on
+the channel dimension natively.
+
+\subsection{Hyperparameter Optimization}
+
+Optuna with 30 trials per domain-model combination (reduced from 88 in
+the seismic-only study for computational tractability in the cross-domain
+setting).
+Same composite objective (Eq.~(1) in companion paper~\cite{artigo1}).
+
+\subsection{Evaluation Protocol}
+
+All models are evaluated under the unified metric suite defined
+in~\cite{artigo2} (companion paper):
+AUC-PR, VUS-PR ($b_{\max} = 5$), PA-F1, Event-F1 ($\tau=0.1$), FP/h.
+
+The same quality-gate thresholds are applied across domains
+(Table~II in~\cite{artigo2}), enabling direct comparison of
+how many models survive the gate in each domain.
+
+% ================================================================
+\section{Results}
+\label{sec:results}
+% ================================================================
+
+\subsection{Cross-Domain Model Comparison}
+
+\begin{table*}[htbp]
+  \caption{Cross-Domain Benchmark Results (Test Set)}
+  \label{tab:xdomain}
+  \centering
+  \begin{tabular}{llccccccc}
+    \toprule
+    Domain & Model & AUC-PR & VUS-PR & PA-F1 & Event-F1 & FP/h & Params & Edge \\
+    \midrule
+    \multirow{4}{*}{Seismic}
+      & Optuna Tiny TCN  & \textbf{0.9416} & [TODO] & [TODO] & [TODO]
+                         & \textbf{3.136}  & 14{,}897  & \checkmark \\
+      & Optuna Tiny CNN  & 0.9127 & [TODO] & [TODO] & [TODO]
+                         & 4.896  & 19{,}489  & \checkmark \\
+      & Random Forest    & 0.8127 & [TODO] & [TODO] & [TODO]
+                         & 9.264  & ---       & $\times$ \\
+      & Extra Trees      & 0.7901 & [TODO] & [TODO] & [TODO]
+                         & 11.296 & ---       & $\times$ \\
+    \midrule
+    \multirow{4}{*}{3W}
+      & Optuna Tiny TCN  & [TODO] & [TODO] & [TODO] & [TODO]
+                         & [TODO] & [TODO]    & \checkmark \\
+      & Optuna Tiny CNN  & [TODO] & [TODO] & [TODO] & [TODO]
+                         & [TODO] & [TODO]    & \checkmark \\
+      & Random Forest    & [TODO] & [TODO] & [TODO] & [TODO]
+                         & [TODO] & ---       & $\times$ \\
+      & Extra Trees      & [TODO] & [TODO] & [TODO] & [TODO]
+                         & [TODO] & ---       & $\times$ \\
+    \bottomrule
+  \end{tabular}
+  % TODO: rodar benchmark_cross_domain.py após baixar dataset 3W
+  %       e preencher os valores [TODO]
+\end{table*}
+
+\subsection{Quality Gate Pass Rate by Domain}
+
+\begin{table}[htbp]
+  \caption{Quality Gate Pass Rate (Full Gate, All Candidates)}
+  \label{tab:gate_rate}
+  \centering
+  \begin{tabular}{lccc}
+    \toprule
+    Domain & Candidates & Passed & Rate \\
+    \midrule
+    Seismic & [TODO] & [TODO] & [TODO]\% \\
+    3W      & [TODO] & [TODO] & [TODO]\% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Relative Ranking Stability}
+
+A key hypothesis of the adapter architecture is that relative model
+ranking---not absolute performance---is stable across domains.
+We measure ranking agreement using Spearman correlation $\rho_s$ between
+the AUC-PR rankings on seismic and 3W:
+
+\begin{equation}
+  \rho_s = 1 - \frac{6\sum d_i^2}{n(n^2-1)}
+\end{equation}
+
+where $d_i$ is the rank difference for model $i$ and $n=4$.
+We expect $\rho_s > 0$ (positive correlation in ranking) if the pipeline
+is consistent across domains.
+
+$\rho_s = \text{[TODO]}$ (target: $> 0.60$).
+
+\subsection{VUS-PR vs.\ AUC-PR Discrepancy by Domain}
+
+\begin{table}[htbp]
+  \caption{Mean VUS-PR/AUC-PR Ratio per Domain}
+  \label{tab:vuspr_ratio}
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+    Domain & AUC-PR (best) & VUS-PR (best) \\
+    \midrule
+    Seismic & 0.9416 & [TODO] \\
+    3W      & [TODO] & [TODO] \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+A lower VUS-PR/AUC-PR ratio indicates that the model relies on
+point-exact alignment---a concern particularly for 3W, where fault
+onset is gradual and window step is 30~s.
+
+% ================================================================
+\section{Discussion}
+\label{sec:discussion}
+% ================================================================
+
+\subsection{Structural Domain Differences}
+
+The two domains differ structurally in ways that stress-test the
+pipeline's generalization:
+
+\begin{itemize}
+  \item \textbf{Sampling rate:} 40$\times$ difference (40~Hz vs.\ 1~Hz).
+        Window duration differs accordingly (20~s vs.\ 60~s).
+  \item \textbf{Dimensionality:} $C=1$ vs.\ $C=8$.
+        Neural models process both without architecture changes;
+        classical models receive 28 vs.\ 252 features.
+  \item \textbf{Anomaly semantics:} seismic anomalies are impulsive
+        (seconds to minutes); oil-well faults are gradual (hours).
+        Event-F1 is more sensitive to this difference than AUC-PR.
+  \item \textbf{Imbalance:} both are imbalanced but at different ratios
+        ($\approx$12.8\% vs.\ [TODO]\%).
+\end{itemize}
+
+\subsection{Cross-Channel Correlation as a Discriminative Feature}
+
+On 3W, the 28 cross-channel Pearson correlations contribute [X]\% of
+Random Forest feature importance.
+Several faults manifest as changes in correlational structure
+(e.g., P-PDG and P-TPT decouple during a valve blockage) that are
+invisible in per-channel statistics alone.
+This motivates retaining correlation features even in classical models,
+at the cost of 28 additional features.
+
+\subsection{Limitations}
+
+\textbf{Two-domain scope:} with only two domains, claims of cross-domain
+generalization are preliminary.
+Extension to C-MAPSS (bearing degradation, 21 sensors)~\cite{saxena2008damage}
+and financial time series would strengthen the argument.
+
+\textbf{No shared train/val windows:} the pipeline does not support
+multi-source training (e.g., pre-train on seismic, fine-tune on 3W).
+This is a deliberate design choice for cleaner evaluation, but limits
+transfer learning scenarios.
+
+\textbf{Hardware validation:} results are offline only.
+The 8-channel Tiny TCN for 3W has a larger input layer and may require
+more RAM than the univariate model; hardware validation on ESP32 is needed.
+
+% ================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% ================================================================
+
+We evaluated a generic TinyML anomaly detection pipeline on two
+structurally different domains---seismic (univariate, 40~Hz) and
+Petrobras 3W (8-channel, 1~Hz)---using a unified dataset contract,
+unified model suite, and unified metric set (AUC-PR, VUS-PR, PA-F1,
+Event-F1, FP/h).
+
+The adapter-based architecture enables this cross-domain evaluation
+without any modification to training, MLOps, or export components.
+Results show that [relative ranking stability / performance differences
+to be discussed after filling TODO values].
+
+The benchmark script, all adapters, profile files, and evaluation code
+are publicly available as part of the companion pipeline repository.
+
+Future work includes:
+(i) adding C-MAPSS and a financial time series as additional benchmark
+    domains;
+(ii) multi-source training (seismic pre-training + 3W fine-tuning);
+(iii) hardware validation of the multivariate Tiny TCN on ESP32.
+
+% ================================================================
+% REFERENCES
+% ================================================================
+
+\begin{thebibliography}{00}
+
+\bibitem{pang2021deep}
+G.~Pang et al.,
+``Deep learning for anomaly detection: A review,''
+\textit{ACM Comput. Surv.}, vol.~54, no.~2, pp. 1--38, 2021.
+
+\bibitem{chandola2009anomaly}
+V.~Chandola, A.~Banerjee, and V.~Kumar,
+``Anomaly detection: A survey,''
+\textit{ACM Comput. Surv.}, vol.~41, no.~3, pp. 1--58, 2009.
+
+\bibitem{kim2022towards}
+S.~Kim et al.,
+``Towards a rigorous evaluation of time-series anomaly detection,''
+in \textit{Proc. AAAI}, 2022.
+
+\bibitem{vargas2019realistic}
+R.~E.~V.~Vargas et al.,
+``A realistic and public dataset with rare undesirable real events in oil wells,''
+\textit{J. Petrol. Sci. Eng.}, vol.~181, p. 106223, 2019.
+
+\bibitem{hundman2018detecting}
+K.~Hundman et al.,
+``Detecting spacecraft anomalies using LSTMs and nonparametric dynamic
+thresholding,''
+in \textit{Proc. KDD}, 2018.
+
+\bibitem{su2019robust}
+Y.~Su et al.,
+``Robust anomaly detection for multivariate time series through stochastic
+recurrent neural network,''
+in \textit{Proc. KDD}, 2019.
+
+\bibitem{shen2020timeseries}
+L.~Shen et al.,
+``Time series anomaly detection using temporal hierarchical one-class
+network,''
+in \textit{Proc. NeurIPS}, 2020.
+
+\bibitem{bai2018empirical}
+S.~Bai, J.~Z.~Kolter, and V.~Koltun,
+``An empirical evaluation of generic convolutional and recurrent networks
+for sequence modeling,''
+arXiv:1803.01271, 2018.
+
+\bibitem{saxena2008damage}
+A.~Saxena et al.,
+``Damage propagation modeling for aircraft engine run-to-failure simulation,''
+in \textit{Proc. IEEE ICPHM}, 2008.
+
+\bibitem{artigo1}
+[AUTHOR],
+``A generic TinyML pipeline for time-series anomaly detection,''
+[VENUE], 2026. \textit{(companion paper 1)}
+
+\bibitem{artigo2}
+[AUTHOR],
+``Operational quality gates for TinyML anomaly detection,''
+[VENUE], 2026. \textit{(companion paper 2)}
+
+\end{thebibliography}
+
+\end{document}

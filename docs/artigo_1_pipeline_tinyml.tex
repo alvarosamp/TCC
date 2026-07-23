@@ -1,0 +1,612 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{hyperref}
+
+% ----------------------------------------------------------------
+% TODO: substituir [AUTHOR] e [INSTITUTION] antes de submeter
+% ----------------------------------------------------------------
+
+\begin{document}
+
+\title{A Generic TinyML Pipeline for Time-Series Anomaly Detection:\\
+Edge-Aware Preprocessing, MLOps Quality Gates,\\
+and Secure OTA Updates on ESP32}
+
+\author{
+  \IEEEauthorblockN{[AUTHOR NAME]}
+  \IEEEauthorblockA{
+    \textit{[Department]}\\
+    \textit{[Institution]}\\
+    [City, Country]\\
+    [email]
+  }
+}
+
+\maketitle
+
+% ----------------------------------------------------------------
+\begin{abstract}
+We present a generic, reproducible TinyML pipeline for anomaly detection
+in complex time series, validated in the seismic domain targeting
+ESP32 microcontrollers.
+The architecture decouples domain adapters from the machine learning core,
+enabling reuse for industrial vibration, electrical current, or telemetry
+sensors without pipeline rewriting.
+Edge-aware preprocessing eliminates MCU-incompatible steps
+(instrumental response removal), reducing training-serving skew at
+embedded inference time.
+The pipeline compares six model families---from STA/LTA to
+Optuna-optimized dilated convolutional networks---under a
+comprehensive set of operational metrics: AUC-PR, VUS-PR,
+PA-F1, event-level F1, and false positives per hour (FP/h).
+The best model, a Tiny TCN with 14{,}897 parameters, achieves AUC-PR of
+0.9416 and 3.136 FP/h, outperforming all baselines including the
+traditional STA/LTA method.
+A complete MLOps cycle---DVC, MLflow, multidimensional quality gate,
+model promotion, and an OTA package with SHA-256 integrity verification
+and rollback---establishes an auditable foundation for production TinyML systems.
+The full pipeline and all trained models are publicly available.
+\end{abstract}
+
+\begin{IEEEkeywords}
+TinyML, anomaly detection, time series, seismology, ESP32, MLOps,
+temporal convolutional network, over-the-air update.
+\end{IEEEkeywords}
+
+% ================================================================
+\section{Introduction}
+\label{sec:intro}
+% ================================================================
+
+Continuous sensor monitoring systems face a recurring operational dilemma:
+transmitting all sensor data for centralized analysis incurs high energy,
+bandwidth, and storage costs, while fixed-threshold alerting on the device
+produces high false-positive rates and poor adaptability~\cite{sculley2015hidden}.
+In domains such as seismic monitoring, industrial vibration, and equipment
+telemetry, continuous acquisition generates data volumes that make centralized
+analysis impractical at scale.
+
+TinyML---the execution of machine learning models on microcontrollers with
+severely limited resources---offers an alternative: the edge device processes
+local signal windows and forwards data only when there is reliable evidence
+of an anomaly~\cite{warden2019tinyml,banbury2021mlperf}.
+This reduces transmission, energy consumption, and operational cost, while
+enabling faster response and offline operation.
+
+In the seismic domain, automatic event detection has been addressed by classical
+methods such as STA/LTA~\cite{allen1978automatic,withers1998comparison} and,
+more recently, deep networks such as PhaseNet~\cite{zhu2019phasenet} and
+EQTransformer~\cite{mousavi2020earthquake}.
+These models, however, are designed for server execution and do not consider
+the memory and processing constraints of microcontrollers.
+
+Evaluation methodology is also under scrutiny:
+Kim et al.~\cite{kim2022towards} show that standard AUC-PR is unreliable
+for windowed time series due to point-to-point alignment sensitivity,
+proposing VUS-PR as a more robust alternative.
+Xu et al.~\cite{xu2018donut} and Tatbul et al.~\cite{tatbul2018precision}
+formalize point-adjust F1 (PA-F1) and event-level F1 as operationally
+meaningful complements.
+
+This paper contributes:
+\begin{enumerate}
+  \item A \emph{generic, reproducible} TinyML pipeline for binary time-series
+        anomaly detection, domain-agnostic via adapter separation.
+  \item \emph{Edge-aware preprocessing} that eliminates MCU-incompatible
+        steps, reducing training-serving skew.
+  \item Comparison of six model families under a \emph{full operational
+        metric set}: AUC-PR, VUS-PR, PA-F1, Event-F1, and FP/h.
+  \item A \emph{complete MLOps cycle}: DVC, MLflow, multidimensional quality
+        gate, model promotion, and an OTA package with SHA-256 integrity
+        verification and simulated rollback.
+\end{enumerate}
+
+% ================================================================
+\section{Related Work}
+\label{sec:related}
+% ================================================================
+
+\subsection{TinyML and Embedded Inference}
+
+Warden and Situnayake~\cite{warden2019tinyml} established practical foundations
+for running ML models on microcontrollers.
+Banbury et al.~\cite{banbury2021mlperf} formalized performance benchmarks for
+TinyML systems, exposing tradeoffs between accuracy, latency, and energy.
+David et al.~\cite{david2021tensorflow} present TensorFlow Lite Micro as
+the reference framework for OS-free inference.
+Lin et al.~\cite{lin2020mcunet} propose architecture and inference engine
+co-design to maximize accuracy on MCUs with less than 512~KB SRAM.
+
+\subsection{Anomaly Detection in Time Series}
+
+Chandola et al.~\cite{chandola2009anomaly} provide a comprehensive taxonomy
+of anomaly detection techniques.
+Pang et al.~\cite{pang2021deep} review deep learning methods for anomalies,
+highlighting the importance of appropriate metrics for imbalanced distributions.
+Kim et al.~\cite{kim2022towards} propose VUS-PR, integrating AUC-PR over
+multiple prediction buffer sizes to produce a more rigorous evaluation measure.
+Tatbul et al.~\cite{tatbul2018precision} define range-based precision and
+recall for time series, formalizing event-level evaluation.
+
+\subsection{Seismic Detection with ML}
+
+STA/LTA~\cite{allen1978automatic,withers1998comparison} is the classical
+baseline: it compares short-window energy (STA) to long-window energy (LTA)
+to identify event onsets.
+PhaseNet~\cite{zhu2019phasenet} is a U-Net for seismic phase detection at
+datacenter scale.
+EQTransformer~\cite{mousavi2020earthquake} introduces a hierarchical
+transformer for simultaneous detection and phase classification.
+Both achieve strong performance but with tens of millions of parameters,
+infeasible for ESP32 deployment.
+
+\subsection{Temporal Convolutional Networks}
+
+Bai et al.~\cite{bai2018empirical} demonstrate empirically that causal dilated
+convolutional networks (TCN) outperform LSTMs on diverse sequence modeling tasks.
+The absence of recurrent state simplifies sequential inference and reduces
+memory consumption, an advantage relevant for embedded devices.
+
+\subsection{MLOps for Embedded Systems}
+
+Sculley et al.~\cite{sculley2015hidden} identify hidden technical debt in ML
+systems, including training-serving skew and lack of data versioning.
+Amershi et al.~\cite{amershi2019software} document software engineering
+practices for production ML.
+DVC~\cite{dvc} and MLflow~\cite{mlflow} form the recognized basis for
+reproducible MLOps pipelines.
+
+% ================================================================
+\section{Methodology}
+\label{sec:method}
+% ================================================================
+
+\subsection{Pipeline Architecture}
+
+The pipeline enforces explicit separation between domain adapters and the
+ML core (Fig.~\ref{fig:pipeline}):
+
+\begin{figure}[htbp]
+  \centering
+  % TODO: inserir figura do pipeline
+  % \includegraphics[width=\columnwidth]{figures/pipeline.pdf}
+  \framebox[\columnwidth]{\parbox{0.9\columnwidth}{\centering
+    \texttt{raw data $\to$ domain adapter $\to$ generic NPZ dataset} \\
+    \texttt{$\to$ contract validation $\to$ feature extraction / raw signal} \\
+    \texttt{$\to$ model training $\to$ Optuna HPO $\to$ candidate manifest} \\
+    \texttt{$\to$ quality gate $\to$ production manifest} \\
+    \texttt{$\to$ TFLite export + C header $\to$ OTA package}
+  }}
+  \caption{End-to-end TinyML pipeline. Domain adapters are the only
+           domain-specific components; everything downstream is generic.}
+  \label{fig:pipeline}
+\end{figure}
+
+The \emph{dataset contract} is a NumPy compressed archive with keys
+\texttt{X\_\{train,val,test\}} of shape \texttt{(N, window\_size)} for
+univariate series or \texttt{(N, window\_size, n\_channels)} for
+multivariate series, and binary labels \texttt{y\_\{train,val,test\}}.
+Adding a new domain requires only a new adapter that respects this contract.
+
+\subsection{Seismic Dataset}
+\label{sec:dataset}
+
+% TODO: preencher com descrição real dos dados
+The validation domain is seismic.
+Raw data are MiniSEED files organized as:
+\texttt{raw/events/} (anomalous windows, $y=1$) and
+\texttt{raw/continuous/} (background noise, $y=0$).
+
+\begin{table}[htbp]
+  \caption{Seismic Profile Parameters (\texttt{seismic\_edge\_v1})}
+  \label{tab:profile}
+  \centering
+  \begin{tabular}{ll}
+    \toprule
+    Parameter & Value \\
+    \midrule
+    Sampling rate     & 40~Hz \\
+    Window size       & 800 samples (20~s) \\
+    Window step       & 10~s (50\% overlap) \\
+    Split strategy    & By event \\
+    Test anomaly ratio & $\approx$12.8\% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Split by event guarantees that windows from the same earthquake do not
+appear simultaneously in train and test, preventing data leakage.
+
+\subsection{Edge-Aware Preprocessing}
+
+\textbf{Offline (training):}
+\texttt{resample 40~Hz $\to$ linear detrend $\to$ demean $\to$ 5\% taper
+$\to$ bandpass 0.5--15~Hz $\to$ per-window z-score}.
+
+\textbf{Edge (ESP32 inference):}
+\texttt{linear detrend $\to$ 5\% taper $\to$ bandpass 0.5--15~Hz
+$\to$ per-window z-score}.
+
+The \texttt{remove\_response} step (requiring StationXML) was removed---it
+cannot be reproduced on the MCU.
+All retained steps are implementable in C/C++ with single-precision
+floating-point arithmetic.
+
+\subsection{Feature Extraction}
+
+For classical supervised models, 28 features are extracted per window:
+
+\textbf{Temporal (20):} mean, std, min, max, median, abs\_mean, abs\_peak,
+RMS, crest factor, peak-to-peak, energy, skewness, kurtosis, $p_{05}$,
+$p_{25}$, $p_{75}$, $p_{95}$, IQR, zero crossings, zero-crossing rate.
+
+\textbf{Spectral (8):} dominant frequency, spectral centroid,
+spectral rolloff (85\%), bandpower in 0--3, 0.5--3, 3--8, 8--15~Hz,
+spectral entropy.
+
+Neural networks (Tiny CNN, Tiny TCN) operate directly on 800 raw samples.
+
+\subsection{Models}
+
+\begin{table}[htbp]
+  \caption{Model Families Evaluated}
+  \label{tab:models}
+  \centering
+  \begin{tabular}{llcc}
+    \toprule
+    Family & Model & Input & Edge \\
+    \midrule
+    Classical baseline & STA/LTA              & Raw signal   & \checkmark \\
+    Linear             & Logistic Regression  & 28 features  & $\times$   \\
+    Ensemble           & Random Forest        & 28 features  & $\times$   \\
+    Ensemble           & Extra Trees          & 28 features  & $\times$   \\
+    Lightweight neural & Tiny CNN             & 800 pts      & \checkmark \\
+    Lightweight neural & Tiny TCN (Optuna)    & 800 pts      & \checkmark \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Tiny TCN (best model):}
+Causal dilated separable Conv1D blocks with residual connections.
+Final Optuna configuration (trial~24, 88 trials total):
+6 blocks, 32 filters, kernel 7, dilation base 3, dense 24,
+dropout 0.028, spatial dropout 0.066; \textbf{14{,}897 parameters}.
+
+\subsection{Hyperparameter Optimization}
+
+Optuna~\cite{akiba2019optuna} maximizes a composite objective:
+
+\begin{equation}
+  \mathcal{J} = \text{AUC-PR}_\text{val} - \lambda \cdot \max(0,\; \text{FP/h} - \text{FP/h}_\text{tol})
+  \label{eq:objective}
+\end{equation}
+
+\noindent where $\lambda = 0.01$ and $\text{FP/h}_\text{tol} = 10$.
+The decision threshold is chosen on the validation set and applied
+unchanged on the test set.
+
+\subsection{Evaluation Metrics}
+
+\textbf{AUC-PR:} primary metric for imbalanced datasets.
+
+\textbf{VUS-PR}~\cite{kim2022towards}:
+average AUC-PR over prediction buffers $b \in [0, b_{\max}]$:
+\begin{equation}
+  \text{VUS-PR} = \frac{1}{b_{\max}+1} \sum_{b=0}^{b_{\max}}
+  \text{AUC-PR}^{(b)}
+  \label{eq:vuspr}
+\end{equation}
+where $\text{AUC-PR}^{(b)}$ dilates each anomaly segment by $b$ windows.
+Buffer $b=0$ recovers standard AUC-PR.
+
+\textbf{PA-F1}~\cite{xu2018donut}:
+point-adjust F1---if any window within an anomaly segment is correctly
+detected, all windows in that segment are counted as TP.
+
+\textbf{Event-F1}~\cite{tatbul2018precision}:
+F1 at segment level---a true segment is a TP if $\geq10\%$ of its
+windows are predicted anomalous.
+
+\textbf{FP/h:} operational false positive rate per monitoring hour:
+\begin{equation}
+  \text{FP/h} = \frac{\text{FP}}{\text{hours of evaluated signal}}
+  \label{eq:fph}
+\end{equation}
+
+\subsection{MLOps Cycle}
+
+\textbf{DVC} versions data and pipeline stages: \texttt{generate\_data $\to$
+validate\_dataset $\to$ train\_all $\to$ export\_tflite}.
+
+\textbf{MLflow} tracks all experiment parameters, metrics, and model artifacts.
+
+\textbf{Quality gate} enforces multidimensional thresholds before promotion:
+AUC-PR $\geq 0.80$, FP/h $\leq 10$, $|\Delta\text{AUC-PR}_\text{val/test}| \leq 0.05$,
+model size $\leq 100$~KB.
+
+\textbf{OTA package} contains: versioned TFLite model, JSON manifest,
+SHA-256 digest, compatibility metadata (target, runtime, preprocessing version),
+and a simulated rollback mechanism.
+
+% ================================================================
+\section{Results}
+\label{sec:results}
+% ================================================================
+
+\subsection{Model Comparison}
+
+\begin{table*}[htbp]
+  \caption{Model Comparison on the Seismic Test Set}
+  \label{tab:results}
+  \centering
+  \begin{tabular}{lcccccccc}
+    \toprule
+    Model & AUC-PR & VUS-PR & PA-F1 & Event-F1 & F1 & FP/h & Params & Edge \\
+    \midrule
+    \textbf{Optuna Tiny TCN}
+          & \textbf{0.9416} & \textbf{[TODO]} & \textbf{[TODO]}
+          & \textbf{[TODO]} & \textbf{0.8885} & \textbf{3.136}
+          & \textbf{14{,}897} & \checkmark \\
+    Optuna Tiny CNN
+          & 0.9127 & [TODO] & [TODO] & [TODO] & 0.8526 & 4.896
+          & 19{,}489 & \checkmark \\
+    Tiny TCN (no HPO)
+          & 0.8964 & [TODO] & [TODO] & [TODO] & 0.7666 & 21.984
+          & $\approx$6k & \checkmark \\
+    Optuna Random Forest
+          & 0.8127 & [TODO] & [TODO] & [TODO] & 0.7367 & 9.264
+          & --- & $\times$ \\
+    Optuna Extra Trees
+          & 0.7901 & [TODO] & [TODO] & [TODO] & 0.7102 & 11.296
+          & --- & $\times$ \\
+    STA/LTA
+          & 0.1662 & [TODO] & [TODO] & [TODO] & 0.2760 & ---
+          & --- & \checkmark \\
+    \bottomrule
+  \end{tabular}
+  % TODO: preencher VUS-PR, PA-F1, Event-F1 rodando evaluate_scores
+  %       nos scores salvos no MLflow (sem retreinamento)
+\end{table*}
+
+The Optuna Tiny TCN dominates across all metrics: highest AUC-PR (0.9416),
+lowest FP/h (3.136) among neural models, and only 14{,}897 parameters---well
+within ESP32 flash capacity after TFLite conversion.
+
+STA/LTA achieves AUC-PR of 0.1662, near random baseline for the class
+distribution, confirming that fixed-threshold methods are insufficient
+for the variability of the evaluated data.
+
+\subsection{Impact of Hyperparameter Optimization}
+
+\begin{table}[htbp]
+  \caption{HPO Convergence for Tiny TCN}
+  \label{tab:hpo}
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+    Configuration & AUC-PR (val) & FP/h \\
+    \midrule
+    No HPO          & ---    & 21.984 \\
+    Trial 0         & 0.8152 & 8.539  \\
+    Trial 8         & 0.8906 & 4.521  \\
+    Trial 11        & 0.8981 & 3.586  \\
+    \textbf{Trial 24 (best)} & \textbf{0.9343} & \textbf{3.136} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+HPO reduces FP/h by \textbf{85.7\%} relative to the default architecture
+(21.984 $\to$ 3.136).
+The improvement in AUC-PR from validation to test ($+0.0079$) indicates
+good generalization with no overfitting.
+
+\subsection{Feature Importance (Classical Models)}
+
+Feature importance analysis on Random Forest reveals that spectral features
+dominate class separation:
+\texttt{spectral\_rolloff\_85}, \texttt{bandpower\_8\_15hz},
+\texttt{spectral\_centroid}, \texttt{zero\_crossing\_rate},
+\texttt{kurtosis}, \texttt{spectral\_entropy}.
+Anomalies are discriminated by spectral distribution and waveform shape,
+not by raw amplitude---consistent with seismic physics.
+
+\subsection{MLOps Validation}
+
+The Tiny TCN passed the quality gate, generating \texttt{production\_manifest.json}
+and an OTA package (\texttt{seismic\_edge\_v1\_tiny\_tcn\_v4-2}) with verified
+SHA-256 digest.
+The simulated OTA flow correctly detected available updates, applied the new
+version, suppressed unnecessary reinstallation, and completed rollback
+after a simulated failure---all state transitions verified.
+
+\subsection{Embedded Resource Estimates}
+
+\begin{table}[htbp]
+  \caption{Embedded Resource Estimates for ESP32}
+  \label{tab:resources}
+  \centering
+  \begin{tabular}{lc}
+    \toprule
+    Artifact & Size \\
+    \midrule
+    \texttt{model.tflite} (float32) & [TODO] KB \\
+    \texttt{model.tflite} (int8)    & [TODO] KB \\
+    \texttt{model\_data.h}          & [TODO] KB \\
+    Estimated inference RAM         & [TODO] KB \\
+    Estimated inference latency     & [TODO] ms \\
+    \bottomrule
+  \end{tabular}
+  % TODO: medir após exportação TFLite com quantização int8
+\end{table}
+
+% ================================================================
+\section{Discussion}
+\label{sec:discussion}
+% ================================================================
+
+\textbf{Edge-aware preprocessing.}
+Removing \texttt{remove\_response} from the training pipeline aligns the
+offline and embedded execution paths, reducing the most common source of
+training-serving skew in physics-based signal processing.
+Residual risk: numerical differences between the Python and C implementations
+of bandpass filtering.
+Hardware validation on ESP32 (Section~\ref{sec:conclusion}, future work)
+will quantify this residual gap.
+
+\textbf{VUS-PR vs.\ AUC-PR.}
+With 50\% window overlap, the same anomaly contributes to multiple positive
+windows.
+AUC-PR may overestimate performance by counting a single missed event as
+multiple false negatives, inflating recall.
+VUS-PR provides a more conservative and operationally meaningful estimate;
+values will be populated upon running the evaluation pipeline on stored scores.
+
+\textbf{Compact models for edge deployment.}
+The Tiny TCN (14{,}897 params) and Tiny CNN (19{,}489 params) are both
+viable for ESP32 flash.
+Non-edge models (Random Forest, Extra Trees) require megabytes after
+joblib serialization, precluding MCU deployment.
+
+% ================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% ================================================================
+
+We presented a generic, reproducible TinyML pipeline covering the complete
+cycle from raw data acquisition to secure OTA model updates on ESP32.
+The architecture decouples domain adapters from the ML core, enabling
+reuse across sensor domains without pipeline rewriting.
+Edge-aware preprocessing eliminates MCU-incompatible dependencies, reducing
+training-serving skew.
+The Optuna-optimized Tiny TCN achieves AUC-PR of 0.9416 and 3.136 FP/h
+with 14{,}897 parameters, outperforming all evaluated baselines.
+The multidimensional quality gate and SHA-256-verified OTA package with
+rollback establish an auditable foundation for production TinyML systems.
+
+Future work includes:
+(i) hardware validation on ESP32 to quantify the preprocessing gap;
+(ii) cross-domain replication on Petrobras 3W and C-MAPSS datasets
+     (see companion papers);
+(iii) int8 quantization and on-device latency measurement.
+
+% ================================================================
+% REFERENCES
+% ================================================================
+
+\begin{thebibliography}{00}
+
+\bibitem{sculley2015hidden}
+D.~Sculley et al.,
+``Hidden technical debt in machine learning systems,''
+in \textit{Proc. NeurIPS}, 2015, pp. 2503--2511.
+
+\bibitem{warden2019tinyml}
+P.~Warden and D.~Situnayake,
+\textit{TinyML: Machine Learning with TensorFlow Lite on Arduino and
+Ultra-Low-Power Microcontrollers}.
+O'Reilly Media, 2019.
+
+\bibitem{banbury2021mlperf}
+C.~Banbury et al.,
+``MLPerf Tiny Benchmark,''
+in \textit{Proc. MLSys}, 2021.
+
+\bibitem{david2021tensorflow}
+R.~David et al.,
+``TensorFlow Lite Micro: Embedded machine learning for TinyML systems,''
+in \textit{Proc. MLSys}, 2021.
+
+\bibitem{lin2020mcunet}
+J.~Lin et al.,
+``MCUNet: Tiny deep learning on IoT devices,''
+in \textit{Proc. NeurIPS}, 2020.
+
+\bibitem{allen1978automatic}
+R.~Allen,
+``Automatic earthquake recognition and timing from single traces,''
+\textit{Bull. Seismol. Soc. Am.}, vol.~68, no.~5, pp. 1521--1532, 1978.
+
+\bibitem{withers1998comparison}
+M.~Withers et al.,
+``A comparison of select trigger algorithms for automated global seismic
+phase and event detection,''
+\textit{Bull. Seismol. Soc. Am.}, vol.~88, no.~1, pp. 95--106, 1998.
+
+\bibitem{zhu2019phasenet}
+W.~Zhu and G.~C.~Beroza,
+``PhaseNet: A deep-neural-network-based seismic arrival-time picking method,''
+\textit{Geophys. J. Int.}, vol.~216, no.~1, pp. 261--273, 2019.
+
+\bibitem{mousavi2020earthquake}
+S.~M.~Mousavi et al.,
+``Earthquake transformer---an attentive deep-learning model for simultaneous
+earthquake detection and phase picking,''
+\textit{Nat. Commun.}, vol.~11, p. 3952, 2020.
+
+\bibitem{bai2018empirical}
+S.~Bai, J.~Z.~Kolter, and V.~Koltun,
+``An empirical evaluation of generic convolutional and recurrent networks
+for sequence modeling,''
+arXiv:1803.01271, 2018.
+
+\bibitem{chandola2009anomaly}
+V.~Chandola, A.~Banerjee, and V.~Kumar,
+``Anomaly detection: A survey,''
+\textit{ACM Comput. Surv.}, vol.~41, no.~3, pp. 1--58, 2009.
+
+\bibitem{pang2021deep}
+G.~Pang et al.,
+``Deep learning for anomaly detection: A review,''
+\textit{ACM Comput. Surv.}, vol.~54, no.~2, pp. 1--38, 2021.
+
+\bibitem{kim2022towards}
+S.~Kim et al.,
+``Towards a rigorous evaluation of time-series anomaly detection,''
+in \textit{Proc. AAAI}, 2022.
+
+\bibitem{xu2018donut}
+H.~Xu et al.,
+``Unsupervised anomaly detection via variational auto-encoder for seasonal
+KPIs in web applications,''
+in \textit{Proc. WWW}, 2018.
+
+\bibitem{tatbul2018precision}
+N.~Tatbul et al.,
+``Precision and recall for time series,''
+in \textit{Proc. NeurIPS}, 2018.
+
+\bibitem{amershi2019software}
+S.~Amershi et al.,
+``Software engineering for machine learning: A case study,''
+in \textit{Proc. ICSE-SEIP}, 2019.
+
+\bibitem{akiba2019optuna}
+T.~Akiba et al.,
+``Optuna: A next-generation hyperparameter optimization framework,''
+in \textit{Proc. KDD}, 2019.
+
+\bibitem{dvc}
+{Iterative AI},
+``DVC: Data version control,''
+\url{https://dvc.org}, 2024.
+
+\bibitem{mlflow}
+M.~Zaharia et al.,
+``Accelerating the machine learning lifecycle with MLflow,''
+\textit{IEEE Data Eng. Bull.}, vol.~41, no.~4, 2018.
+
+\end{thebibliography}
+
+\end{document}
