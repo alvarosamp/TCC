@@ -2,14 +2,29 @@
 
 import numpy as np
 from scipy.stats import kurtosis, skew
-
 """
 Features genericas para janelas de series temporais.
 
-Este modulo e propositalmente independente do dominio. Ele nao sabe se a janela
-veio de sismologia, vibracao, audio ou corrente eletrica. Recebe apenas uma
-matriz X com shape (n_janelas, n_amostras) e devolve uma matriz tabular de
-features para modelos classicos.
+Este modulo suporta:
+
+1. Serie univariada:
+   X.shape = (n_janelas, window_size)
+
+2. Serie multivariada:
+   X.shape = (n_janelas, window_size, n_canais)
+
+Para modelos classicos, precisamos transformar cada janela em uma linha tabular.
+Exemplo:
+
+Entrada multivariada:
+  uma janela com 128 amostras e 3 canais
+
+Saida:
+  uma lista de features:
+    ch0_mean, ch0_std, ...
+    ch1_mean, ch1_std, ...
+    ch2_mean, ch2_std, ...
+    corr_ch0_ch1, corr_ch0_ch2, corr_ch1_ch2
 """
 
 
@@ -19,7 +34,29 @@ def _safe_stat(value: float) -> float:
         return 0.0
     return float(value)
 
-
+def _as_3d_window(X: np.ndarray) -> np.ndarray:
+    """
+    Converte X para o formato padrao interno:
+    (n_janelas, window_size, n_canais)
+    
+    Se vier univariado : (n_janelas, window_size)
+    
+    vira: (n_janelas, window_size, 1)
+    
+    """
+    X = np.asarray(X, dtype=np.float32)
+    if X.ndim == 2:
+        return X[:, :, np.newaxis]
+    
+    if X.ndim == 3:
+        return X
+    
+    raise ValueError(
+        f"Formato de X nao suportado: {X.shape}. "
+        f"Use (n_janelas, window_size) ou "
+        f"(n_janelas, window_size, n_canais)."
+    )
+    
 def time_domain_features(x: np.ndarray) -> list[float]:
     """Features no dominio do tempo."""
     x = np.asarray(x, dtype=np.float32)
@@ -87,27 +124,50 @@ def _band_power(
 
 
 def _spectral_rolloff(freqs: np.ndarray, power: np.ndarray, ratio: float = 0.85) -> float:
+    """Frequencia abaixo da qual esta acumulada uma porcentagem da energia.
+    Com ration = 0.85, a rolloff_85 é a frequencia abaixo da qual esta acumulada 85% da energia.
+    """
     cumulative = np.cumsum(power)
-    total = cumulative[-1] if len(cumulative) else 0.0
+
+    if len(cumulative) == 0:
+        return 0.0
+
+    total = cumulative[-1]
+
     if total <= 0:
         return 0.0
+
     idx = int(np.searchsorted(cumulative, ratio * total))
     idx = min(idx, len(freqs) - 1)
+
     return _safe_stat(float(freqs[idx]))
 
 
 def frequency_domain_features(x: np.ndarray, sample_rate: float) -> list[float]:
-    """Features espectrais usando FFT real."""
+    """
+    Extrai features no dominio da frequencia usando FFT real.
+
+    Entrada:
+      x.shape = (window_size,)
+
+    sample_rate:
+      frequencia de amostragem em Hz.
+    """
     x = np.asarray(x, dtype=np.float32)
+
     spectrum = np.fft.rfft(x)
     magnitude = np.abs(spectrum)
+
     freqs = np.fft.rfftfreq(len(x), d=1.0 / sample_rate)
     power = magnitude**2
     total_power = float(np.sum(power)) + 1e-8
 
     dominant_idx = int(np.argmax(magnitude))
+
     dominant_freq = _safe_stat(float(freqs[dominant_idx]))
-    spectral_centroid = _safe_stat(float(np.sum(freqs * magnitude) / (np.sum(magnitude) + 1e-8)))
+    spectral_centroid = _safe_stat(
+        float(np.sum(freqs * magnitude) / (np.sum(magnitude) + 1e-8))
+    )
     spectral_rolloff_85 = _spectral_rolloff(freqs, power, ratio=0.85)
 
     bandpower_0_3hz = _band_power(freqs, power, 0.0, 3.0, total_power)
@@ -137,15 +197,85 @@ def extract_features_from_window(x: np.ndarray, sample_rate: float) -> list[floa
     return features
 
 
+def _cross_channel_correlation(window_3d: np.ndarray) -> list[float]:
+    """
+    Correlação de Pearson entre todos os pares de canais de uma janela.
+
+    window_3d.shape = (window_size, n_channels)
+    Retorna n_channels*(n_channels-1)/2 valores.
+    """
+    n_channels = window_3d.shape[1]
+    feats: list[float] = []
+    for i in range(n_channels):
+        for j in range(i + 1, n_channels):
+            a = window_3d[:, i]
+            b = window_3d[:, j]
+            std_a = float(np.std(a)) + 1e-8
+            std_b = float(np.std(b)) + 1e-8
+            corr = float(np.mean((a - a.mean()) * (b - b.mean())) / (std_a * std_b))
+            feats.append(_safe_stat(corr))
+    return feats
+
+
+def extract_features_from_window_multivariate(
+    window: np.ndarray, sample_rate: float
+) -> list[float]:
+    """
+    Extrai features de uma janela multivariada: (window_size, n_channels).
+
+    Para cada canal: features temporais + espectrais.
+    Depois: correlação cruzada entre pares de canais.
+    """
+    window = np.asarray(window, dtype=np.float32)
+    if window.ndim == 1:
+        return extract_features_from_window(window, sample_rate)
+
+    n_channels = window.shape[1]
+    feats: list[float] = []
+    for c in range(n_channels):
+        feats.extend(extract_features_from_window(window[:, c], sample_rate))
+    feats.extend(_cross_channel_correlation(window))
+    return feats
+
+
 def extract_statistical_features(X: np.ndarray, sample_rate: float) -> np.ndarray:
+    """
+    Extrai features de X.
+
+    Suporta:
+      univariado:   X.shape = (n_janelas, window_size)
+      multivariado: X.shape = (n_janelas, window_size, n_channels)
+    """
     X = np.asarray(X, dtype=np.float32)
-    if X.ndim != 2:
-        raise ValueError(f"Input must be 2D array, got shape {X.shape}")
-    rows = [extract_features_from_window(window, sample_rate) for window in X]
+
+    if X.ndim == 2:
+        rows = [extract_features_from_window(window, sample_rate) for window in X]
+    elif X.ndim == 3:
+        rows = [
+            extract_features_from_window_multivariate(X[i], sample_rate)
+            for i in range(len(X))
+        ]
+    else:
+        raise ValueError(f"Input must be 2D or 3D array, got shape {X.shape}")
+
     return np.array(rows, dtype=np.float32)
 
 
-def feature_names() -> list[str]:
+def feature_names(n_channels: int = 1) -> list[str]:
+    """Retorna nomes das features. Para multivariado, prefixados por canal."""
+    if n_channels > 1:
+        names: list[str] = []
+        base = _base_feature_names()
+        for c in range(n_channels):
+            names.extend([f"ch{c}_{f}" for f in base])
+        for i in range(n_channels):
+            for j in range(i + 1, n_channels):
+                names.append(f"corr_ch{i}_ch{j}")
+        return names
+    return _base_feature_names()
+
+
+def _base_feature_names() -> list[str]:
     time_features = [
         "mean",
         "std",
@@ -179,3 +309,8 @@ def feature_names() -> list[str]:
         "spectral_entropy",
     ]
     return time_features + freq_features
+
+
+# manter compatibilidade com chamadas antigas sem argumento
+def feature_names_univariate() -> list[str]:
+    return _base_feature_names()

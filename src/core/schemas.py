@@ -19,29 +19,60 @@ def validate_npz_keys(npz_path: str | Path) -> list[str]:
     return list(data.files)
 
 def flatten_window(X: np.ndarray, expected_size: int) -> np.ndarray:
-    """Normaliza X para o formato padrao
-    Se X tem shape (n_samples, window_size, n_features) e window_size == expected_size, retorna X
-    (n_janelas, window_size * n_features) se window_size == expected_size
-    Isso permite que datasets diferentes usem shapes levemente diferentes
     """
-    x = np.asarray(X)
+    Retorna X em formato 2D (n_janelas, window_size * n_channels) para modelos clássicos.
 
-    if x.ndim == 3 and x.shape[-1] == 1:
-        x = x[:, :, 0]
+    Univariado  (n, w)       -> (n, w)
+    Multivariado (n, w, c)   -> (n, w*c)   (canais concatenados)
+    """
+    x = np.asarray(X, dtype=np.float32)
 
-    elif x.ndim == 3 and x.shape[1] == 1:
-        x = x[:, 0, :]
+    if x.ndim == 2:
+        if x.shape[1] != expected_size:
+            raise ValueError(
+                f"Tamanho de janela invalido. Recebido={x.shape[1]}, esperado={expected_size}"
+            )
+        return x
 
-    if x.ndim != 2:
-        raise ValueError(f"Formato de X nao suportado: {x.shape}")
+    if x.ndim == 3:
+        if x.shape[1] != expected_size:
+            raise ValueError(
+                f"Tamanho de janela invalido. Recebido={x.shape[1]}, esperado={expected_size}"
+            )
+        n = x.shape[0]
+        return x.reshape(n, -1)
 
-    if x.shape[1] != expected_size:
-        raise ValueError(
-            f"Tamanho de janela invalido. "
-            f"Recebido={x.shape[1]}, esperado={expected_size}"
-        )
+    raise ValueError(f"Formato de X nao suportado: {x.shape}")
 
-    return x.astype(np.float32, copy=False)
+
+def prepare_for_neural(X: np.ndarray, expected_size: int, n_channels: int = 1) -> np.ndarray:
+    """
+    Retorna X em formato 3D (n_janelas, window_size, n_channels) para redes neurais.
+
+    Univariado  (n, w)       -> (n, w, 1)
+    Multivariado (n, w, c)   -> (n, w, c)
+    """
+    x = np.asarray(X, dtype=np.float32)
+
+    if x.ndim == 2:
+        if x.shape[1] != expected_size:
+            raise ValueError(
+                f"Tamanho de janela invalido. Recebido={x.shape[1]}, esperado={expected_size}"
+            )
+        return x[:, :, np.newaxis]
+
+    if x.ndim == 3:
+        if x.shape[1] != expected_size:
+            raise ValueError(
+                f"Tamanho de janela invalido. Recebido={x.shape[1]}, esperado={expected_size}"
+            )
+        if x.shape[2] != n_channels:
+            raise ValueError(
+                f"Numero de canais invalido. Recebido={x.shape[2]}, esperado={n_channels}"
+            )
+        return x
+
+    raise ValueError(f"Formato de X nao suportado: {x.shape}")
 
 def validate_labels(
     y: np.ndarray,

@@ -10,15 +10,9 @@ def infer_window_size(x_shape: tuple[int, ...]) -> int:
     """Infere o tamanho da janela a partir da forma dos dados."""
     if len(x_shape) == 2:
         return int(x_shape[1])
-
-    if len(x_shape) == 3 and x_shape[-1] == 1:
+    if len(x_shape) == 3:
         return int(x_shape[1])
-
-    if len(x_shape) == 3 and x_shape[1] == 1:
-        return int(x_shape[2])
-
-    raise ValueError(f"Formato de X nao suportado: {x_shape}")
-
+    raise ValueError(f"Forma de dados inesperada: {x_shape}. Esperado (n_samples, window_size) ou (n_samples, window_size, n_features).")
 
 @dataclass(frozen=True)
 class PipelineProfile:
@@ -44,6 +38,7 @@ class PipelineProfile:
     secondary_metrics: list[str]
     preprocessing: dict[str, Any]
     embedded: dict[str, Any]
+    n_channels: int = 1
 
     @classmethod
     def load_from_yaml(cls, path: Path) -> "PipelineProfile":
@@ -72,6 +67,7 @@ class PipelineProfile:
             raise ValueError(f"Missing required fields in profile: {missing}")
 
         data.setdefault('description', None)
+        data.setdefault('n_channels', 1)
         return cls(**data)
         
     @property
@@ -114,7 +110,8 @@ class PipelineProfile:
             'primary_metric': self.primary_metric,
             'secondary_metrics': self.secondary_metrics,
             'preprocessing': self.preprocessing,
-            'embedded': self.embedded
+            'embedded': self.embedded,
+            'n_channels': self.n_channels,
         }
 
     @staticmethod

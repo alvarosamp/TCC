@@ -1,0 +1,48 @@
+{
+    "profile_name": "3w_edge_v1",
+    "profile_version": "1.0.0",
+    "task": "binary_anomaly_detection",
+    "domain": "oil_well_petrobras_3w",
+    "description": "Profile para deteccao de anomalias em pocas de petroleo usando o dataset publico Petrobras 3W. Serie multivariada com 8 sensores de processo. Split por poco para evitar data leakage.",
+    "sampling_rate": 1.0,
+    "window_size": 60,
+    "window_seconds": 60.0,
+    "step_seconds": 30.0,
+    "overlap": 0.5,
+    "n_channels": 8,
+    "normal_label": 0,
+    "anomaly_label": 1,
+    "normal_name": "normal",
+    "anomaly_name": "fault",
+    "split_name": "poco",
+    "primary_metric": "auc_pr",
+    "secondary_metrics": [
+        "auc_roc",
+        "f1",
+        "pa_f1",
+        "event_f1",
+        "vus_pr"
+    ],
+    "preprocessing": {
+        "offline_pipeline": [
+            "interpolate_missing",
+            "detrend_linear",
+            "zscore_per_channel_per_window"
+        ],
+        "edge_pipeline": [
+            "detrend_linear",
+            "zscore_per_channel_per_window"
+        ],
+        "normalization": "zscore_per_channel_per_window",
+        "missing_strategy": "linear_interpolation",
+        "fault_types_included": "all"
+    },
+    "embedded": {
+        "target": "esp32",
+        "runtime": "tensorflow_lite_micro",
+        "decision_interval_ms": 60000,
+        "preprocessing_version": "3w_edge_preproc_v1",
+        "ota_strategy_initial": "firmware_full_image",
+        "ota_strategy_future": "separate_model_partition"
+    }
+}
