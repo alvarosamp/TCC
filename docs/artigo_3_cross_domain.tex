@@ -47,14 +47,15 @@ evaluation, and MLOps components to operate on both domains without
 modification.
 Both domains are evaluated under a unified metric suite:
 AUC-PR, VUS-PR, PA-F1, event-level F1, and FP/h.
-On seismic data, the best model (Tiny TCN, 14{,}897 parameters)
-achieves AUC-PR~$=0.9416$ and FP/h~$=3.136$.
-On 3W, [RESULTS TO BE FILLED].
-The results demonstrate that the pipeline generalizes across domains
-with structural differences in sampling rate (40~Hz vs.\ 1~Hz),
-dimensionality (univariate vs.\ 8-channel), anomaly ratio, and failure
-semantics, supporting the adapter-based design as a viable architecture
-for multi-domain edge monitoring systems.
+On seismic data, the best model (Tiny TCN, 5{,}273 parameters)
+achieves AUC-PR~$=0.9144$, VUS-PR~$=0.8921$, PA-F1~$=0.9443$, and
+FP/h~$=3.144$.
+Evaluation on the 3W domain is prepared (adapter, profile, and benchmark
+script are implemented and validated) and will be completed upon public
+download of the Petrobras 3W dataset (available at
+\url{https://github.com/petrobras/3W}).
+The architecture, contract definition, and seismic benchmarks are
+complete and reproducible.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -178,7 +179,7 @@ using consistent metrics across multiple domains.
     Channels ($C$)   & 1             & 8              \\
     Split strategy   & By event      & By well        \\
     Anomaly type     & Earthquake    & Process fault  \\
-    Anomaly ratio    & $\approx$12.8\% & [TODO]       \\
+    Anomaly ratio    & $\approx$12.8\% & domain-dependent\dag \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -284,29 +285,33 @@ how many models survive the gate in each domain.
     \toprule
     Domain & Model & AUC-PR & VUS-PR & PA-F1 & Event-F1 & FP/h & Params & Edge \\
     \midrule
-    \multirow{4}{*}{Seismic}
-      & Optuna Tiny TCN  & \textbf{0.9416} & [TODO] & [TODO] & [TODO]
-                         & \textbf{3.136}  & 14{,}897  & \checkmark \\
-      & Optuna Tiny CNN  & 0.9127 & [TODO] & [TODO] & [TODO]
-                         & 4.896  & 19{,}489  & \checkmark \\
-      & Random Forest    & 0.8127 & [TODO] & [TODO] & [TODO]
-                         & 9.264  & ---       & $\times$ \\
-      & Extra Trees      & 0.7901 & [TODO] & [TODO] & [TODO]
-                         & 11.296 & ---       & $\times$ \\
+    \multirow{5}{*}{Seismic}
+      & Tiny TCN   & \textbf{0.9144} & \textbf{0.8921} & \textbf{0.9443} & 0.0051
+                   & \textbf{3.144}  & 5{,}273   & \checkmark \\
+      & Tiny CNN   & 0.8892 & 0.8683 & 0.9360 & 0.0044
+                   & 3.640  & 13{,}073  & \checkmark \\
+      & Random Forest & 0.8273 & 0.8091 & 0.9296 & 0.0040
+                   & 4.032  & $\sim$4M  & $\times$ \\
+      & Extra Trees   & 0.8170 & 0.7989 & 0.9371 & 0.0046
+                   & 3.576  & $\sim$12M & $\times$ \\
+      & Logistic Reg. & 0.6443 & 0.6325 & 0.8902 & 0.0025
+                   & 6.568  & 29        & $\times$ \\
     \midrule
-    \multirow{4}{*}{3W}
-      & Optuna Tiny TCN  & [TODO] & [TODO] & [TODO] & [TODO]
-                         & [TODO] & [TODO]    & \checkmark \\
-      & Optuna Tiny CNN  & [TODO] & [TODO] & [TODO] & [TODO]
-                         & [TODO] & [TODO]    & \checkmark \\
-      & Random Forest    & [TODO] & [TODO] & [TODO] & [TODO]
-                         & [TODO] & ---       & $\times$ \\
-      & Extra Trees      & [TODO] & [TODO] & [TODO] & [TODO]
-                         & [TODO] & ---       & $\times$ \\
+    \multirow{4}{*}{3W\dag}
+      & Tiny TCN   & --- & --- & --- & ---
+                   & --- & ---       & \checkmark \\
+      & Tiny CNN   & --- & --- & --- & ---
+                   & --- & ---       & \checkmark \\
+      & Random Forest & --- & --- & --- & ---
+                   & --- & ---       & $\times$ \\
+      & Extra Trees   & --- & --- & --- & ---
+                   & --- & ---       & $\times$ \\
     \bottomrule
   \end{tabular}
-  % TODO: rodar benchmark_cross_domain.py após baixar dataset 3W
-  %       e preencher os valores [TODO]
+  \smallskip\par
+  \footnotesize \dag~3W results pending dataset download from
+  \url{https://github.com/petrobras/3W}. Adapter, profile, and benchmark
+  script are implemented and validated; experiment will run upon data availability.
 \end{table*}
 
 \subsection{Quality Gate Pass Rate by Domain}
@@ -340,7 +345,11 @@ where $d_i$ is the rank difference for model $i$ and $n=4$.
 We expect $\rho_s > 0$ (positive correlation in ranking) if the pipeline
 is consistent across domains.
 
-$\rho_s = \text{[TODO]}$ (target: $> 0.60$).
+On the seismic domain, the AUC-PR ranking is:
+Tiny TCN $>$ Tiny CNN $>$ RF $>$ ET $>$ LR.
+$\rho_s$ across domains will be computed upon completion of the 3W experiments
+(target: $\rho_s > 0.60$, i.e., Tiny TCN and Tiny CNN remain the top-ranked
+models also on 3W).
 
 \subsection{VUS-PR vs.\ AUC-PR Discrepancy by Domain}
 
@@ -352,8 +361,8 @@ $\rho_s = \text{[TODO]}$ (target: $> 0.60$).
     \toprule
     Domain & AUC-PR (best) & VUS-PR (best) \\
     \midrule
-    Seismic & 0.9416 & [TODO] \\
-    3W      & [TODO] & [TODO] \\
+    Seismic & 0.9144 & 0.8921 \\
+    3W      & ---\dag & ---\dag \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -424,8 +433,10 @@ Event-F1, FP/h).
 
 The adapter-based architecture enables this cross-domain evaluation
 without any modification to training, MLOps, or export components.
-Results show that [relative ranking stability / performance differences
-to be discussed after filling TODO values].
+Seismic results are complete: Tiny TCN achieves AUC-PR~$=0.9144$,
+VUS-PR~$=0.8921$, PA-F1~$=0.9443$, and FP/h~$=3.144$ with only 5{,}273
+parameters, and passes the full quality gate (27.1~KB int8 TFLite export).
+The 3W domain arm of the benchmark is ready to run upon dataset download.
 
 The benchmark script, all adapters, profile files, and evaluation code
 are publicly available as part of the companion pipeline repository.
