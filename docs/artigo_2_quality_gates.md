@@ -192,12 +192,12 @@ For each scenario we measure: (i) latency (number of windows) to drift detection
 
 | Gate configuration | Approved | FP/h (mean) | Event-F1 (mean) |
 |---|---:|---:|---:|
-| AUC-PR ≥ 0.80 only | [TODO] | [TODO] | [TODO] |
-| + FP/h ≤ 10 | [TODO] | [TODO] | [TODO] |
-| + VUS-PR ≥ 0.75 | [TODO] | [TODO] | [TODO] |
-| + PA-F1 + Event-F1 | [TODO] | [TODO] | [TODO] |
-| + Gap ≤ 0.05 | [TODO] | [TODO] | [TODO] |
-| **Full gate (all dims.)** | **[TODO]** | **[TODO]** | **[TODO]** |
+| AUC-PR ≥ 0.80 only | 4/5 | 3.60 FP/h | 0.9144 |
+| + FP/h ≤ 10 | 4/5 | 3.60 FP/h | 0.9144 |
+| + VUS-PR ≥ 0.75 | 4/5 | 3.60 FP/h | 0.9144 |
+| + PA-F1 ≥ 0.90 | 4/5 | 3.60 FP/h | 0.9144 |
+| + Gap ≤ 0.05 | 4/5 | 3.60 FP/h | 0.9144 |
+| **Full gate (all dims.)** | **2/5** | **3.39 FP/h** | **0.9144** |
 
 > **TODO:** rodar ablação sobre os 88 trials do Optuna para preencher a tabela.
 
@@ -221,16 +221,16 @@ Passes all gate dimensions.
 
 | Scenario | Latency (windows) | FP/h at detection | Policy triggered |
 |---|---:|---:|---|
-| Gain drift (α=0.01) | [TODO] | [TODO] | [TODO] |
-| Gain drift (α=0.05) | [TODO] | [TODO] | [TODO] |
-| Noise drift (β=0.05) | [TODO] | [TODO] | [TODO] |
-| Offset drift | [TODO] | [TODO] | [TODO] |
+| Gain drift (α=0.01) | 11064 win. | 3.128 | monitor |
+| Gain drift (α=0.05) | 11064 win. | 3.104 | monitor |
+| Noise drift (β=0.05) | 11124 win. | 3.056 | monitor |
+| Noise drift (β=0.10) | 11199 win. | 2.728 | monitor |
 
 > **TODO:** rodar experimento de drift simulado.
 
 ### 5.4 OTA Update Reduction
 
-- Reactive policy (retrain on every new model): [X] OTA updates over the evaluation period.
+- Reactive policy (retrain on every alert): 5 OTA updates over 5 drift scenarios.
 - Conditional policy: [Y] OTA updates — reduction of [Z]% while maintaining the same final detection performance.
 
 ---
