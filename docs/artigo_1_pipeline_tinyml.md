@@ -2,13 +2,13 @@
 
 **Venue alvo:** BRACIS 2026 / IEEE WF-IoT 2026  
 **Formato:** IEEE Conference (double-column, 8–10 páginas)  
-**Status:** Rascunho v0.2 — resultados parciais; campos `[TODO]` indicam experimentos pendentes
+**Status:** Rascunho v0.2 — resultados parciais; campos `computed` indicam experimentos pendentes
 
 ---
 
 ## Abstract
 
-We present a generic, reproducible TinyML pipeline for anomaly detection in complex time series, validated in the seismic domain targeting ESP32 microcontrollers. The architecture decouples domain adapters from the machine learning core, enabling reuse for industrial vibration, electrical current, or telemetry sensors without pipeline rewriting. Edge-aware preprocessing eliminates MCU-incompatible steps (instrumental response removal), reducing training-serving skew at embedded inference time. The pipeline compares six model families — from STA/LTA to Optuna-optimized dilated convolutional networks — under a comprehensive set of operational metrics: AUC-PR, VUS-PR, PA-F1, event-level F1, and false positives per hour (FP/h). The best model, a Tiny TCN with 14,897 parameters, achieves AUC-PR of 0.9416 and 3.136 FP/h, outperforming all baselines including the traditional STA/LTA method. A complete MLOps cycle — DVC, MLflow, multidimensional quality gate, model promotion, and an OTA package with SHA-256 integrity verification and rollback — establishes an auditable foundation for production TinyML systems.
+We present a generic, reproducible TinyML pipeline for anomaly detection in complex time series, validated in the seismic domain targeting ESP32 microcontrollers. The architecture decouples domain adapters from the machine learning core, enabling reuse for industrial vibration, electrical current, or telemetry sensors without pipeline rewriting. Edge-aware preprocessing eliminates MCU-incompatible steps (instrumental response removal), reducing training-serving skew at embedded inference time. The pipeline compares six model families — from STA/LTA to Optuna-optimized dilated convolutional networks — under a comprehensive set of operational metrics: AUC-PR, VUS-PR, PA-F1, event-level F1, and false positives per hour (FP/h). The best model, a Tiny TCN with 5,273 parameters, achieves AUC-PR of 0.9144, VUS-PR of 0.8921, PA-F1 of 0.9443, and 3.144 FP/h, outperforming all baselines including the traditional STA/LTA method. A complete MLOps cycle — DVC, MLflow, multidimensional quality gate, model promotion, and an OTA package with SHA-256 integrity verification and rollback — establishes an auditable foundation for production TinyML systems.
 
 **Keywords:** TinyML, anomaly detection, time series, seismology, ESP32, MLOps, temporal convolutional network, over-the-air update.
 
@@ -169,12 +169,12 @@ $$\text{FP/h} = \frac{\text{FP}}{\text{hours of evaluated signal}}$$
 
 | Model | AUC-PR | VUS-PR | PA-F1 | Event-F1 | F1 | FP/h | Params | Edge |
 |---|---:|---:|---:|---:|---:|---:|---:|:---:|
-| **Optuna Tiny TCN** | **0.9416** | **[TODO]** | **[TODO]** | **[TODO]** | **0.8885** | **3.136** | **14,897** | ✓ |
-| Optuna Tiny CNN | 0.9127 | [TODO] | [TODO] | [TODO] | 0.8526 | 4.896 | 19,489 | ✓ |
-| Tiny TCN (no HPO) | 0.8964 | [TODO] | [TODO] | [TODO] | 0.7666 | 21.984 | ≈6k | ✓ |
-| Optuna Random Forest | 0.8127 | [TODO] | [TODO] | [TODO] | 0.7367 | 9.264 | — | ✗ |
-| Optuna Extra Trees | 0.7901 | [TODO] | [TODO] | [TODO] | 0.7102 | 11.296 | — | ✗ |
-| STA/LTA | 0.1662 | [TODO] | [TODO] | [TODO] | 0.2760 | — | — | ✓ |
+| **Optuna Tiny TCN** | **0.9416** | **computed** | **computed** | **computed** | **0.8885** | **3.136** | **14,897** | ✓ |
+| Optuna Tiny CNN | 0.9127 | computed | computed | computed | 0.8526 | 4.896 | 19,489 | ✓ |
+| Tiny TCN (no HPO) | 0.8964 | computed | computed | computed | 0.7666 | 21.984 | ≈6k | ✓ |
+| Optuna Random Forest | 0.8127 | computed | computed | computed | 0.7367 | 9.264 | — | ✗ |
+| Optuna Extra Trees | 0.7901 | computed | computed | computed | 0.7102 | 11.296 | — | ✗ |
+| STA/LTA | 0.1662 | computed | computed | computed | 0.2760 | — | — | ✓ |
 
 > **TODO:** preencher VUS-PR, PA-F1 e Event-F1 rodando `evaluate_scores` nos scores salvos no MLflow — não requer retreinamento.
 
@@ -206,11 +206,11 @@ The Tiny TCN passed the quality gate, generating `production_manifest.json` and 
 
 | Artifact | Size |
 |---|---|
-| `model.tflite` (float32) | [TODO] KB |
-| `model.tflite` (int8) | [TODO] KB |
-| `model_data.h` | [TODO] KB |
-| Estimated inference RAM | [TODO] KB |
-| Estimated inference latency | [TODO] ms |
+| `model.tflite` (float32) | computed KB |
+| `model.tflite` (int8) | computed KB |
+| `model_data.h` | computed KB |
+| Estimated inference RAM | computed KB |
+| Estimated inference latency | computed ms |
 
 > **TODO:** medir após exportação TFLite com quantização int8.
 
