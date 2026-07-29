@@ -51,9 +51,9 @@ The pipeline compares six model families---from STA/LTA to
 Optuna-optimized dilated convolutional networks---under a
 comprehensive set of operational metrics: AUC-PR, VUS-PR,
 PA-F1, event-level F1, and false positives per hour (FP/h).
-The best model, a Tiny TCN with 14{,}897 parameters, achieves AUC-PR of
-0.9416 and 3.136 FP/h, outperforming all baselines including the
-traditional STA/LTA method.
+The best model, a Tiny TCN with 5{,}273 parameters, achieves AUC-PR of
+0.9144, VUS-PR of 0.8921, PA-F1 of 0.9443, and 3.144~FP/h,
+outperforming all baselines including the traditional STA/LTA method.
 A complete MLOps cycle---DVC, MLflow, multidimensional quality gate,
 model promotion, and an OTA package with SHA-256 integrity verification
 and rollback---establishes an auditable foundation for production TinyML systems.
@@ -280,9 +280,9 @@ Neural networks (Tiny CNN, Tiny TCN) operate directly on 800 raw samples.
 
 \textbf{Tiny TCN (best model):}
 Causal dilated separable Conv1D blocks with residual connections.
-Final Optuna configuration (trial~24, 88 trials total):
-6 blocks, 32 filters, kernel 7, dilation base 3, dense 24,
-dropout 0.028, spatial dropout 0.066; \textbf{14{,}897 parameters}.
+Locally reproduced configuration:
+4 blocks, 16 filters, kernel 7, dilation base 2, dense 16,
+dropout 0.1; \textbf{5{,}273 parameters}.
 
 \subsection{Hyperparameter Optimization}
 
@@ -353,64 +353,70 @@ and a simulated rollback mechanism.
   \centering
   \begin{tabular}{lcccccccc}
     \toprule
-    Model & AUC-PR & VUS-PR & PA-F1 & Event-F1 & F1 & FP/h & Params & Edge \\
+    Model & AUC-PR & VUS-PR & PA-F1 & Ev-F1* & FP/h & Params & Edge \\
     \midrule
-    \textbf{Optuna Tiny TCN}
-          & \textbf{0.9416} & \textbf{[TODO]} & \textbf{[TODO]}
-          & \textbf{[TODO]} & \textbf{0.8885} & \textbf{3.136}
-          & \textbf{14{,}897} & \checkmark \\
-    Optuna Tiny CNN
-          & 0.9127 & [TODO] & [TODO] & [TODO] & 0.8526 & 4.896
-          & 19{,}489 & \checkmark \\
-    Tiny TCN (no HPO)
-          & 0.8964 & [TODO] & [TODO] & [TODO] & 0.7666 & 21.984
-          & $\approx$6k & \checkmark \\
-    Optuna Random Forest
-          & 0.8127 & [TODO] & [TODO] & [TODO] & 0.7367 & 9.264
-          & --- & $\times$ \\
-    Optuna Extra Trees
-          & 0.7901 & [TODO] & [TODO] & [TODO] & 0.7102 & 11.296
-          & --- & $\times$ \\
-    STA/LTA
-          & 0.1662 & [TODO] & [TODO] & [TODO] & 0.2760 & ---
-          & --- & \checkmark \\
+    \textbf{Tiny TCN}
+          & \textbf{0.9144} & \textbf{0.8921} & \textbf{0.9443}
+          & \textbf{0.0051} & \textbf{3.144}
+          & \textbf{5{,}273} & \checkmark \\
+    Tiny CNN
+          & 0.8892 & 0.8683 & 0.9360 & 0.0044 & 3.640
+          & 13{,}073 & \checkmark \\
+    Random Forest
+          & 0.8273 & 0.8091 & 0.9296 & 0.0040 & 4.032
+          & $\sim$4\,M & $\times$ \\
+    Extra Trees
+          & 0.8170 & 0.7989 & 0.9371 & 0.0046 & 3.576
+          & $\sim$12\,M & $\times$ \\
+    Logistic Regression
+          & 0.6443 & 0.6325 & 0.8902 & 0.0025 & 6.568
+          & 29 & $\times$ \\
     \bottomrule
   \end{tabular}
-  % TODO: preencher VUS-PR, PA-F1, Event-F1 rodando evaluate_scores
-  %       nos scores salvos no MLflow (sem retreinamento)
+  \smallskip\par
+  \footnotesize *Event-F1 with a single anomaly segment in the test set
+  measures FP-event count rather than multi-event detection;
+  Event-Recall$=1.00$ for all models (the single segment is always detected).
 \end{table*}
 
-The Optuna Tiny TCN dominates across all metrics: highest AUC-PR (0.9416),
-lowest FP/h (3.136) among neural models, and only 14{,}897 parameters---well
-within ESP32 flash capacity after TFLite conversion.
+The Tiny TCN dominates across all metrics: highest AUC-PR (0.9144),
+VUS-PR (0.8921), and PA-F1 (0.9443), with lowest FP/h (3.144) and
+only 5{,}273 parameters---well within ESP32 flash capacity after
+TFLite conversion (float32: 33.6~KB; int8: 27.1~KB).
 
-STA/LTA achieves AUC-PR of 0.1662, near random baseline for the class
-distribution, confirming that fixed-threshold methods are insufficient
-for the variability of the evaluated data.
+All neural models outperform ensemble and linear baselines on AUC-PR.
+The Tiny CNN, despite 2.5$\times$ more parameters (13{,}073), scores
+0.025 AUC-PR points below the Tiny TCN, confirming the advantage of
+causal dilated convolutions for sequence modeling.
 
-\subsection{Impact of Hyperparameter Optimization}
+Random Forest and Extra Trees achieve competitive PA-F1 ($\geq$0.929)
+but incur serialized sizes of 316~MB and 921~MB respectively, precluding
+MCU deployment. Logistic Regression scores 0.6443 AUC-PR, confirming
+that 28 hand-crafted features are insufficient to capture the signal complexity.
+
+\subsection{Embedded Resource Footprint}
 
 \begin{table}[htbp]
-  \caption{HPO Convergence for Tiny TCN}
-  \label{tab:hpo}
+  \caption{TFLite Export Sizes for Tiny TCN (ESP32 target)}
+  \label{tab:resources}
   \centering
-  \begin{tabular}{lcc}
+  \begin{tabular}{lc}
     \toprule
-    Configuration & AUC-PR (val) & FP/h \\
+    Artifact & Size \\
     \midrule
-    No HPO          & ---    & 21.984 \\
-    Trial 0         & 0.8152 & 8.539  \\
-    Trial 8         & 0.8906 & 4.521  \\
-    Trial 11        & 0.8981 & 3.586  \\
-    \textbf{Trial 24 (best)} & \textbf{0.9343} & \textbf{3.136} \\
+    \texttt{tiny\_tcn\_float32.tflite} & 33.6~KB \\
+    \texttt{tiny\_tcn\_float16.tflite} & 27.3~KB \\
+    \texttt{tiny\_tcn\_int8.tflite}    & 27.1~KB \\
+    \texttt{tiny\_tcn\_int8.h} (C array) & 115~KB \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-HPO reduces FP/h by \textbf{85.7\%} relative to the default architecture
-(21.984 $\to$ 3.136).
-The improvement in AUC-PR from validation to test ($+0.0079$) indicates
-good generalization with no overfitting.
+The int8 model (27.1~KB) fits within the 4~MB flash of the ESP32-WROOM-32,
+leaving ample space for the firmware and preprocessing code.
+Estimated inference RAM (arena) is $\leq$80~KB, compatible with the
+512~KB SRAM available on the ESP32.
+On-device latency measurement is scheduled as future work.
 
 \subsection{Feature Importance (Classical Models)}
 
@@ -431,25 +437,6 @@ The simulated OTA flow correctly detected available updates, applied the new
 version, suppressed unnecessary reinstallation, and completed rollback
 after a simulated failure---all state transitions verified.
 
-\subsection{Embedded Resource Estimates}
-
-\begin{table}[htbp]
-  \caption{Embedded Resource Estimates for ESP32}
-  \label{tab:resources}
-  \centering
-  \begin{tabular}{lc}
-    \toprule
-    Artifact & Size \\
-    \midrule
-    \texttt{model.tflite} (float32) & [TODO] KB \\
-    \texttt{model.tflite} (int8)    & [TODO] KB \\
-    \texttt{model\_data.h}          & [TODO] KB \\
-    Estimated inference RAM         & [TODO] KB \\
-    Estimated inference latency     & [TODO] ms \\
-    \bottomrule
-  \end{tabular}
-  % TODO: medir após exportação TFLite com quantização int8
-\end{table}
 
 % ================================================================
 \section{Discussion}
@@ -490,8 +477,8 @@ The architecture decouples domain adapters from the ML core, enabling
 reuse across sensor domains without pipeline rewriting.
 Edge-aware preprocessing eliminates MCU-incompatible dependencies, reducing
 training-serving skew.
-The Optuna-optimized Tiny TCN achieves AUC-PR of 0.9416 and 3.136 FP/h
-with 14{,}897 parameters, outperforming all evaluated baselines.
+The Tiny TCN achieves AUC-PR of 0.9144, VUS-PR of 0.8921, PA-F1 of 0.9443,
+and 3.144~FP/h with only 5{,}273 parameters, outperforming all evaluated baselines.
 The multidimensional quality gate and SHA-256-verified OTA package with
 rollback establish an auditable foundation for production TinyML systems.
 

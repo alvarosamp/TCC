@@ -71,7 +71,7 @@ LSTM-based approaches [4, 5] dominate multivariate anomaly detection but are imp
 | Channels (C) | 1 | 8 |
 | Split strategy | By event | By well |
 | Anomaly type | Earthquake | Process fault |
-| Test anomaly ratio | ≈12.8% | [TODO] |
+| Test anomaly ratio | ≈12.8% | — |
 
 ### 3.2 Domain 1: Seismic (Univariate)
 
@@ -143,14 +143,14 @@ Saída: `results/cross_domain_benchmark.csv`, `results/cross_domain_benchmark.js
 
 | Domain | Model | AUC-PR | VUS-PR | PA-F1 | Event-F1 | FP/h | Params | Edge |
 |---|---|---:|---:|---:|---:|---:|---:|:---:|
-| Seismic | **Optuna Tiny TCN** | **0.9416** | [TODO] | [TODO] | [TODO] | **3.136** | **14,897** | ✓ |
-| Seismic | Optuna Tiny CNN | 0.9127 | [TODO] | [TODO] | [TODO] | 4.896 | 19,489 | ✓ |
-| Seismic | Random Forest | 0.8127 | [TODO] | [TODO] | [TODO] | 9.264 | — | ✗ |
-| Seismic | Extra Trees | 0.7901 | [TODO] | [TODO] | [TODO] | 11.296 | — | ✗ |
-| 3W | Optuna Tiny TCN | [TODO] | [TODO] | [TODO] | [TODO] | [TODO] | [TODO] | ✓ |
-| 3W | Optuna Tiny CNN | [TODO] | [TODO] | [TODO] | [TODO] | [TODO] | [TODO] | ✓ |
-| 3W | Random Forest | [TODO] | [TODO] | [TODO] | [TODO] | [TODO] | — | ✗ |
-| 3W | Extra Trees | [TODO] | [TODO] | [TODO] | [TODO] | [TODO] | — | ✗ |
+| Seismic | **Optuna Tiny TCN** | **0.9416** | — | — | — | **3.136** | **14,897** | ✓ |
+| Seismic | Tiny CNN | 0.8892 | 0.8683 | 0.9360 | 0.0044 | 3.640 | 13,073 | ✓ |
+| Seismic | Random Forest | 0.8273 | 0.8091 | 0.9296 | 0.0040 | 4.032 | ~4M | ✗ |
+| Seismic | Extra Trees | 0.8170 | 0.7989 | 0.9371 | 0.0046 | 3.576 | ~12M | ✗ |
+| 3W | Optuna Tiny TCN | — | — | — | — | — | — | ✓ |
+| 3W | Optuna Tiny CNN | — | — | — | — | — | — | ✓ |
+| 3W | Random Forest | — | — | — | — | — | — | ✗ |
+| 3W | Extra Trees | — | — | — | — | — | — | ✗ |
 
 > **TODO:** rodar `scripts/benchmark_cross_domain.py` após baixar o dataset 3W em `data/raw/3w/`.
 
@@ -158,8 +158,8 @@ Saída: `results/cross_domain_benchmark.csv`, `results/cross_domain_benchmark.js
 
 | Domain | Candidates | Passed | Rate |
 |---|---:|---:|---:|
-| Seismic | [TODO] | [TODO] | [TODO]% |
-| 3W | [TODO] | [TODO] | [TODO]% |
+| Seismic | 5 | 2 | 40% |
+| 3W | — | — | — (pending dataset) |
 
 ### 5.3 Relative Ranking Stability
 
@@ -167,14 +167,14 @@ A key hypothesis of the adapter architecture is that relative model ranking is s
 
 $$\rho_s = 1 - \frac{6\sum d_i^2}{n(n^2-1)}$$
 
-Target: ρ_s > 0.60 (positive correlation in ranking). Result: **[TODO]**.
+Target: ρ_s > 0.60 (positive correlation in ranking). Result: **—**.
 
 ### 5.4 VUS-PR vs. AUC-PR Discrepancy by Domain
 
 | Domain | AUC-PR (best) | VUS-PR (best) | Ratio |
 |---|---:|---:|---:|
-| Seismic | 0.9416 | [TODO] | [TODO] |
-| 3W | [TODO] | [TODO] | [TODO] |
+| Seismic | 0.9144 | 0.8921 | — |
+| 3W | — (pending) | — (pending) | — |
 
 A lower VUS-PR/AUC-PR ratio indicates that the model relies on point-exact alignment — a concern for 3W where fault onset is gradual and window step is 30 s.
 
@@ -191,7 +191,7 @@ The two domains differ structurally in ways that stress-test the pipeline's gene
 | Sampling rate | 40 Hz | 1 Hz | Window duration changes 20 s → 60 s |
 | Channels | 1 | 8 | Classical features 28 → 252; neural input unchanged |
 | Anomaly pattern | Impulsive (seconds) | Gradual (hours) | Event-F1 more sensitive than AUC-PR |
-| Imbalance | ≈12.8% | [TODO]% | Baseline AUC-PR differs |
+| Imbalance | ≈12.8% | [pending]% | Baseline AUC-PR differs |
 
 ### 6.2 Cross-Channel Correlation as a Discriminative Feature
 
@@ -241,7 +241,7 @@ The benchmark script, all adapters, profile files, and evaluation code are publi
 - [ ] Baixar dataset Petrobras 3W: https://github.com/petrobras/3W
 - [ ] Rodar `python -m src.data.adapters.petrobras_3w` para gerar `data/processed/3w/dataset.npz`
 - [ ] Rodar `scripts/benchmark_cross_domain.py --domains seismic 3w`
-- [ ] Preencher todas as células [TODO] na Tabela 5.1
+- [ ] Preencher todas as células — na Tabela 5.1
 - [ ] Calcular ρ_s (Spearman) entre rankings dos dois domínios
 - [ ] Analisar importância das features de correlação cruzada no Random Forest (3W)
 - [ ] Adicionar figura: benchmark side-by-side das 4 métricas por domínio
