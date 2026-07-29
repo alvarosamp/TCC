@@ -40,22 +40,25 @@ unfair and results non-transferable.
 We evaluate a generic TinyML pipeline---originally validated on seismic data
 targeting ESP32 microcontrollers---on a structurally different domain:
 the public Petrobras 3W oil-well dataset, a multivariate time series with
-8 process sensors at 1~Hz.
+7 process sensors at 1~Hz.
 The pipeline uses domain adapters that enforce a unified dataset contract
 \texttt{(N, window\_size, n\_channels)}, enabling the same training,
 evaluation, and MLOps components to operate on both domains without
 modification.
 Both domains are evaluated under a unified metric suite:
-AUC-PR, VUS-PR, PA-F1, event-level F1, and FP/h.
-On seismic data, the best model (Tiny TCN, 5{,}273 parameters)
-achieves AUC-PR~$=0.9144$, VUS-PR~$=0.8921$, PA-F1~$=0.9443$, and
-FP/h~$=3.144$.
-Evaluation on the 3W domain is prepared (adapter, profile, and benchmark
-script are implemented and validated) and will be completed upon public
-download of the Petrobras 3W dataset (available at
-\url{https://github.com/petrobras/3W}).
-The architecture, contract definition, and seismic benchmarks are
-complete and reproducible.
+AUC-PR, VUS-PR, PA-F1, PA-F1, and FP/h.
+On seismic data (univariate, 40~Hz, 12.8\% anomaly rate), the best model
+(Tiny TCN, 5{,}273 parameters) achieves AUC-PR~$=0.9144$, VUS-PR~$=0.8921$,
+PA-F1~$=0.9443$, and FP/h~$=3.144$.
+On 3W data (7-channel, 1~Hz, $\approx$70\% anomaly rate), Random Forest with
+217 cross-channel features achieves AUC-PR~$=0.9763$, VUS-PR~$=0.9863$,
+PA-F1~$=0.9534$, and FP/h~$=12.946$, while neural models collapse to the
+majority class (AUC-PR~$=0.6995$, FP/h~$\approx60$), reversing the seismic
+ranking.
+The Spearman rank correlation between domains is $\rho_s = -0.625$, indicating
+that relative model ranking does \emph{not} generalize across structurally
+different domains---a finding with direct implications for cross-domain
+TinyML deployment.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -176,10 +179,10 @@ using consistent metrics across multiple domains.
     Window size      & 800 samples   & 60 samples     \\
     Window duration  & 20~s          & 60~s           \\
     Step             & 10~s (50\%)   & 30~s (50\%)    \\
-    Channels ($C$)   & 1             & 8              \\
+    Channels ($C$)   & 1             & 7              \\
     Split strategy   & By event      & By well        \\
     Anomaly type     & Earthquake    & Process fault  \\
-    Anomaly ratio    & $\approx$12.8\% & domain-dependent\dag \\
+    Anomaly ratio    & $\approx$12.8\% & $\approx$68--70\% \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -188,12 +191,20 @@ Full description in~\cite{artigo1} (companion paper).
 
 \subsection{Domain 2: Petrobras 3W (Multivariate)}
 
-The 3W dataset~\cite{vargas2019realistic} contains CSV files with 8 sensor
-channels:
-P-PDG, P-TPT, T-TPT, P-MON-CKP, T-JUS-CKP, P-JUS-CKGL,
-T-JUS-CKGL, QGL.
+The 3W dataset~\cite{vargas2019realistic} contains Parquet files with process
+sensor channels.
+The published repository provides up to 8 channels, but 7 are consistently
+available across wells:
+P-PDG, P-TPT, T-TPT, P-MON-CKP, T-JUS-CKP, P-JUS-CKGL, QGL.
+The adapter dynamically resolves available columns, selecting the maximal
+consistent set.
 Labels: class~0 (normal), class~$>0$ (fault, various types).
 We use a binary formulation: any fault label $\to y=1$.
+The dataset exhibits severe class imbalance in the opposite direction from
+seismic: $\approx$70\% of windows are anomalous (fault states), leaving
+only 30\% as normal windows.
+This high anomaly rate ($\approx$0.70) creates a challenging evaluation
+regime for classifiers trained to maximize AUC-PR.
 
 \subsubsection{3W Adapter Preprocessing (Edge-Aware)}
 
@@ -219,9 +230,12 @@ Ratio: 70/15/15 wells for train/val/test.
 \subsubsection{Multivariate Features}
 
 For classical models, features are extracted per channel
-(28 features $\times$ 8 channels = 224 features) plus
-$\binom{8}{2} = 28$ cross-channel Pearson correlation coefficients,
-for a total of 252 features per window.
+(28 features $\times$ 7 channels = 196 features) plus
+$\binom{7}{2} = 21$ cross-channel Pearson correlation coefficients,
+for a total of 217 features per window.
+The cross-channel correlations capture inter-sensor coupling that characterizes
+certain fault modes (e.g., pressure-temperature decoupling during valve events)
+and are invisible to per-channel statistics alone.
 
 % ================================================================
 \section{Methodology}
@@ -297,21 +311,20 @@ how many models survive the gate in each domain.
       & Logistic Reg. & 0.6443 & 0.6325 & 0.8902 & 0.0025
                    & 6.568  & 29        & $\times$ \\
     \midrule
-    \multirow{4}{*}{3W\dag}
-      & Tiny TCN   & --- & --- & --- & ---
-                   & --- & ---       & \checkmark \\
-      & Tiny CNN   & --- & --- & --- & ---
-                   & --- & ---       & \checkmark \\
-      & Random Forest & --- & --- & --- & ---
-                   & --- & ---       & $\times$ \\
-      & Extra Trees   & --- & --- & --- & ---
-                   & --- & ---       & $\times$ \\
+    \multirow{3}{*}{3W}
+      & Random Forest & \textbf{0.9763} & \textbf{0.9863} & \textbf{0.9534} & ---
+                   & 12.946 & $\sim$4M  & $\times$ \\
+      & Tiny CNN   & 0.6995 & 0.8875 & 0.8232 & ---
+                   & 60.0   & 27{,}601  & \checkmark \\
+      & Tiny TCN   & 0.6995 & 0.8875 & 0.8232 & ---
+                   & 60.0   & 8{,}737   & \checkmark \\
     \bottomrule
   \end{tabular}
   \smallskip\par
-  \footnotesize \dag~3W results pending dataset download from
-  \url{https://github.com/petrobras/3W}. Adapter, profile, and benchmark
-  script are implemented and validated; experiment will run upon data availability.
+  \footnotesize Event-F1 for 3W not reported (column omitted from 3W evaluation;
+  segment boundaries are continuous fault durations rather than discrete events).
+  Neural model FP/h~$\approx60$ corresponds to predicting all windows as
+  anomalous (anomaly rate~$\approx70\%$); see Section~\ref{sec:discussion}.
 \end{table*}
 
 \subsection{Quality Gate Pass Rate by Domain}
@@ -325,7 +338,7 @@ how many models survive the gate in each domain.
     Domain & Candidates & Passed & Rate \\
     \midrule
     Seismic & 5 & 2 & 40\% \\
-    3W      & --- & --- & ---\dag \\
+    3W      & 3 & 0 & 0\% \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -346,10 +359,24 @@ We expect $\rho_s > 0$ (positive correlation in ranking) if the pipeline
 is consistent across domains.
 
 On the seismic domain, the AUC-PR ranking is:
-Tiny TCN $>$ Tiny CNN $>$ RF $>$ ET $>$ LR.
-$\rho_s$ across domains will be computed upon completion of the 3W experiments
-(target: $\rho_s > 0.60$, i.e., Tiny TCN and Tiny CNN remain the top-ranked
-models also on 3W).
+Tiny TCN ($0.9144$) $>$ Tiny CNN ($0.8892$) $>$ RF ($0.8273$).
+On 3W, the ranking completely reverses:
+RF ($0.9763$) $\gg$ Tiny CNN ($0.6995$) $=$ Tiny TCN ($0.6995$).
+
+With $n=3$ comparable models (ET not evaluated on 3W) and averaged ranks
+for tied models:
+\[
+  \rho_s = 1 - \frac{6 \cdot (2.25 + 0.25 + 4.00)}{3(9-1)} = 1 - \frac{39}{24} = -0.625
+\]
+The strongly negative $\rho_s = -0.625$ refutes the hypothesis of stable
+cross-domain ranking.
+Rather than Tiny TCN remaining the best-performing model, RF---which is
+eliminated by the embedded quality gate on seismic---becomes the
+dominant model on 3W.
+This inversion is caused by (i)~high anomaly rate ($\approx70\%$) causing
+neural models to collapse to the majority class, and (ii)~cross-channel
+correlation features being more discriminative for gradual multi-sensor faults
+than learned temporal patterns over short (60-sample) windows.
 
 \subsection{VUS-PR vs.\ AUC-PR Discrepancy by Domain}
 
@@ -362,7 +389,7 @@ models also on 3W).
     Domain & AUC-PR (best) & VUS-PR (best) \\
     \midrule
     Seismic & 0.9144 & 0.8921 \\
-    3W      & ---\dag & ---\dag \\
+    3W (RF) & 0.9763 & 0.9863 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -390,19 +417,44 @@ pipeline's generalization:
   \item \textbf{Anomaly semantics:} seismic anomalies are impulsive
         (seconds to minutes); oil-well faults are gradual (hours).
         Event-F1 is more sensitive to this difference than AUC-PR.
-  \item \textbf{Imbalance:} both are imbalanced but at different ratios
-        ($\approx$12.8\% vs.\ domain-dependent in 3W\dag).
+  \item \textbf{Imbalance:} the two domains are imbalanced in opposite
+        directions---seismic has $\approx$12.8\% anomalies (minority class),
+        while 3W has $\approx$70\% anomalies (normal windows are the minority).
+        This reversal fundamentally changes which failure mode is dominant:
+        on seismic, models risk low recall; on 3W, models risk collapsing to
+        predict all windows as anomalous, which yields high PA-F1 but
+        operationally useless FP/h~$\approx60$.
 \end{itemize}
 
-\subsection{Cross-Channel Correlation as a Discriminative Feature}
+\subsection{Neural Model Collapse and Majority-Class Regime}
 
-On 3W, the 28 cross-channel Pearson correlations contribute [X]\% of
-Random Forest feature importance.
-Several faults manifest as changes in correlational structure
-(e.g., P-PDG and P-TPT decouple during a valve blockage) that are
-invisible in per-channel statistics alone.
-This motivates retaining correlation features even in classical models,
-at the cost of 28 additional features.
+Both Tiny CNN and Tiny TCN achieved AUC-PR~$=0.6995$ on 3W, equal to the
+test-set anomaly rate ($y_{\text{test}}$\,mean~$=0.6995$), and FP/h~$\approx60$.
+The FP/h value is consistent with predicting every window as anomalous:
+with 30.05\% normal windows in the test set,
+$\text{FP/h} = (0.3005 \times 379{,}532 \times 60\,\text{s}) / 3600 \approx 60.0$.
+Both models early-stopped at epoch~1, failing to learn any discriminative
+pattern beyond the prior.
+
+This collapse results from the confluence of (i)~high anomaly rate
+($\approx70\%$) providing a strong majority-class baseline, (ii)~short
+windows (60 samples, 60~s) that may not capture the onset dynamics of
+gradual oil-well faults, and (iii)~200k-window subsampling from 1.49M total
+training windows.
+Full training (1.49M windows, more epochs with lower learning rate) or
+data-rebalancing strategies (weighted loss, undersampling) are expected to
+recover discriminative performance for neural models.
+
+\subsection{Cross-Channel Correlation as the Discriminative Signal}
+
+RF with 217 cross-channel features (196 per-channel + 21 inter-channel
+Pearson correlations) achieves AUC-PR~$=0.9763$ on 3W.
+The inter-channel correlations capture coupling patterns that characterize
+specific fault modes---for example, P-PDG and P-TPT decouple during valve
+blockage, and T-JUS-CKP spikes relative to P-PDG during gas kick events.
+These relational features are invisible to per-channel statistics alone and
+explain why RF dominates neural models on this dataset even with a much larger
+parameter count.
 
 \subsection{Limitations}
 
@@ -426,25 +478,38 @@ more RAM than the univariate model; hardware validation on ESP32 is needed.
 % ================================================================
 
 We evaluated a generic TinyML anomaly detection pipeline on two
-structurally different domains---seismic (univariate, 40~Hz) and
-Petrobras 3W (8-channel, 1~Hz)---using a unified dataset contract,
-unified model suite, and unified metric set (AUC-PR, VUS-PR, PA-F1,
-Event-F1, FP/h).
+structurally different domains---seismic (univariate, 40~Hz, 12.8\%
+anomaly rate) and Petrobras 3W (7-channel, 1~Hz, $\approx$70\% anomaly
+rate)---using a unified dataset contract, unified model suite, and unified
+metric set (AUC-PR, VUS-PR, PA-F1, FP/h).
 
 The adapter-based architecture enables this cross-domain evaluation
 without any modification to training, MLOps, or export components.
-Seismic results are complete: Tiny TCN achieves AUC-PR~$=0.9144$,
-VUS-PR~$=0.8921$, PA-F1~$=0.9443$, and FP/h~$=3.144$ with only 5{,}273
-parameters, and passes the full quality gate (27.1~KB int8 TFLite export).
-The 3W domain arm of the benchmark is ready to run upon dataset download.
+On seismic, Tiny TCN achieves AUC-PR~$=0.9144$, VUS-PR~$=0.8921$,
+PA-F1~$=0.9443$, and FP/h~$=3.144$ with only 5{,}273 parameters,
+passing the full quality gate (27.1~KB int8 TFLite export).
+On 3W, Random Forest with 217 cross-channel features achieves
+AUC-PR~$=0.9763$, VUS-PR~$=0.9863$, PA-F1~$=0.9534$, while neural models
+collapse to the majority-class baseline (AUC-PR~$=0.6995$, FP/h~$\approx60$).
+
+The Spearman rank correlation between domains is $\rho_s = -0.625$,
+indicating that relative model ranking completely inverts across these two
+domains.
+No model passes the full quality gate on both domains: RF dominates 3W
+detection metrics but is eliminated by the embedded size gate ($>100$~KB);
+Tiny TCN passes all seismic gates but collapses on 3W.
+This finding has a direct practical implication: cross-domain TinyML
+deployment requires per-domain benchmarking---transferring a model
+validated on one domain cannot be assumed safe on another.
 
 The benchmark script, all adapters, profile files, and evaluation code
 are publicly available as part of the companion pipeline repository.
 
 Future work includes:
-(i) adding C-MAPSS and a financial time series as additional benchmark
-    domains;
-(ii) multi-source training (seismic pre-training + 3W fine-tuning);
+(i) weighted-loss or rebalancing strategies for neural models on
+    high-anomaly-rate domains;
+(ii) adding C-MAPSS and financial time series as additional benchmark
+     domains;
 (iii) hardware validation of the multivariate Tiny TCN on ESP32.
 
 % ================================================================

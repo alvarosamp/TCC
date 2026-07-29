@@ -1,0 +1,37 @@
+{
+  "random_forest_3w": {
+    "auc_pr": 0.9763,
+    "vus_pr": 0.9863,
+    "pa_f1": 0.9534,
+    "fp_per_hour": 12.946,
+    "threshold": null,
+    "n_params": null
+  },
+  "tiny_cnn_3w": {
+    "auc_pr": 0.6995,
+    "pa_f1": 0.8232,
+    "vus_pr": 0.8875,
+    "fp_per_hour": 60.0,
+    "threshold": 0.5838,
+    "n_params": 27601
+  },
+  "tiny_tcn_3w": {
+    "auc_pr": 0.6995,
+    "pa_f1": 0.8232,
+    "vus_pr": 0.8875,
+    "fp_per_hour": 60.0,
+    "threshold": 0.5837,
+    "n_params": 8737
+  },
+  "dataset_3w": {
+    "window_size": 60,
+    "n_channels": 7,
+    "sampling_rate": 1.0,
+    "n_train": 1489426,
+    "n_val": 310678,
+    "n_test": 379532,
+    "anomaly_rate_train": 0.6801,
+    "anomaly_rate_val": 0.6526,
+    "anomaly_rate_test": 0.6995
+  }
+}
