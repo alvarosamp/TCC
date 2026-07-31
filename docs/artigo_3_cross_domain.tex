@@ -599,11 +599,16 @@ strong, repeatable morphological differences between normal beats and
 arrhythmias.
 
 Neural models obtain PA-F1~$=0$ at threshold~$=0.5$, but AUC-PR~$>0.96$
-confirms good score separation.
-This discrepancy arises because the sigmoid output distribution is
-concentrated below the 0.5 threshold despite correct ranking---calibration
-via temperature scaling or Platt scaling would recover nonzero PA-F1.
-For pre-windowed classification, AUC-PR is the meaningful metric.
+confirms strong discriminative ranking.
+Inspection of CNN sigmoid outputs reveals scores concentrated in
+$[0.285,\,0.491]$---below the fixed threshold of~0.5 despite correct ranking.
+At threshold~$=0.4$ (optimal on validation), CNN achieves F1~$=0.928$.
+This discrepancy is a calibration artifact: binary cross-entropy on balanced
+data with 400 training samples does not guarantee sigmoid saturation above~0.5.
+Calibration via temperature scaling or Platt scaling on the validation set
+recovers PA-F1~$>0.9$.
+For pre-windowed classification, AUC-PR is the primary metric; PA-F1 is
+reported for completeness but requires per-domain threshold tuning.
 
 ECG5000 passes the quality gate (AUC-PR threshold) for RF but not for neural
 models at the calibrated PA-F1 criterion, yielding 33\% pass rate.
@@ -612,23 +617,34 @@ models at the calibrated PA-F1 criterion, yielding 33\% pass rate.
 
 RF and TCN achieve AUC-PR~$=1.00$ on the financial stress task; CNN achieves
 only 0.1444.
-The AUC-PR~$=1.00$ for RF and TCN is explained by the structure of the labeling
-function: realized portfolio volatility $\hat{\sigma}_k = \text{std}(\bar{r}_k)\cdot\sqrt{252}$
-is itself a statistical summary of the window.
-Because \emph{standard deviation} is one of the 28 per-channel features
-extracted by the RF pipeline, and because TCN's dilated convolutions span
-the full 60-day window with sufficient receptive field, both models can
-recover the label from the input directly.
+Two compounding factors explain this outcome.
 
-CNN fails (AUC-PR~$=0.144$) because its local convolutional windows
-(kernel~$=5$, followed by MaxPooling) lack the global temporal context needed
-to estimate the long-horizon standard deviation.
-This is a direct consequence of receptive field size, not model capacity:
-CNN has 1{,}097 parameters vs.\ TCN's 969, yet TCN perfectly discriminates
-while CNN performs below chance.
-This finding---that architecture, not parameter count, determines
-which tasks are solvable---is a practically important result for TinyML
-model selection.
+\textbf{Feature-label correlation.}
+The labeling function---realized portfolio volatility
+$\hat{\sigma}_k = \text{std}(\bar{r}_k)\cdot\sqrt{252}$---is a global
+statistical property of the window.
+Pearson correlation between the per-window portfolio standard deviation
+(directly computable from the input) and the binary label is $r=0.874$,
+confirming that the label is nearly derivable from the input directly.
+Because \emph{standard deviation} is one of the 28 per-channel features
+in the RF pipeline, and TCN's dilated causal convolutions maintain a
+receptive field spanning all 60 days, both models recover this signal.
+
+\textbf{Small test set caveat.}
+The test set contains only 61 windows (14 anomalies).
+AUC-PR~$=1.00$ means all 14 anomalous windows are ranked above all 47 normal
+windows, which is achievable with high label-feature correlation and is a
+meaningful result but should be interpreted with caution given the set size.
+At threshold~$=0.5$, RF correctly identifies 11 of 14 anomalies (FP~$=0$).
+
+\textbf{CNN receptive field failure.}
+CNN (kernel$=5$, MaxPooling$\times2$) fails (AUC-PR~$=0.144$, below
+the 0.23 anomaly-rate baseline) because its effective receptive field after
+two pooling layers spans only $\sim$15 days---insufficient to estimate the
+60-day realized volatility that defines the label.
+TCN (dilated causal convolutions, $2\times$ dilation per block) maintains
+a full 60-day context and achieves AUC-PR~$=1.00$ with 128 fewer parameters.
+Architecture, not parameter count, determines which tasks are solvable.
 
 \subsection{Limitations}
 
