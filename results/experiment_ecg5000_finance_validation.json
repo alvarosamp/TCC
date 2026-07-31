@@ -1,0 +1,66 @@
+{
+  "random_forest_ecg5000": {
+    "auc_pr": 0.9923,
+    "vus_pr": 0.9905,
+    "pa_f1": 0.9879,
+    "fp_per_hour": 13248.0,
+    "n_params": 200
+  },
+  "tiny_cnn_ecg5000": {
+    "auc_pr": 0.9756,
+    "vus_pr": 0.974,
+    "pa_f1": 0.0,
+    "fp_per_hour": 0.0,
+    "n_params": 737
+  },
+  "tiny_tcn_ecg5000": {
+    "auc_pr": 0.9615,
+    "vus_pr": 0.9601,
+    "pa_f1": 0.0,
+    "fp_per_hour": 0.0,
+    "n_params": 897
+  },
+  "dataset_ecg5000": {
+    "window_size": 140,
+    "n_channels": 1,
+    "sampling_rate": 360.0,
+    "n_train": 400,
+    "n_val": 100,
+    "n_test": 4500,
+    "anomaly_rate_train": 0.4225,
+    "anomaly_rate_val": 0.39,
+    "anomaly_rate_test": 0.4162
+  },
+  "random_forest_finance": {
+    "auc_pr": 1.0,
+    "vus_pr": 0.9972,
+    "pa_f1": 1.0,
+    "fp_per_hour": 0.0,
+    "n_params": 200
+  },
+  "tiny_cnn_finance": {
+    "auc_pr": 0.1444,
+    "vus_pr": 0.1621,
+    "pa_f1": 0.0,
+    "fp_per_hour": 0.0,
+    "n_params": 1097
+  },
+  "tiny_tcn_finance": {
+    "auc_pr": 1.0,
+    "vus_pr": 1.0,
+    "pa_f1": 0.0,
+    "fp_per_hour": 0.0,
+    "n_params": 969
+  },
+  "dataset_finance": {
+    "window_size": 60,
+    "n_channels": 10,
+    "sampling_rate": 1.1574074074074073e-05,
+    "n_train": 282,
+    "n_val": 60,
+    "n_test": 61,
+    "anomaly_rate_train": 0.1348,
+    "anomaly_rate_val": 0.3333,
+    "anomaly_rate_test": 0.2295
+  }
+}
