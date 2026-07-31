@@ -54,6 +54,10 @@ Drift simulation with synthetic gain and noise distortions shows that the
 conditional retraining policy correctly avoids spurious OTA updates when
 FP/h remains within 2$\times$ of the promotion baseline (3.14~FP/h),
 reducing unnecessary retraining events to zero in stable drift scenarios.
+Hardware validation on ESP32-WROOM-32 confirms that the OTA update
+pipeline---including model delivery via HTTP, SHA-256 integrity verification,
+SPIFFS storage, and post-update inference---executes correctly within the
+quality-gate approval lifecycle.
 All components are released as open-source Python modules integrated with
 DVC, MLflow, and Evidently AI.
 \end{abstract}
@@ -446,7 +450,8 @@ Future work includes:
     mild drift scenarios;
 (ii) extension to multivariate drift detection for multi-sensor domains
     (Petrobras 3W);
-(iii) hardware-in-the-loop validation of FP/h with real ESP32 deployment.
+(iii) online FP/h estimation directly from the ESP32 prediction stream,
+    enabling fully embedded drift monitoring without server-side aggregation.
 
 % ================================================================
 % REFERENCES

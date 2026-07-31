@@ -10,10 +10,9 @@
 #define MODEL_TCN_FLOAT32               3
 #define MODEL_PIPELINE_TINY_CNN_INT8    4
 #define MODEL_PIPELINE_TINY_CNN_FLOAT32 5
+#define MODEL_TCN_DEMO                  6   // 265 params, 10KB, demo OTA circuit
 
-// INT8 falhou no TFLite Micro por incompatibilidade no kernel REDUCE_MAX.
-// Para validacao funcional embarcada, usamos float32.
-#define ACTIVE_MODEL MODEL_PIPELINE_TINY_CNN_FLOAT32
+#define ACTIVE_MODEL MODEL_TCN_DEMO
 
 // ============================================================
 //  Thresholds por modelo
@@ -48,6 +47,12 @@
   #define MODEL_DATA      g_optuna_tiny_tcn_classifier_float32_model
   #define MODEL_NAME      "TCN_FLOAT32"
   #define MODEL_THRESHOLD 0.73828125f
+
+#elif ACTIVE_MODEL == MODEL_TCN_DEMO
+  #include "tiny_tcn_demo_float32.h"
+  #define MODEL_DATA      tiny_tcn_demo_float32_tflite
+  #define MODEL_NAME      "TCN_DEMO_FLOAT32"
+  #define MODEL_THRESHOLD 0.5f
 
 #else
   #error "ACTIVE_MODEL invalido."

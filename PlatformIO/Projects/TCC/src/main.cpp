@@ -3,6 +3,8 @@
 #include <esp_heap_caps.h>
 #include <float.h>
 #include <math.h>
+#include <SPIFFS.h>
+#include <WiFi.h>
 
 // ============================================================
 //  Para trocar o modelo: edite apenas model_config.h
@@ -72,8 +74,8 @@ constexpr float kDecisionIntervalMs = 10000.0f;
 constexpr float kVoltage  = 3.3f;
 constexpr float kCurrentA = 0.08f;
 
-// Tensor arena. Precisa caber no maior bloco continuo livre do ESP32.
-constexpr int kTensorArenaSize = 100 * 1024;
+// Tensor arena. Alocada ANTES do WiFi para garantir bloco continuo.
+constexpr int kTensorArenaSize = 80 * 1024;
 uint8_t* tensor_arena = nullptr;
 size_t tensor_arena_size = kTensorArenaSize;
 
@@ -359,7 +361,7 @@ void setup() {
   liberarMemoriaNaoUsada();
 
   // ============================================================
-  //  OTA via HTTP
+  //  FASE 1: OTA via HTTP (WiFi ligado)
   //  Tenta conectar ao WiFi e verificar atualizacao de modelo.
   //  Se nao houver wifi_config.h ou conexao falhar, continua
   //  normalmente com o modelo compilado no firmware.
@@ -406,6 +408,27 @@ void setup() {
   Serial.println("      Copie include/wifi_config.h.template para include/wifi_config.h");
 #endif
 
+  // ============================================================
+  //  FASE 2: Desliga WiFi e aloca arena grande para inferencia
+  // ============================================================
+  WiFi.disconnect(true);
+  delay(200);
+  {
+    size_t free_now = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL);
+    Serial.print("[MEM] RAM livre apos WiFi off: "); Serial.print(free_now); Serial.println(" bytes");
+    // Usa o maximo disponivel, reservando 16KB para stack e sistema
+    tensor_arena_size = (free_now > 20 * 1024) ? (free_now - 16 * 1024) : free_now;
+    tensor_arena_size = tensor_arena_size & ~15u;
+    tensor_arena = static_cast<uint8_t*>(
+      heap_caps_aligned_alloc(16, tensor_arena_size, MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL)
+    );
+  }
+  if (tensor_arena == nullptr) {
+    Serial.println("ERRO: falha ao alocar tensor_arena");
+    while (true) delay(1000);
+  }
+  Serial.print("[MEM] tensor_arena: "); Serial.print(tensor_arena_size / 1024); Serial.println(" KB");
+
   // Escolhe fonte do modelo: SPIFFS (OTA) ou header compilado (fallback)
   const uint8_t* model_data = MODEL_DATA;
   if (ota_load_model_into_ram()) {
@@ -413,17 +436,6 @@ void setup() {
     Serial.println("[OTA] Usando modelo do SPIFFS (OTA).");
   } else {
     Serial.println("[OTA] Usando modelo compilado no firmware (builtin).");
-  }
-
-  tensor_arena = static_cast<uint8_t*>(
-    heap_caps_aligned_alloc(16, tensor_arena_size, MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL)
-  );
-  if (tensor_arena == nullptr) {
-    Serial.println("ERRO: falha ao alocar tensor_arena");
-    Serial.print("Maior bloco livre interno: ");
-    Serial.print(heap_caps_get_largest_free_block(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL));
-    Serial.println(" bytes");
-    while (true) delay(1000);
   }
 
   model = tflite::GetModel(model_data);   // model_data = SPIFFS (OTA) ou MODEL_DATA (builtin)

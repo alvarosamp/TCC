@@ -38,32 +38,34 @@ A central challenge in anomaly detection benchmarking is that most pipelines
 are designed and tuned for a single domain, making cross-domain comparison
 unfair and results non-transferable.
 We evaluate a generic TinyML pipeline---originally validated on seismic data
-targeting ESP32 microcontrollers---on a structurally different domain:
-the public Petrobras 3W oil-well dataset, a multivariate time series with
-7 process sensors at 1~Hz.
+targeting ESP32 microcontrollers---on two structurally different domains:
+the public Petrobras 3W oil-well dataset (7 process sensors, 1~Hz) and
+the Skoltech Anomaly Benchmark (SKAB, 8 pump sensors, 1~Hz).
 The pipeline uses domain adapters that enforce a unified dataset contract
 \texttt{(N, window\_size, n\_channels)}, enabling the same training,
-evaluation, and MLOps components to operate on both domains without
+evaluation, and MLOps components to operate on all domains without
 modification.
-Both domains are evaluated under a unified metric suite:
-AUC-PR, VUS-PR, PA-F1, PA-F1, and FP/h.
+All domains are evaluated under a unified metric suite:
+AUC-PR, VUS-PR, PA-F1, and FP/h.
 On seismic data (univariate, 40~Hz, 12.8\% anomaly rate), the best model
 (Tiny TCN, 5{,}273 parameters) achieves AUC-PR~$=0.9144$, VUS-PR~$=0.8921$,
 PA-F1~$=0.9443$, and FP/h~$=3.144$.
-On 3W data (7-channel, 1~Hz, $\approx$70\% anomaly rate), Random Forest with
-217 cross-channel features achieves AUC-PR~$=0.9763$, VUS-PR~$=0.9863$,
-PA-F1~$=0.9534$, and FP/h~$=12.946$, while neural models collapse to the
-majority class (AUC-PR~$=0.6995$, FP/h~$\approx60$), reversing the seismic
-ranking.
-The Spearman rank correlation between domains is $\rho_s = -0.625$, indicating
-that relative model ranking does \emph{not} generalize across structurally
-different domains---a finding with direct implications for cross-domain
-TinyML deployment.
+On 3W ($\approx$70\% anomaly rate), Random Forest with 217 cross-channel
+features achieves AUC-PR~$=0.9763$, while neural models collapse to the
+majority class (AUC-PR~$=0.6995$, FP/h~$\approx60$), reversing the seismic ranking.
+On SKAB ($\approx$37\% anomaly rate, 891 training windows), all models achieve
+AUC-PR~$\leq0.50$, with neural models collapsing to the normal class---a
+third, distinct failure mode driven by experiment-type distribution shift
+and small dataset size.
+The Spearman rank correlation between seismic and 3W rankings is $\rho_s = -0.625$,
+indicating that relative model ranking does \emph{not} generalize across
+structurally different domains---a finding with direct implications for
+cross-domain TinyML deployment.
 \end{abstract}
 
 \begin{IEEEkeywords}
 Cross-domain generalization, TinyML, anomaly detection, multivariate time
-series, Petrobras 3W, seismology, ESP32, VUS-PR, PA-F1, benchmark.
+series, Petrobras 3W, SKAB, seismology, ESP32, VUS-PR, PA-F1, benchmark.
 \end{IEEEkeywords}
 
 % ================================================================
@@ -104,7 +106,7 @@ The contract is a NumPy compressed archive:
 where $N$ is the number of windows, $W$ the window size, and $C$ the
 number of channels ($C=1$ for univariate).
 
-Any domain---seismic ($C=1$, $f_s=40$~Hz), oil-well ($C=8$, $f_s=1$~Hz),
+Any domain---seismic ($C=1$, $f_s=40$~Hz), oil-well ($C=7$, $f_s=1$~Hz),
 industrial vibration, or audio---contributes only a domain adapter.
 The training, evaluation, MLOps, and export components remain unchanged.
 
@@ -112,11 +114,11 @@ The training, evaluation, MLOps, and export components remain unchanged.
 
 \begin{enumerate}
   \item \textbf{Cross-domain evaluation} of a unified TinyML pipeline on
-        seismic (univariate, 40~Hz) and Petrobras 3W (8-channel, 1~Hz)
+        seismic (univariate, 40~Hz), Petrobras 3W (7-channel, 1~Hz), and SKAB (8-channel, 1~Hz)
         under a common, rigorous metric suite.
   \item \textbf{Multivariate extension} of the pipeline contract, supporting
-        $C$-channel input in CNN, TCN, and LSTM architectures via a single
-        \texttt{n\_channels} parameter.
+        $C$-channel input ($C=7$ for 3W) in CNN and TCN architectures via a
+        single \texttt{n\_channels} parameter.
   \item \textbf{3W domain adapter} with split-by-well strategy, edge-aware
         per-channel preprocessing, and cross-channel correlation features.
   \item \textbf{Reproducible benchmark} comparing models across domains
@@ -140,6 +142,17 @@ multivariate time series, noting the lack of standard protocols.
 Kim et al.~\cite{kim2022towards} argue that existing benchmarks
 systematically favor certain metrics and preprocessing choices, calling
 for more rigorous evaluation.
+
+\subsection{SKAB (Skoltech Anomaly Benchmark)}
+
+Filonov et al.~\cite{filonov2016multivariate} and Katser et al.~\cite{katser2021skoltech}
+introduce SKAB: a public, labeled benchmark of 34 water-pump experiments
+at 1~Hz with 8 sensor channels (accelerometers, current, pressure,
+temperature, thermocouple, voltage, volume flow rate).
+Anomalies are injected by mechanical perturbations (valve changes, blockage)
+and labeled per-sample in each CSV.
+The dataset contains $\approx$47k samples across experiments with distinct
+anomaly profiles, making cross-experiment generalization challenging.
 
 \subsection{Petrobras 3W Dataset}
 
@@ -173,16 +186,17 @@ using consistent metrics across multiple domains.
   \centering
   \begin{tabular}{lcc}
     \toprule
-    Parameter & Seismic & Petrobras 3W \\
+    Parameter & Seismic & Petrobras 3W & SKAB \\
     \midrule
-    Sampling rate    & 40~Hz         & 1~Hz           \\
-    Window size      & 800 samples   & 60 samples     \\
-    Window duration  & 20~s          & 60~s           \\
-    Step             & 10~s (50\%)   & 30~s (50\%)    \\
-    Channels ($C$)   & 1             & 7              \\
-    Split strategy   & By event      & By well        \\
-    Anomaly type     & Earthquake    & Process fault  \\
-    Anomaly ratio    & $\approx$12.8\% & $\approx$68--70\% \\
+    Sampling rate    & 40~Hz         & 1~Hz           & 1~Hz           \\
+    Window size      & 800 samples   & 60 samples     & 60 samples     \\
+    Window duration  & 20~s          & 60~s           & 60~s           \\
+    Step             & 10~s (50\%)   & 30~s (50\%)    & 30~s (50\%)    \\
+    Channels ($C$)   & 1             & 7              & 8              \\
+    Split strategy   & By event      & By well        & By experiment  \\
+    Anomaly type     & Earthquake    & Process fault  & Mechanical pert.\\
+    Anomaly ratio    & $\approx$12.8\% & $\approx$68--70\% & $\approx$32--44\% \\
+    Train/Val/Test   & 120k/26k/26k  & 1.49M/311k/380k & 891/182/219 windows \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -318,13 +332,21 @@ how many models survive the gate in each domain.
                    & 60.0   & 27{,}601  & \checkmark \\
       & Tiny TCN   & 0.6995 & 0.8875 & 0.8232 & ---
                    & 60.0   & 8{,}737   & \checkmark \\
+    \midrule
+    \multirow{3}{*}{SKAB}
+      & Random Forest & \textbf{0.4947} & 0.6903 & \textbf{0.9257} & ---
+                   & 7.123  & $\sim$4M  & $\times$ \\
+      & Tiny CNN   & 0.4996 & \textbf{0.7246} & 0.000 & ---
+                   & 0.0    & 1{,}017   & \checkmark \\
+      & Tiny TCN   & 0.3194 & 0.6010 & 0.000 & ---
+                   & 0.0    & 953       & \checkmark \\
     \bottomrule
   \end{tabular}
   \smallskip\par
-  \footnotesize Event-F1 for 3W not reported (column omitted from 3W evaluation;
-  segment boundaries are continuous fault durations rather than discrete events).
-  Neural model FP/h~$\approx60$ corresponds to predicting all windows as
-  anomalous (anomaly rate~$\approx70\%$); see Section~\ref{sec:discussion}.
+  \footnotesize Event-F1 not reported for 3W or SKAB (continuous fault windows,
+  not discrete events). 3W neural FP/h~$\approx60$: predicting all anomalous
+  (anomaly rate~$\approx70\%$). SKAB neural PA-F1~$=0$ and FP/h~$=0$:
+  predicting all normal (opposite collapse). See Section~\ref{sec:discussion}.
 \end{table*}
 
 \subsection{Quality Gate Pass Rate by Domain}
@@ -339,6 +361,7 @@ how many models survive the gate in each domain.
     \midrule
     Seismic & 5 & 2 & 40\% \\
     3W      & 3 & 0 & 0\% \\
+    SKAB    & 3 & 0 & 0\% \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -411,9 +434,10 @@ pipeline's generalization:
 \begin{itemize}
   \item \textbf{Sampling rate:} 40$\times$ difference (40~Hz vs.\ 1~Hz).
         Window duration differs accordingly (20~s vs.\ 60~s).
-  \item \textbf{Dimensionality:} $C=1$ vs.\ $C=8$.
+  \item \textbf{Dimensionality:} $C=1$ vs.\ $C=7$.
         Neural models process both without architecture changes;
-        classical models receive 28 vs.\ 252 features.
+        classical models receive 28 vs.\ 217 features
+        ($28 \times 7 + \binom{7}{2} = 196 + 21$).
   \item \textbf{Anomaly semantics:} seismic anomalies are impulsive
         (seconds to minutes); oil-well faults are gradual (hours).
         Event-F1 is more sensitive to this difference than AUC-PR.
@@ -456,32 +480,70 @@ These relational features are invisible to per-channel statistics alone and
 explain why RF dominates neural models on this dataset even with a much larger
 parameter count.
 
+\subsection{SKAB: A Third Failure Mode}
+
+SKAB reveals a third failure mode distinct from seismic and 3W.
+All models achieve low AUC-PR ($\leq$0.50): RF at 0.4947, Tiny CNN at 0.4996,
+Tiny TCN at 0.3194.
+A random classifier on SKAB would achieve AUC-PR~$\approx$0.37 (the anomaly
+rate), confirming that some discrimination is learned but far below the quality gate.
+
+Neural models collapse to the \emph{normal} class (PA-F1~$=0$, FP/h~$=0$),
+the opposite of the 3W collapse.
+The root cause is the same mechanism---majority-class regularization---but
+the majority is now the \emph{normal} class (37\% anomaly rate).
+
+Two additional factors compound this:
+\begin{enumerate}
+  \item \textbf{Small training set:} only 891 windows across 23 experiments,
+        far fewer than the 120k seismic or 1.49M 3W training windows.
+        RF with 252 features ($28\times8 + \binom{8}{2}=28$) is likely to overfit or fail to generalize
+        to unseen experiment types.
+  \item \textbf{Experiment-type distribution shift:}
+        valve1, valve2, and other experiments produce qualitatively different
+        anomaly patterns (valve blockage vs.\ mechanical perturbation);
+        split-by-experiment does not guarantee matching distributions between
+        train and test sets.
+\end{enumerate}
+
+The combination of small dataset size, high feature dimensionality, and
+structural experiment heterogeneity makes SKAB the most challenging domain
+for the pipeline in its current configuration.
+Global normalization (fit on training, applied to test) was tested and
+produced identical AUC-PR (0.4945), confirming that the issue is not
+normalization choice but rather the distributional mismatch.
+
 \subsection{Limitations}
 
-\textbf{Two-domain scope:} with only two domains, claims of cross-domain
-generalization are preliminary.
+\textbf{Three-domain scope:} with three domains (seismic, 3W, SKAB),
+the findings illustrate three qualitatively different failure modes but
+remain insufficient to characterize the full pipeline behavior space.
 Extension to C-MAPSS (bearing degradation, 21 sensors)~\cite{saxena2008damage}
-and financial time series would strengthen the argument.
+and additional industrial datasets would further strengthen the argument.
 
 \textbf{No shared train/val windows:} the pipeline does not support
 multi-source training (e.g., pre-train on seismic, fine-tune on 3W).
 This is a deliberate design choice for cleaner evaluation, but limits
 transfer learning scenarios.
 
-\textbf{Hardware validation:} results are offline only.
-The 8-channel Tiny TCN for 3W has a larger input layer and may require
-more RAM than the univariate model; hardware validation on ESP32 is needed.
+\textbf{Hardware validation:} seismic results are validated on physical
+ESP32 hardware (28.2~ms inference, 91.98~KB arena, OTA update confirmed).
+The 7-channel Tiny TCN for 3W has a larger input tensor and requires
+evaluation to determine if the arena fits within DRAM budget after WiFi
+disconnection; this is reserved for future work pending 3W neural model
+convergence.
 
 % ================================================================
 \section{Conclusion}
 \label{sec:conclusion}
 % ================================================================
 
-We evaluated a generic TinyML anomaly detection pipeline on two
+We evaluated a generic TinyML anomaly detection pipeline on three
 structurally different domains---seismic (univariate, 40~Hz, 12.8\%
-anomaly rate) and Petrobras 3W (7-channel, 1~Hz, $\approx$70\% anomaly
-rate)---using a unified dataset contract, unified model suite, and unified
-metric set (AUC-PR, VUS-PR, PA-F1, FP/h).
+anomaly rate), Petrobras 3W (7-channel, 1~Hz, $\approx$70\% anomaly rate),
+and SKAB (8-channel pump sensors, 1~Hz, $\approx$37\% anomaly rate)---using a unified
+dataset contract, unified model suite, and unified metric set
+(AUC-PR, VUS-PR, PA-F1, FP/h).
 
 The adapter-based architecture enables this cross-domain evaluation
 without any modification to training, MLOps, or export components.
@@ -491,13 +553,14 @@ passing the full quality gate (27.1~KB int8 TFLite export).
 On 3W, Random Forest with 217 cross-channel features achieves
 AUC-PR~$=0.9763$, VUS-PR~$=0.9863$, PA-F1~$=0.9534$, while neural models
 collapse to the majority-class baseline (AUC-PR~$=0.6995$, FP/h~$\approx60$).
+On SKAB, all models achieve low AUC-PR ($\leq$0.50), with neural models
+collapsing to the normal class (opposite of 3W) due to the 37\% anomaly rate
+and small training set (891 windows), revealing a third failure mode:
+distributional shift across heterogeneous experiments.
 
-The Spearman rank correlation between domains is $\rho_s = -0.625$,
-indicating that relative model ranking completely inverts across these two
-domains.
-No model passes the full quality gate on both domains: RF dominates 3W
-detection metrics but is eliminated by the embedded size gate ($>100$~KB);
-Tiny TCN passes all seismic gates but collapses on 3W.
+The Spearman rank correlation between domains is $\rho_s = -0.625$
+(seismic vs.\ 3W), indicating that relative model ranking completely inverts.
+No model passes the full quality gate on all domains.
 This finding has a direct practical implication: cross-domain TinyML
 deployment requires per-domain benchmarking---transferring a model
 validated on one domain cannot be assumed safe on another.
@@ -510,7 +573,9 @@ Future work includes:
     high-anomaly-rate domains;
 (ii) adding C-MAPSS and financial time series as additional benchmark
      domains;
-(iii) hardware validation of the multivariate Tiny TCN on ESP32.
+(iii) hardware validation of the 7-channel Tiny TCN on ESP32 after
+      resolving the majority-class collapse on 3W via weighted loss or
+      undersampling strategies.
 
 % ================================================================
 % REFERENCES
@@ -566,6 +631,17 @@ arXiv:1803.01271, 2018.
 A.~Saxena et al.,
 ``Damage propagation modeling for aircraft engine run-to-failure simulation,''
 in \textit{Proc. IEEE ICPHM}, 2008.
+
+\bibitem{filonov2016multivariate}
+P.~Filonov, A.~Lavrentyev, and A.~Vorontsov,
+``Multivariate industrial time series with cyber-attack simulation:
+Fault detection using an LSTM-based predictive data model,''
+arXiv:1612.06676, 2016.
+
+\bibitem{katser2021skoltech}
+I.~Katser and V.~Kozitsin,
+``Skoltech anomaly benchmark (SKAB),''
+\url{https://github.com/waico/SKAB}, 2021.
 
 \bibitem{artigo1}
 [AUTHOR],

@@ -1,0 +1,34 @@
+{
+  "random_forest_skab": {
+    "auc_pr": 0.4947,
+    "vus_pr": 0.6903,
+    "pa_f1": 0.9257,
+    "fp_per_hour": 7.123,
+    "n_params": 200
+  },
+  "tiny_cnn_skab": {
+    "auc_pr": 0.4996,
+    "vus_pr": 0.7246,
+    "pa_f1": 0.0,
+    "fp_per_hour": 0.0,
+    "n_params": 1017
+  },
+  "tiny_tcn_skab": {
+    "auc_pr": 0.3194,
+    "vus_pr": 0.601,
+    "pa_f1": 0.0,
+    "fp_per_hour": 0.0,
+    "n_params": 953
+  },
+  "dataset_skab": {
+    "window_size": 60,
+    "n_channels": 8,
+    "sampling_rate": 1.0,
+    "n_train": 891,
+    "n_val": 182,
+    "n_test": 219,
+    "anomaly_rate_train": 0.3221,
+    "anomaly_rate_val": 0.3516,
+    "anomaly_rate_test": 0.3699
+  }
+}
