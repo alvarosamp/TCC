@@ -116,13 +116,17 @@ The training, evaluation, MLOps, and export components remain unchanged.
         and S\&P~500 financial stress (10-channel, daily)---under a common,
         rigorous metric suite.
   \item \textbf{Multivariate extension} of the pipeline contract, supporting
-        $C$-channel input ($C=7$ for 3W) in CNN and TCN architectures via a
-        single \texttt{n\_channels} parameter.
-  \item \textbf{3W domain adapter} with split-by-well strategy, edge-aware
-        per-channel preprocessing, and cross-channel correlation features.
-  \item \textbf{Reproducible benchmark} comparing models across domains
-        using AUC-PR, VUS-PR, PA-F1, Event-F1, and FP/h---enabling fair
-        inter-domain ranking for the first time in this pipeline.
+        $C$-channel input ($C \in \{1, 7, 8, 10\}$) in CNN and TCN
+        architectures via a single \texttt{n\_channels} parameter,
+        with no architectural modification.
+  \item \textbf{Domain adapters} for 3W (split-by-well, edge-aware preprocessing,
+        cross-channel correlation features), SKAB (split-by-experiment, majority-vote
+        labeling), ECG5000 (pre-windowed UCR benchmark), and Finance S\&P~500
+        (realized-volatility regime labels, temporal split).
+  \item \textbf{Reproducible benchmark} comparing RF, Tiny CNN, and Tiny TCN across
+        five domains using AUC-PR, VUS-PR, PA-F1, and FP/h---identifying five
+        qualitatively distinct failure modes for the first time under a unified
+        pipeline and metric suite.
 \end{enumerate}
 
 % ================================================================
@@ -500,26 +504,28 @@ onset is gradual and window step is 30~s.
 
 \subsection{Structural Domain Differences}
 
-The two domains differ structurally in ways that stress-test the
-pipeline's generalization:
+The five domains differ structurally across five key dimensions:
 
 \begin{itemize}
-  \item \textbf{Sampling rate:} 40$\times$ difference (40~Hz vs.\ 1~Hz).
-        Window duration differs accordingly (20~s vs.\ 60~s).
-  \item \textbf{Dimensionality:} $C=1$ vs.\ $C=7$.
-        Neural models process both without architecture changes;
-        classical models receive 28 vs.\ 217 features
-        ($28 \times 7 + \binom{7}{2} = 196 + 21$).
-  \item \textbf{Anomaly semantics:} seismic anomalies are impulsive
-        (seconds to minutes); oil-well faults are gradual (hours).
-        Event-F1 is more sensitive to this difference than AUC-PR.
-  \item \textbf{Imbalance:} the two domains are imbalanced in opposite
-        directions---seismic has $\approx$12.8\% anomalies (minority class),
-        while 3W has $\approx$70\% anomalies (normal windows are the minority).
-        This reversal fundamentally changes which failure mode is dominant:
-        on seismic, models risk low recall; on 3W, models risk collapsing to
-        predict all windows as anomalous, which yields high PA-F1 but
-        operationally useless FP/h~$\approx60$.
+  \item \textbf{Sampling rate:} spans four orders of magnitude---from daily
+        financial data ($f_s \approx 1.16 \times 10^{-5}$~Hz) to 360~Hz cardiac
+        ECG. Window duration ranges from 0.39~s (ECG5000) to three months (Finance).
+  \item \textbf{Dimensionality:} $C \in \{1, 7, 8, 10\}$.
+        Neural models process all via the same \texttt{Conv1D} on $C$ channels;
+        classical models receive 28 (seismic/ECG) to 325 features
+        ($28 \times 10 + \binom{10}{2} = 280 + 45$, Finance).
+  \item \textbf{Anomaly semantics:} seismic and ECG anomalies are
+        impulsive (sub-second to minutes); 3W faults are gradual (hours);
+        SKAB anomalies are mechanical step-changes; financial stress regimes
+        are diffuse (weeks to months of elevated volatility).
+  \item \textbf{Class balance:} spans from 12.8\% (seismic, minority anomaly)
+        through $\approx$41\% (ECG5000, balanced), $\approx$23--33\% (Finance),
+        $\approx$37\% (SKAB), to $\approx$70\% (3W, majority anomaly).
+        This range spans both collapse directions: models may predict all-anomaly
+        (3W, FP/h~$\approx60$) or all-normal (SKAB, PA-F1~$=0$).
+  \item \textbf{Dataset size:} train sets range from 282 windows (Finance) to
+        1.49M windows (3W)---a $5{,}319\times$ difference---with ECG5000 at 400
+        and SKAB at 891, both in the data-scarce regime.
 \end{itemize}
 
 \subsection{Neural Model Collapse and Majority-Class Regime}
@@ -569,7 +575,7 @@ Two additional factors compound this:
 \begin{enumerate}
   \item \textbf{Small training set:} only 891 windows across 23 experiments,
         far fewer than the 120k seismic or 1.49M 3W training windows.
-        RF with 252 features ($28\times8 + \binom{8}{2}=28$) is likely to overfit or fail to generalize
+        RF with 252 features ($28\times8 + \binom{8}{2} = 224 + 28$) is likely to overfit or fail to generalize
         to unseen experiment types.
   \item \textbf{Experiment-type distribution shift:}
         valve1, valve2, and other experiments produce qualitatively different
