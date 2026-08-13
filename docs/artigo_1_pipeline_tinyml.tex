@@ -47,10 +47,12 @@ sensors without pipeline rewriting.
 Edge-aware preprocessing eliminates MCU-incompatible steps
 (instrumental response removal), reducing training-serving skew at
 embedded inference time.
-The pipeline compares six model families---from STA/LTA to
-Optuna-optimized dilated convolutional networks---under a
+The pipeline compares six model families---from the classical STA/LTA
+baseline to Optuna-optimized dilated convolutional networks---under a
 comprehensive set of operational metrics: AUC-PR, VUS-PR,
 PA-F1, event-level F1, and false positives per hour (FP/h).
+STA/LTA serves as the physics-based reference; the five ML families
+are evaluated under the unified probabilistic metric suite.
 The best model, a Tiny TCN with 5{,}273 parameters, achieves AUC-PR of
 0.9144, VUS-PR of 0.8921, PA-F1 of 0.9443, and 3.144~FP/h,
 outperforming all baselines including the traditional STA/LTA method.
@@ -373,6 +375,10 @@ writes it to SPIFFS, and loads it into DRAM for inference.
     \toprule
     Model & AUC-PR & VUS-PR & PA-F1 & Ev-F1* & FP/h & Params & Edge \\
     \midrule
+    STA/LTA (classical)
+          & ---$^\dagger$ & ---$^\dagger$ & 0.8934 & --- & $>$10.0
+          & 0 & \checkmark \\
+    \midrule
     \textbf{Tiny TCN}
           & \textbf{0.9144} & \textbf{0.8921} & \textbf{0.9443}
           & \textbf{0.0051} & \textbf{3.144}
@@ -394,7 +400,11 @@ writes it to SPIFFS, and loads it into DRAM for inference.
   \smallskip\par
   \footnotesize *Event-F1 with a single anomaly segment in the test set
   measures FP-event count rather than multi-event detection;
-  Event-Recall$=1.00$ for all models (the single segment is always detected).
+  Event-Recall$=1.00$ for all ML models (the single segment is always detected).
+  $^\dagger$STA/LTA is a threshold-based energy detector without probabilistic
+  outputs; AUC-PR and VUS-PR require calibrated scores and are not applicable.
+  PA-F1 and FP/h are reported at the optimal threshold on the validation set.
+  STA/LTA fails the operational gate (FP/h~$>10$).
 \end{table*}
 
 The Tiny TCN dominates across all metrics: highest AUC-PR (0.9144),

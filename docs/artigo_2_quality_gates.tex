@@ -58,6 +58,10 @@ Hardware validation on ESP32-WROOM-32 confirms that the OTA update
 pipeline---including model delivery via HTTP, SHA-256 integrity verification,
 SPIFFS storage, and post-update inference---executes correctly within the
 quality-gate approval lifecycle.
+Without the gate, the worst-performing model (Logistic Regression) produces
+FP/h~$=6.568$---$2.1\times$ the gate-approved Tiny TCN baseline of 3.144~FP/h---at
+2.09$\times$ the operational cost while being physically undeployable without
+the embedded resource gate (Random Forest: 316~MB; Extra Trees: 921~MB).
 All components are released as open-source Python modules integrated with
 DVC, MLflow, and Evidently AI.
 \end{abstract}
@@ -417,8 +421,8 @@ validation set---directly controls the operational impact.
 
 \textbf{VUS-PR as a prerequisite for fair comparison.}
 When comparing models trained on different datasets (cross-domain,
-Section~\ref{sec:conclusion}), AUC-PR values are not directly comparable
-due to varying overlap fractions.
+see companion paper~\cite{artigo3}), AUC-PR values are not directly
+comparable due to varying overlap fractions.
 VUS-PR normalizes across buffer sizes, enabling fairer cross-dataset ranking.
 
 \textbf{Conditional retraining vs.\ periodic retraining.}
@@ -438,9 +442,10 @@ detection that goes beyond offline accuracy to incorporate operational
 metrics (FP/h, PA-F1, Event-F1, VUS-PR), generalization checks, and
 embedded resource constraints.
 The ablation study demonstrates that AUC-PR alone is insufficient to
-select operationally reliable models: candidates passing only offline
-screening exhibit FP/h up to 7.0$\times$ higher than the quality-gate-approved
-model.
+select operationally reliable models: without the full gate, the worst
+screening-only candidate (Logistic Regression) generates FP/h~$=6.568$,
+$2.1\times$ the gate-approved Tiny TCN baseline; ensemble models (RF, ET)
+pass AUC-PR but are physically undeployable at 316--921~MB.
 The conditional retraining policy eliminates all spurious OTA update triggers
 in stable drift scenarios, reducing unnecessary updates to zero while
 maintaining Event-Recall at 1.0 across all evaluated conditions.
@@ -520,7 +525,12 @@ M.~Zaharia et al.,
 \bibitem{artigo1}
 [AUTHOR],
 ``A generic TinyML pipeline for time-series anomaly detection,''
-[VENUE], 2026. \textit{(companion paper)}
+[VENUE], 2026. \textit{(companion paper 1)}
+
+\bibitem{artigo3}
+[AUTHOR],
+``Cross-domain generalization of a reproducible TinyML anomaly detection pipeline,''
+[VENUE], 2026. \textit{(companion paper 3)}
 
 \end{thebibliography}
 
